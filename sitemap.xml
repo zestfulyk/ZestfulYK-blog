@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zestfulyk.github.io/ZestfulYK-blog/friends/index.html</loc>
+    
+    <lastmod>2025-10-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zestfulyk.github.io/ZestfulYK-blog/about/index.html</loc>
+    
+    <lastmod>2025-10-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zestfulyk.github.io/ZestfulYK-blog/2025/10/20/index/</loc>
     
     <lastmod>2025-10-20</lastmod>
