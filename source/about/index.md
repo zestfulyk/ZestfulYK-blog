@@ -6,6 +6,7 @@ layout: page
 # 👋 你好，我是 ZestfulYK！
 
 这里是我的个人角落，欢迎来到我的世界！
+![我的头像](images/avatar.png)
 
 ## 🎯 我是谁
 
