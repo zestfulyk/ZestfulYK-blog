@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+    <meta charset="UTF-8">
+    <title>markdown使用教程 - ZestfulYK的Blog</title>
+    <link rel="shortcut icon" href="/ZestfulYK-blog/static/img/icon.png">
+    <link rel="icon" href="/static/img/icon.png" sizes="192x192"/>
+    
+<link rel="stylesheet" href="/ZestfulYK-blog/static/kico.css">
+<link rel="stylesheet" href="/ZestfulYK-blog/static/hingle.css">
+
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta property="og:site_name" content="ZestfulYK的Blog">
+    <meta property="og:title" content="markdown使用教程"/>
+    
+    <style>body:before{ content: ''; background-image: url(images/27090472f6d3b404fc352a7302fb8347.png) }</style>
+    
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+  <body>
+    <header>
+    <div class="head-title">
+        <h4>ZestfulYK的Blog</h4>
+    </div>
+    <div class="head-action">
+        <div class="toggle-btn"></div>
+        <div class="light-btn"></div>
+        <div class="search-btn"></div>
+    </div>
+    <form class="head-search" method="post">
+        <input type="text" name="s" placeholder="搜索什么？">
+    </form>
+    <nav class="head-menu">
+        <a href="/ZestfulYK-blog/">首页</a>
+        <div class="has-child">
+        </div>
+        
+            <a href="/ZestfulYK-blog/about">关于我</a>
+        
+            <a href="/ZestfulYK-blog/friends">朋友们</a>
+        
+    </nav>
+</header>
+
+    <main>
+    <div class="wrap min">
+        <section class="post-title">
+            <h2>markdown使用教程</h2>
+            <div class="post-meta">
+                <time class="date">2025.10.20</time>
+            
+            </div>
+        </section>
+        <article class="post-content">
+        
+            <h3 id="标题的使用"><a href="#标题的使用" class="headerlink" title="标题的使用"></a>标题的使用</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一级标题</span></span><br><span class="line"><span class="comment">## 二级标题</span></span><br><span class="line"><span class="comment">### 三级标题</span></span><br></pre></td></tr></table></figure>
+<h3 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h3><p><strong>粗体</strong> <em>斜体</em> <del>删除线</del> <code>行内代码</code></p>
+<h3 id="小标题的使用"><a href="#小标题的使用" class="headerlink" title="小标题的使用"></a>小标题的使用</h3><ul>
+<li>无序列表项</li>
+<li>另一个项目</li>
+</ul>
+<ol>
+<li>有序列表</li>
+<li>第二项</li>
+</ol>
+<h3 id="链接，图片"><a href="#链接，图片" class="headerlink" title="链接，图片"></a>链接，图片</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">链接文字</span>]<span class="string">(https://example.com)</span></span><br><span class="line"><span class="type">![</span><span class="string">图片描述](https://example.com/image.jpg)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="引用块"><a href="#引用块" class="headerlink" title="引用块"></a>引用块</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&gt;</span> <span class="string">这是一个引用块</span></span><br><span class="line"><span class="string">&gt;</span> <span class="string">可以多行使用</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这是一个引用块<br>可以多行使用</p>
+</blockquote>
+<h3 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">|</span> <span class="string">姓名</span> <span class="string">|</span> <span class="string">年龄</span> <span class="string">|</span> <span class="string">城市</span> <span class="string">|</span></span><br><span class="line"><span class="string">|------|------|------|</span></span><br><span class="line"><span class="string">|</span> <span class="string">张三</span> <span class="string">|</span> <span class="number">25</span>   <span class="string">|</span> <span class="string">北京</span> <span class="string">|</span></span><br><span class="line"><span class="string">|</span> <span class="string">李四</span> <span class="string">|</span> <span class="number">30</span>   <span class="string">|</span> <span class="string">上海</span> <span class="string">|</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>姓名</th>
+<th>年龄</th>
+<th>城市</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>张三</td>
+<td>25</td>
+<td>北京</td>
+</tr>
+<tr>
+<td>李四</td>
+<td>30</td>
+<td>上海</td>
+</tr>
+</tbody></table>
+
+        </article>
+        <section class="post-near">
+            <ul>
+                
+                    <li>上一篇: <a href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li>
+                
+                
+                    <li>下一篇: 看完啦 (つд⊂)</li>
+                
+            </ul>
+        </section>
+        
+            <section class="post-tags">
+            <a class="-none-link" href="/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/" rel="tag">技术</a>
+            </section>
+        
+    
+        <section class="post-author">
+        
+            <div class="author-info">
+                <h4>ZestfulYK</h4>
+                <p>纯前端萌新加算法萌新</p>
+            </div>
+        </section>
+    
+    </div>
+</main>
+
+    <footer>
+    <div class="buttons">
+        <button class="to-top" href="#"></button>
+    </div>
+    <div class="wrap min">
+        <section class="widget">
+            <div class="row">
+                <div class="col-m-4">
+                    <h3 class="title-recent">最新文章：</h3>
+                    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/markdown%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">markdown使用教程</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-date">时光机：</h3>
+                    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/10/">十月 2025</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-tags">标签云：</h3>
+                    <a href="/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">技术</a> <a href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;">算法</a>
+                </div>
+            </div>
+        </section>
+        <section class="sub-footer">
+            <p>© 2025 <a href="/ZestfulYK-blog/">ZestfulYK的Blog</a>. All Rights Reserved. Theme By <a href="https://github.com/Dreamer-Paul/Hingle" target="_blank" rel="nofollow">Hingle</a>.</p>
+        </section>
+    </div>
+</footer>
+
+
+<script src="/ZestfulYK-blog/static/kico.js"></script>
+<script src="/ZestfulYK-blog/static/hingle.js"></script>
+
+
+<script>var hingle = new Paul_Hingle({"copyright":true,"night":true});</script>
+
+  </body>
+</html>
