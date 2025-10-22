@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+    <meta charset="UTF-8">
+    <title>全排列函数的应用 - ZestfulYK的Blog</title>
+    <link rel="shortcut icon" href="/ZestfulYK-blog/static/img/icon.png">
+    <link rel="icon" href="/static/img/icon.png" sizes="192x192"/>
+    
+<link rel="stylesheet" href="/ZestfulYK-blog/static/kico.css">
+<link rel="stylesheet" href="/ZestfulYK-blog/static/hingle.css">
+
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta property="og:site_name" content="ZestfulYK的Blog">
+    <meta property="og:title" content="全排列函数的应用"/>
+    
+    <style>body:before{ content: ''; background-image: url(images/27090472f6d3b404fc352a7302fb8347.png) }</style>
+    
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+  <body>
+    <header>
+    <div class="head-title">
+        <h4>ZestfulYK的Blog</h4>
+    </div>
+    <div class="head-action">
+        <div class="toggle-btn"></div>
+        <div class="light-btn"></div>
+        <div class="search-btn"></div>
+    </div>
+    <form class="head-search" method="post">
+        <input type="text" name="s" placeholder="搜索什么？">
+    </form>
+    <nav class="head-menu">
+        <a href="/ZestfulYK-blog/">首页</a>
+        <div class="has-child">
+        </div>
+        
+            <a href="/ZestfulYK-blog/about">关于我</a>
+        
+            <a href="/ZestfulYK-blog/friends">朋友们</a>
+        
+    </nav>
+</header>
+
+    <main>
+    <div class="wrap min">
+        <section class="post-title">
+            <h2>全排列函数的应用</h2>
+            <div class="post-meta">
+                <time class="date">2025.10.22</time>
+            
+            </div>
+        </section>
+        <article class="post-content">
+        
+            <h1 id="全排列函数"><a href="#全排列函数" class="headerlink" title="全排列函数"></a>全排列函数</h1><h2 id="什么是全排列？"><a href="#什么是全排列？" class="headerlink" title="什么是全排列？"></a>什么是全排列？</h2><p>简单来说就是排列组合的所有情况，并按照字典顺序输出<br>例如：123全排列的结果为</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">123</span></span><br><span class="line"><span class="number">132</span></span><br><span class="line"><span class="number">213</span></span><br><span class="line"><span class="number">231</span></span><br><span class="line"><span class="number">312</span></span><br><span class="line"><span class="number">321</span></span><br></pre></td></tr></table></figure>
+
+<p>而实际上全排列需要在代码中用复杂的深度搜索来写<br>这实在是太复杂了！！！<br>于是我就发现了全排列函数这个东西^__^<br>现在我们就来学习一下这个高级函数————next_permutation</p>
+<h2 id="全排列函数-1"><a href="#全排列函数-1" class="headerlink" title="全排列函数"></a>全排列函数</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#include &lt;iostream&gt;  </span></span><br><span class="line"><span class="comment">#include &lt;algorithm&gt;  </span></span><br><span class="line"><span class="string">using</span> <span class="string">namespace</span> <span class="string">std;</span>  </span><br><span class="line"><span class="string">int</span> <span class="string">main()</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="string">int</span> <span class="string">num</span>[<span class="number">3</span>]<span class="string">=</span>&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;<span class="string">;</span>  </span><br><span class="line">    <span class="string">do</span>  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="string">cout&lt;&lt;num</span>[<span class="number">0</span>]<span class="string">&lt;&lt;&quot;</span> <span class="string">&quot;&lt;&lt;num[1]&lt;&lt;&quot;</span> <span class="string">&quot;&lt;&lt;num[2]&lt;&lt;endl;  </span></span><br><span class="line"><span class="string">    &#125;while(next_permutation(num,num+3));  </span></span><br><span class="line"><span class="string">    return 0;  </span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>全排列函数详细定义<br>对于next_permutation函数，其函数原型为：</p>
+<p>  #include <algorithm></p>
+<p>  bool next_permutation(iterator start,iterator end)</p>
+</li>
+</ul>
+<p>当当前序列不存在下一个排列时，函数返回false，否则返回true</p>
+<ul>
+<li>全排列函数的特性</li>
+</ul>
+<p>next_permutation(num,num+n)函数是对数组num中的前n个元素进行全排列，同时并改变num数组的值。</p>
+<p>另外，需要强调的是，next_permutation()在使用前需要对欲排列数组按升序排序，否则只能找出该序列之后的全排列数。比如，如果数组num初始化为2,3,1，那么输出就变为了：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">231</span></span><br><span class="line"><span class="number">312</span></span><br><span class="line"><span class="number">321</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="全排列函数的应用"><a href="#全排列函数的应用" class="headerlink" title="全排列函数的应用"></a>全排列函数的应用</h1><p><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc326/tasks/abc326_d?lang=en">题目链接</a></p>
+<p>题目要求我们按要求完成5*5数独，且只要填ABC，可以有空格子<br>一种方法是遍历每一个格子，逐个填入，<br>时间复杂度(4^25)，显然不行<br>不过我的朋友使用了大量剪枝，最后还是过了<br>%%%大佬 qinye_leaf</p>
+<p><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc326/submissions/70334070">代码链接</a></p>
+<p>但是我们刚学了全排列函数，就不能使用一下吗？<br>你别说，还真能使用！<br>我们只要先填写每一行，然后就只用40^5就能计算完了<br>因为可以加上一个判断，看看每一行是否符合标准(也算剪枝吧)</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">vector&lt;string&gt;</span> <span class="string">eachrow(int</span> <span class="string">row)</span> &#123;</span><br><span class="line">    <span class="string">vector&lt;string&gt;</span> <span class="string">result;</span></span><br><span class="line">    <span class="string">string</span> <span class="string">h=string(n-3</span>,<span class="string">&#x27;.&#x27;</span><span class="string">)+&quot;ABC&quot;;</span></span><br><span class="line">    <span class="string">do</span>&#123; <span class="string">for(int</span> <span class="string">i=0;i&lt;n;i++)</span>&#123;</span><br><span class="line">            <span class="string">if(h</span>[<span class="string">i</span>]<span class="type">!=&#x27;.&#x27;)</span>&#123;</span><br><span class="line">                <span class="string">if(h</span>[<span class="string">i</span>]<span class="string">==r</span>[<span class="string">row</span>]<span class="string">)</span> <span class="string">result.push_back(h);</span></span><br><span class="line">                <span class="string">break;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="string">while(next_permutation(h.begin()</span>,<span class="string">h.end()));</span></span><br><span class="line">    <span class="string">return</span> <span class="string">result;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么这样我们就能得到每一行的可能情况，每行40种<br>之后就可以正常的DFS了</p>
+<p><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc326/submissions/70340782">个人AC代码链接</a></p>
+
+        </article>
+        <section class="post-near">
+            <ul>
+                
+                    <li>上一篇: 看完啦 (つд⊂)</li>
+                
+                
+                    <li>下一篇: <a href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li>
+                
+            </ul>
+        </section>
+        
+            <section class="post-tags">
+            <a class="-none-link" href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+            </section>
+        
+    
+        <section class="post-author">
+        
+            <div class="author-info">
+                <h4>ZestfulYK</h4>
+                <p>纯前端萌新加算法萌新</p>
+            </div>
+        </section>
+    
+    </div>
+</main>
+
+    <footer>
+    <div class="buttons">
+        <button class="to-top" href="#"></button>
+    </div>
+    <div class="wrap min">
+        <section class="widget">
+            <div class="row">
+                <div class="col-m-4">
+                    <h3 class="title-recent">最新文章：</h3>
+                    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/">全排列函数的应用</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/markdown%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">markdown使用教程</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-date">时光机：</h3>
+                    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/10/">十月 2025</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-tags">标签云：</h3>
+                    <a href="/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">技术</a> <a href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;">算法</a>
+                </div>
+            </div>
+        </section>
+        <section class="sub-footer">
+            <p>© 2025 <a href="/ZestfulYK-blog/">ZestfulYK的Blog</a>. All Rights Reserved. Theme By <a href="https://github.com/Dreamer-Paul/Hingle" target="_blank" rel="nofollow">Hingle</a>.</p>
+        </section>
+    </div>
+</footer>
+
+
+<script src="/ZestfulYK-blog/static/kico.js"></script>
+<script src="/ZestfulYK-blog/static/hingle.js"></script>
+
+
+<script>var hingle = new Paul_Hingle({"copyright":true,"night":true});</script>
+
+  </body>
+</html>
