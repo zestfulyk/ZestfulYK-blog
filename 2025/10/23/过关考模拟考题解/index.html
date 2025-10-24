@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+    <meta charset="UTF-8">
+    <title>过关考模拟考题解 - ZestfulYK的Blog</title>
+    <link rel="shortcut icon" href="/ZestfulYK-blog/static/img/icon.png">
+    <link rel="icon" href="/static/img/icon.png" sizes="192x192"/>
+    
+<link rel="stylesheet" href="/ZestfulYK-blog/static/kico.css">
+<link rel="stylesheet" href="/ZestfulYK-blog/static/hingle.css">
+
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta property="og:site_name" content="ZestfulYK的Blog">
+    <meta property="og:title" content="过关考模拟考题解"/>
+    
+    <style>body:before{ content: ''; background-image: url(images/27090472f6d3b404fc352a7302fb8347.png) }</style>
+    
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+  <body>
+    <header>
+    <div class="head-title">
+        <h4>ZestfulYK的Blog</h4>
+    </div>
+    <div class="head-action">
+        <div class="toggle-btn"></div>
+        <div class="light-btn"></div>
+        <div class="search-btn"></div>
+    </div>
+    <form class="head-search" method="post">
+        <input type="text" name="s" placeholder="搜索什么？">
+    </form>
+    <nav class="head-menu">
+        <a href="/ZestfulYK-blog/">首页</a>
+        <div class="has-child">
+        </div>
+        
+            <a href="/ZestfulYK-blog/about">关于我</a>
+        
+            <a href="/ZestfulYK-blog/friends">朋友们</a>
+        
+    </nav>
+</header>
+
+    <main>
+    <div class="wrap min">
+        <section class="post-title">
+            <h2>过关考模拟考题解</h2>
+            <div class="post-meta">
+                <time class="date">2025.10.23</time>
+            
+            </div>
+        </section>
+        <article class="post-content">
+        
+            <h1 id="过关考模拟考题解"><a href="#过关考模拟考题解" class="headerlink" title="过关考模拟考题解"></a>过关考模拟考题解</h1><h2 id="A签到题"><a href="#A签到题" class="headerlink" title="A签到题"></a>A签到题</h2><ul>
+<li>分析:</li>
+</ul>
+<p>要是这也不会那学习委员真没招了</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;Help others voluntarily but never let them know they owe you a favor.&quot;</span>&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="B选择结构"><a href="#B选择结构" class="headerlink" title="B选择结构"></a>B选择结构</h2><ul>
+<li>分析:</li>
+</ul>
+<p>按照要求逐个判断，然后取最小值就行了</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">double</span> x,y,n,p,ans=<span class="number">200</span>;</span><br><span class="line">    cin&gt;&gt;x&gt;&gt;y&gt;&gt;n&gt;&gt;p;</span><br><span class="line">    <span class="keyword">if</span>(p&gt;=x) ans=<span class="built_in">min</span>(ans,p-y);</span><br><span class="line">    ans=<span class="built_in">min</span>(ans,p/<span class="number">10</span>*n);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%.2lf&quot;</span>,ans);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="C循环"><a href="#C循环" class="headerlink" title="C循环"></a>C循环</h2><ul>
+<li>分析:</li>
+</ul>
+<p>分三种情况，&lt;10的一定成立，两三四位数自己判断就行了</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,cnt=<span class="number">0</span>; cin&gt;&gt;n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(i&lt;<span class="number">10</span>) cnt++;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(i&lt;<span class="number">100</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(i%<span class="number">10</span>==i/<span class="number">10</span>) cnt++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(i&lt;<span class="number">1000</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(i%<span class="number">10</span>==i/<span class="number">10</span>%<span class="number">10</span>&amp;&amp;i%<span class="number">10</span>==i/<span class="number">100</span>) cnt++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(i%<span class="number">10</span>==i/<span class="number">10</span>%<span class="number">10</span>&amp;&amp;i%<span class="number">10</span>==i/<span class="number">100</span>%<span class="number">10</span>&amp;&amp;i%<span class="number">10</span>==i/<span class="number">1000</span>) cnt++;</span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;cnt&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>打表的做法</li>
+</ul>
+<p>为什么没人想到这题能打表呢？总共也就28个数啊</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> a[<span class="number">30</span>]=&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">11</span>,</span><br><span class="line">    <span class="number">22</span>,<span class="number">33</span>,<span class="number">44</span>,<span class="number">55</span>,<span class="number">66</span>,<span class="number">77</span>,<span class="number">88</span>,<span class="number">99</span>,<span class="number">111</span>,</span><br><span class="line">    <span class="number">222</span>,<span class="number">333</span>,<span class="number">444</span>,<span class="number">555</span>,<span class="number">666</span>,<span class="number">777</span>,<span class="number">888</span>,<span class="number">999</span>,<span class="number">1111</span>,<span class="number">2222</span>&#125;,n;</span><br><span class="line">    cin&gt;&gt;n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;=<span class="number">28</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(a[i]&gt;n) &#123;cout&lt;&lt;i&lt;&lt;endl;<span class="keyword">break</span>;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="D菱形"><a href="#D菱形" class="headerlink" title="D菱形"></a>D菱形</h2><ul>
+<li>分析:</li>
+</ul>
+<p>逐行输出，先上半部分，再是后半部分</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n; cin&gt;&gt;n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;=n/<span class="number">2</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j&lt;=n/<span class="number">2</span>-i;j++) cout&lt;&lt;<span class="string">&quot;.&quot;</span>;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;#&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j&lt;=i*<span class="number">2</span><span class="number">-1</span>;j++) cout&lt;&lt;<span class="string">&quot;.&quot;</span>;</span><br><span class="line">        <span class="keyword">if</span>(i!=<span class="number">0</span>) cout&lt;&lt;<span class="string">&quot;#&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j&lt;=n/<span class="number">2</span>-i;j++) cout&lt;&lt;<span class="string">&quot;.&quot;</span>;</span><br><span class="line">        cout&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=n/<span class="number">2</span><span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j&lt;=n/<span class="number">2</span>-i;j++) cout&lt;&lt;<span class="string">&quot;.&quot;</span>;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;#&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j&lt;=i*<span class="number">2</span><span class="number">-1</span>;j++) cout&lt;&lt;<span class="string">&quot;.&quot;</span>;</span><br><span class="line">        <span class="keyword">if</span>(i!=<span class="number">0</span>) cout&lt;&lt;<span class="string">&quot;#&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j&lt;=n/<span class="number">2</span>-i;j++) cout&lt;&lt;<span class="string">&quot;.&quot;</span>;</span><br><span class="line">        cout&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="E金字塔"><a href="#E金字塔" class="headerlink" title="E金字塔"></a>E金字塔</h2><ul>
+<li>分析:</li>
+</ul>
+<p>逐个循环相加就行了</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,ans=<span class="number">0</span>; cin&gt;&gt;n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++) ans+=i*i;</span><br><span class="line">    cout&lt;&lt;ans&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="F假期阅读"><a href="#F假期阅读" class="headerlink" title="F假期阅读"></a>F假期阅读</h2><ul>
+<li>分析:</li>
+</ul>
+<p>最多k*t页，但不能超过n</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,k,t; cin&gt;&gt;n&gt;&gt;k&gt;&gt;t;</span><br><span class="line">    cout&lt;&lt;<span class="built_in">min</span>(n,k*t)&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="G值日"><a href="#G值日" class="headerlink" title="G值日"></a>G值日</h2><ul>
+<li>分析:</li>
+</ul>
+<p>求最小公倍数</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,m,i; cin&gt;&gt;n&gt;&gt;m;</span><br><span class="line">    <span class="keyword">for</span>(i=n;i%m!=<span class="number">0</span>;i+=n);</span><br><span class="line">    cout&lt;&lt;i&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="H数三角形"><a href="#H数三角形" class="headerlink" title="H数三角形"></a>H数三角形</h2><ul>
+<li>分析:</li>
+</ul>
+<p>循环i 1..n，j 1..i即可，每次判断一下是否存在整数解</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> n,cnt=<span class="number">0</span>; cin&gt;&gt;n;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">1</span>;j&lt;=i;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(i*j%<span class="number">2</span>==<span class="number">0</span>) cnt++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;cnt&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="I幂数和"><a href="#I幂数和" class="headerlink" title="I幂数和"></a>I幂数和</h2><ul>
+<li>分析:</li>
+</ul>
+<p>直接暴力枚举所有数，判断是否能拆就行了<br>遍历每种可能的情况，计算和是否为这个数就行了<br>至于代码中的&lt;&lt;是二进制内左移的意思，用来计算2的n次幂<br>比如1&lt;&lt;1是10，变成了2，同理还有右移，自己学习</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> l,r,cnt=<span class="number">0</span>; cin&gt;&gt;l&gt;&gt;r;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=l;i&lt;=r;i++)&#123;</span><br><span class="line">        <span class="type">bool</span> f=<span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;=<span class="number">20</span>;j++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> k=<span class="number">0</span>;k&lt;=<span class="number">20</span>;k++)&#123;</span><br><span class="line">                <span class="keyword">if</span>((<span class="number">1</span>&lt;&lt;j)+(<span class="number">1</span>&lt;&lt;k)==i) &#123;cnt++;f=<span class="literal">true</span>;<span class="keyword">break</span>;&#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(f) <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;cnt&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="J质因数分解"><a href="#J质因数分解" class="headerlink" title="J质因数分解"></a>J质因数分解</h2><ul>
+<li>分析:</li>
+</ul>
+<p>第一空，先输出n，免得后面n的值变掉了<br>第二空判断是否算一个因子，当然最后一个是需要特判的<br>第三空，既然发现了因子，那么把n减小，变为n&#x2F;i<br>第四空，找的不对，i自增，寻找下一个位置<br>第五空，输出最后一个质因数</p>
+<ul>
+<li>参考代码:</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ll long long</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ll n,i=<span class="number">2</span>; cin&gt;&gt;n;</span><br><span class="line">    cout&lt;&lt;n&lt;&lt;<span class="string">&quot;=&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">2</span>;i&lt;=n;)&#123;</span><br><span class="line">        <span class="keyword">if</span>(n%i==<span class="number">0</span>&amp;&amp;n/i!=<span class="number">1</span>)&#123;</span><br><span class="line">            cout&lt;&lt;i&lt;&lt;<span class="string">&quot;*&quot;</span>;</span><br><span class="line">            n/=i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;i<span class="number">-1</span>&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </article>
+        <section class="post-near">
+            <ul>
+                
+                    <li>上一篇: 看完啦 (つд⊂)</li>
+                
+                
+                    <li>下一篇: <a href="/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/">全排列函数的应用</a></li>
+                
+            </ul>
+        </section>
+        
+            <section class="post-tags">
+            <a class="-none-link" href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+            </section>
+        
+    
+        <section class="post-author">
+        
+            <div class="author-info">
+                <h4>ZestfulYK</h4>
+                <p>纯前端萌新加算法萌新</p>
+            </div>
+        </section>
+    
+    </div>
+</main>
+
+    <footer>
+    <div class="buttons">
+        <button class="to-top" href="#"></button>
+    </div>
+    <div class="wrap min">
+        <section class="widget">
+            <div class="row">
+                <div class="col-m-4">
+                    <h3 class="title-recent">最新文章：</h3>
+                    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/23/%E8%BF%87%E5%85%B3%E8%80%83%E6%A8%A1%E6%8B%9F%E8%80%83%E9%A2%98%E8%A7%A3/">过关考模拟考题解</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/">全排列函数的应用</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/markdown%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">markdown使用教程</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-date">时光机：</h3>
+                    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/10/">十月 2025</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-tags">标签云：</h3>
+                    <a href="/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">技术</a> <a href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;">算法</a>
+                </div>
+            </div>
+        </section>
+        <section class="sub-footer">
+            <p>© 2025 <a href="/ZestfulYK-blog/">ZestfulYK的Blog</a>. All Rights Reserved. Theme By <a href="https://github.com/Dreamer-Paul/Hingle" target="_blank" rel="nofollow">Hingle</a>.</p>
+        </section>
+    </div>
+</footer>
+
+
+<script src="/ZestfulYK-blog/static/kico.js"></script>
+<script src="/ZestfulYK-blog/static/hingle.js"></script>
+
+
+<script>var hingle = new Paul_Hingle({"copyright":true,"night":true});</script>
+
+  </body>
+</html>
