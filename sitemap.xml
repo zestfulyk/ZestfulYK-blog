@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://zestfulyk.github.io/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/</loc>
+    
+    <lastmod>2025-10-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://zestfulyk.github.io/ZestfulYK-blog/friends/index.html</loc>
+    
+    <lastmod>2025-10-24</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://zestfulyk.github.io/ZestfulYK-blog/2025/10/23/%E8%BF%87%E5%85%B3%E8%80%83%E6%A8%A1%E6%8B%9F%E8%80%83%E9%A2%98%E8%A7%A3/</loc>
     
     <lastmod>2025-10-23</lastmod>
@@ -46,19 +64,10 @@
     <priority>0.6</priority>
   </url>
   
-  <url>
-    <loc>https://zestfulyk.github.io/ZestfulYK-blog/friends/index.html</loc>
-    
-    <lastmod>2025-10-20</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
 
   <url>
     <loc>https://zestfulyk.github.io/ZestfulYK-blog</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -66,14 +75,14 @@
   
   <url>
     <loc>https://zestfulyk.github.io/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://zestfulyk.github.io/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2025-10-23</lastmod>
+    <lastmod>2025-10-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
