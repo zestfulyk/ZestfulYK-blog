@@ -82,10 +82,10 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=n;i++) cout&lt;&lt;i&lt;&lt;<span class="string">&quot; &quot;</span>; cout&lt;&lt;endl;</span><br></pre></td></tr></table></figure>
 
 <p>因为<code>C++cout&lt;&lt;endl;</code>其实是在循环之外的，所以这么写是正确的</p>
-<h2 id="头文件压行"><a href="#头文件压行" class="headerlink" title="头文件压行"></a>头文件压行</h2><p>下面送给大家万能头文件：</p>
+<h1 id="头文件压行"><a href="#头文件压行" class="headerlink" title="头文件压行"></a>头文件压行</h1><p>下面送给大家万能头文件：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br></pre></td></tr></table></figure>
 
-<h2 id="其他技巧"><a href="#其他技巧" class="headerlink" title="其他技巧"></a>其他技巧</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ll long long</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> rep(1,n) for(int i=1;i&lt;=(n);i++)</span></span><br><span class="line">ll n;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">rep</span>(<span class="number">1</span>,n) cout&lt;&lt;<span class="string">&quot;*&quot;</span>; cout&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="其他技巧"><a href="#其他技巧" class="headerlink" title="其他技巧"></a>其他技巧</h1><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ll long long</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> rep(1,n) for(int i=1;i&lt;=(n);i++)</span></span><br><span class="line">ll n;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">rep</span>(<span class="number">1</span>,n) cout&lt;&lt;<span class="string">&quot;*&quot;</span>; cout&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>通过define来减少代码长度，增加可读性</p>
 <h2 id="一些非常有用的C-自带函数"><a href="#一些非常有用的C-自带函数" class="headerlink" title="一些非常有用的C++自带函数"></a>一些非常有用的C++自带函数</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sort</span>(a,a+n);<span class="comment">//a为数组，n为a的大小</span></span><br><span class="line">__gcd(x,y);<span class="comment">//x，y的最大公约数</span></span><br><span class="line">x=<span class="number">1</span>&lt;&lt;n;<span class="comment">//2的n次方</span></span><br></pre></td></tr></table></figure>
@@ -94,7 +94,7 @@
         <section class="post-near">
             <ul>
                 
-                    <li>上一篇: 看完啦 (つд⊂)</li>
+                    <li>上一篇: <a href="/ZestfulYK-blog/2025/11/03/1/">算法挑战赛题解（11.2）</a></li>
                 
                 
                     <li>下一篇: <a href="/ZestfulYK-blog/2025/10/23/%E8%BF%87%E5%85%B3%E8%80%83%E6%A8%A1%E6%8B%9F%E8%80%83%E9%A2%98%E8%A7%A3/">过关考模拟考题解</a></li>
@@ -127,11 +127,11 @@
             <div class="row">
                 <div class="col-m-4">
                     <h3 class="title-recent">最新文章：</h3>
-                    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/">压行技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/23/%E8%BF%87%E5%85%B3%E8%80%83%E6%A8%A1%E6%8B%9F%E8%80%83%E9%A2%98%E8%A7%A3/">过关考模拟考题解</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/">全排列函数的应用</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/markdown%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">markdown使用教程</a></li></ul>
+                    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/11/03/1/">算法挑战赛题解（11.2）</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/">压行技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/23/%E8%BF%87%E5%85%B3%E8%80%83%E6%A8%A1%E6%8B%9F%E8%80%83%E9%A2%98%E8%A7%A3/">过关考模拟考题解</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/">全排列函数的应用</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/markdown%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">markdown使用教程</a></li></ul>
                 </div>
                 <div class="col-m-4">
                     <h3 class="title-date">时光机：</h3>
-                    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/10/">十月 2025</a></li></ul>
+                    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/11/">十一月 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/10/">十月 2025</a></li></ul>
                 </div>
                 <div class="col-m-4">
                     <h3 class="title-tags">标签云：</h3>
