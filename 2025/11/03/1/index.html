@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+    <meta charset="UTF-8">
+    <title>算法挑战赛题解（11.2） - ZestfulYK的Blog</title>
+    <link rel="shortcut icon" href="/ZestfulYK-blog/static/img/icon.png">
+    <link rel="icon" href="/static/img/icon.png" sizes="192x192"/>
+    
+<link rel="stylesheet" href="/ZestfulYK-blog/static/kico.css">
+<link rel="stylesheet" href="/ZestfulYK-blog/static/hingle.css">
+
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta property="og:site_name" content="ZestfulYK的Blog">
+    <meta property="og:title" content="算法挑战赛题解（11.2）"/>
+    
+    <style>body:before{ content: ''; background-image: url(images/27090472f6d3b404fc352a7302fb8347.png) }</style>
+    
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+  <body>
+    <header>
+    <div class="head-title">
+        <h4>ZestfulYK的Blog</h4>
+    </div>
+    <div class="head-action">
+        <div class="toggle-btn"></div>
+        <div class="light-btn"></div>
+        <div class="search-btn"></div>
+    </div>
+    <form class="head-search" method="post">
+        <input type="text" name="s" placeholder="搜索什么？">
+    </form>
+    <nav class="head-menu">
+        <a href="/ZestfulYK-blog/">首页</a>
+        <div class="has-child">
+        </div>
+        
+            <a href="/ZestfulYK-blog/about">关于我</a>
+        
+            <a href="/ZestfulYK-blog/friends">朋友们</a>
+        
+    </nav>
+</header>
+
+    <main>
+    <div class="wrap min">
+        <section class="post-title">
+            <h2>算法挑战赛题解（11.2）</h2>
+            <div class="post-meta">
+                <time class="date">2025.11.03</time>
+            
+            </div>
+        </section>
+        <article class="post-content">
+        
+            <h1 id="算法挑战赛题解（11-2）"><a href="#算法挑战赛题解（11-2）" class="headerlink" title="算法挑战赛题解（11.2）"></a>算法挑战赛题解（11.2）</h1><h2 id="简单版本："><a href="#简单版本：" class="headerlink" title="简单版本："></a>简单版本：</h2><h3 id="题目大意："><a href="#题目大意：" class="headerlink" title="题目大意："></a>题目大意：</h3><p>给定n个区间，判断这些区间能划分出几种不同的区域</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://www.zjutacm.cn/problem/3120">性质不同的数字</a></li>
+</ul>
+<h3 id="题目分析："><a href="#题目分析：" class="headerlink" title="题目分析："></a>题目分析：</h3><p>实际上是在讨论每个点被哪几个区包含，在样例中，数据是这样的，我们来分析一下这两个样例</p>
+<p><img src="/ZestfulYK-blog/../images/example3119.png" alt="样例"></p>
+<h3 id="样例分析："><a href="#样例分析：" class="headerlink" title="样例分析："></a>样例分析：</h3><p>样例1: 0 1 1 1 1 1 1 0 0 … …  所以是两种区间<br>样例2: 1   2  3   4   5   6   7  8    9   10  11  12  13 … …<br>       1   1  1   1   1   1   1  1   1    1   1   1<br>                  2   2   2   2  2   2    2   2   2   2<br>                          3   3  3   3    3   3   3   3<br>                                                  4   4<br>       |&lt; —— &gt;|&lt; —- &gt;|&lt; —————– &gt;|&lt;-&gt;|&lt;-&gt;|&lt;–</p>
+<p>所以是6种区间<br>这样,我们就弄明白了题目在讲什么,接下来就可以思考怎么实现了</p>
+<h3 id="题目思路："><a href="#题目思路：" class="headerlink" title="题目思路："></a>题目思路：</h3><p>实际上有些人会以为我们需要统计的是这个点有几个区间经过，但是这是错误的，在样例二就能发现这一点。<br>（这也是我第一次的想法，测试样例二时发现的T_T）</p>
+<p>我们需要思考怎么表示这一个点有哪些区间经过，而且每一个区间是互不相同的。这里我们考虑类似<strong>状态压缩</strong>的思想。</p>
+<p>什么是状态压缩呢？简而言之就是用一个数来代替这个状态。<br>比如说，我们用1表示未进行，2表示正在进行，3表示完成，<br>那么一个含有4个任务的任务表可以是这样的：</p>
+<pre><code>            1321
+</code></pre>
+<p>（1，4任务未进行，2任务完成，3正在进行）</p>
+<p>我们使用了一个4位数表示了这一状态，这样就实现了状态压缩，我们没有用数组存储状态，而是一个数，这样我们在判断两个状态是否相同时就可以直接判断数字是否相同了，节约了时间和判断的复杂度。</p>
+<p>那么怎么把这个思想用在这一题呢？我们考虑给每个区间一个标号k，每个区间内的点加上2^k，这样就保证了每一个状态不会重复。<br>但是这么写居然WA了！这是因为数据范围n是[0,300]也就是会有2^300，远大于long long的最大范围(2^64-1)这显然是不行的。</p>
+<p>实际上这个算法已经十分接近答案了,但我们还需要改进这个算法。<br>接着我们想到一个类似的方法，<strong>哈希表(hash)</strong>。</p>
+<p>其实哈希表和刚才的思路差不多，不过加入了一些更高级的算法来防止数据溢出。</p>
+<h3 id="那么什么是hash呢？"><a href="#那么什么是hash呢？" class="headerlink" title="那么什么是hash呢？"></a>那么什么是hash呢？</h3><p>实际上也是创建一种对应关系，使得在查询时能快速访问这种情况对应的值。就像上面的例子一样，我们通过我们规定的方式把任务状态和整数一一对应。</p>
+<h3 id="怎么创建hash表呢？"><a href="#怎么创建hash表呢？" class="headerlink" title="怎么创建hash表呢？"></a>怎么创建hash表呢？</h3><p>首先，找到一个质数作为进制数P，通常取131或者13331，模数mod通常取1e9+7或1e9+9，对应关系就是对应的P进制数%mod<br>例如这个点上经过了134这三个集合，那么我们就把134转化为131进制，即1<em>131^2+3</em>131+4，在实际操作时，就是每一个集合的下标k作为对应的位数，则每一个点的表示可以是这样的：</p>
+<p><a href="../images/%E5%85%AC%E5%BC%8F.png">公式</a></p>
+<p>这样我们就计算出了每一个点的唯一标识，含有相同标识的才能算是同一个点。（这里选择质数是为了防止哈希碰撞，即不同状态的得到了相同的标记；选择mod是防止溢出）</p>
+<p>最后只要统计一下标识的个数就行了（可以用set实现）<br>代码实现：对于简单版本，暴力完全够用了。</p>
+<p><a href="../images/3119.png">code</a><br><a href="../images/3119OJ.png">code</a></p>
+<p>所以这样我们就解决了简单版本。</p>
+<h2 id="复杂版本："><a href="#复杂版本：" class="headerlink" title="复杂版本："></a>复杂版本：</h2><p>那么对于数据量大的<strong>复杂版本</strong>呢？</p>
+<p>这里我们依然采用hash，但是由于数据量大，为了防止冲突，我们给每一个区间都分配一个随机hash值，在计算时只考虑起点和终点，在进入起点时加入标记，离开时移除标记。这时我们就想到了具有可逆性质的异或，我们只要给对应的起终点打上相同标记就行了，最后还是用set统计产生的不同标记数</p>
+<h3 id="参考代码："><a href="#参考代码：" class="headerlink" title="参考代码："></a>参考代码：</h3><p><a href="../images/3120.png">code</a><br><a href="../images/3120OJ.png">code</a></p>
+<pre><code class="language-yaml">&gt;感谢观看！关注ZestfulYK喵，谢谢喵！
+</code></pre>
+
+        </article>
+        <section class="post-near">
+            <ul>
+                
+                    <li>上一篇: 看完啦 (つд⊂)</li>
+                
+                
+                    <li>下一篇: <a href="/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/">压行技巧</a></li>
+                
+            </ul>
+        </section>
+        
+            <section class="post-tags">
+            <a class="-none-link" href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a>
+            </section>
+        
+    
+        <section class="post-author">
+        
+            <div class="author-info">
+                <h4>ZestfulYK</h4>
+                <p>纯前端萌新加算法萌新</p>
+            </div>
+        </section>
+    
+    </div>
+</main>
+
+    <footer>
+    <div class="buttons">
+        <button class="to-top" href="#"></button>
+    </div>
+    <div class="wrap min">
+        <section class="widget">
+            <div class="row">
+                <div class="col-m-4">
+                    <h3 class="title-recent">最新文章：</h3>
+                    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/11/03/1/">算法挑战赛题解（11.2）</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/">压行技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/23/%E8%BF%87%E5%85%B3%E8%80%83%E6%A8%A1%E6%8B%9F%E8%80%83%E9%A2%98%E8%A7%A3/">过关考模拟考题解</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/">全排列函数的应用</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/markdown%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">markdown使用教程</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-date">时光机：</h3>
+                    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/11/">十一月 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/10/">十月 2025</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-tags">标签云：</h3>
+                    <a href="/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">技术</a> <a href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;">算法</a>
+                </div>
+            </div>
+        </section>
+        <section class="sub-footer">
+            <p>© 2025 <a href="/ZestfulYK-blog/">ZestfulYK的Blog</a>. All Rights Reserved. Theme By <a href="https://github.com/Dreamer-Paul/Hingle" target="_blank" rel="nofollow">Hingle</a>.</p>
+        </section>
+    </div>
+</footer>
+
+
+<script src="/ZestfulYK-blog/static/kico.js"></script>
+<script src="/ZestfulYK-blog/static/hingle.js"></script>
+
+
+<script>var hingle = new Paul_Hingle({"copyright":true,"night":true});</script>
+
+  </body>
+</html>
