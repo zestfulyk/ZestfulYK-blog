@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    
+    <meta charset="UTF-8">
+    <title>算法挑战赛题解 - ZestfulYK的Blog</title>
+    <link rel="shortcut icon" href="/ZestfulYK-blog/static/img/icon.png">
+    <link rel="icon" href="/static/img/icon.png" sizes="192x192"/>
+    
+<link rel="stylesheet" href="/ZestfulYK-blog/static/kico.css">
+<link rel="stylesheet" href="/ZestfulYK-blog/static/hingle.css">
+
+    
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta property="og:site_name" content="ZestfulYK的Blog">
+    <meta property="og:title" content="算法挑战赛题解"/>
+    
+    <style>body:before{ content: ''; background-image: url(images/27090472f6d3b404fc352a7302fb8347.png) }</style>
+    
+<meta name="generator" content="Hexo 8.0.0"></head>
+
+  <body>
+    <header>
+    <div class="head-title">
+        <h4>ZestfulYK的Blog</h4>
+    </div>
+    <div class="head-action">
+        <div class="toggle-btn"></div>
+        <div class="light-btn"></div>
+        <div class="search-btn"></div>
+    </div>
+    <form class="head-search" method="post">
+        <input type="text" name="s" placeholder="搜索什么？">
+    </form>
+    <nav class="head-menu">
+        <a href="/ZestfulYK-blog/">首页</a>
+        <div class="has-child">
+        </div>
+        
+            <a href="/ZestfulYK-blog/about">关于我</a>
+        
+            <a href="/ZestfulYK-blog/friends">朋友们</a>
+        
+    </nav>
+</header>
+
+    <main>
+    <div class="wrap min">
+        <section class="post-title">
+            <h2>算法挑战赛题解</h2>
+            <div class="post-meta">
+                <time class="date">2025.11.20</time>
+            
+            </div>
+        </section>
+        <article class="post-content">
+        
+            <h3 id="算法挑战赛第二期题解"><a href="#算法挑战赛第二期题解" class="headerlink" title="算法挑战赛第二期题解"></a>算法挑战赛第二期题解</h3><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><ul>
+<li><p>二进制小数的乘积~HC哥哥说这个很困！难！</p>
+</li>
+<li><p>Description</p>
+</li>
+</ul>
+<blockquote>
+<p>HC哥哥今天又突发奇想，它依然定义一个数字为二进制小数，如果它是一个正整数，并且其十进制表示中的所有数字都是0或1。例如，110 是一个二进制小数，而 102 和 787 不是。</p>
+</blockquote>
+<blockquote>
+<p>现在HC哥哥给定你一个数 n，你被要求判断是否可能将 n 表示为一些（不一定是不同的）二进制小数的乘积。</p>
+</blockquote>
+<ul>
+<li>Input</li>
+</ul>
+<blockquote>
+<p>第一行包含一个整数 t（1≤t≤5⋅10^4）— 测试用例的数量。</p>
+</blockquote>
+<blockquote>
+<p>每个测试用例的唯一一行包含一个整数 n（1≤n≤10^5）。</p>
+</blockquote>
+<ul>
+<li>Output</li>
+</ul>
+<blockquote>
+<p>对于每个测试用例，如果 n 可以表示为一些二进制小数的乘积，则输出 “YES”（不带引号），否则输出 “NO”（不带引号）。</p>
+</blockquote>
+<ul>
+<li>题目解释 （<del>翻译成人话</del>）</li>
+</ul>
+<p>计算把01串强制转换为整数，再相乘得到的数就是合法的数字，其余都是不合法的。<br>那么直接<strong>打表</strong>就行了，总共1e5个数，打表还是很容易实现的</p>
+<p>接下来我们来学习一下该怎么打表</p>
+<h2 id="打表"><a href="#打表" class="headerlink" title="打表"></a>打表</h2><ul>
+<li>定义 : 计算出所有情况，然后直接判断。</li>
+</ul>
+<p>比如问你100以内的数是否是质数，你肯定能直接回答，因为你已经把100以内的质数全部背下来了。这其实就是打表的一种体现，你提前计算前100内的数是否是质数，然后直接调用答案。</p>
+<p>但是我们的计算机实际上并不知道一个问题的所有解，那么你自己提前算好告诉它不就彳亍了吗。</p>
+<p>这时我们需要两个重要程序：<strong>打表程序</strong>和<strong>判断程序</strong>。</p>
+<h3 id="打表程序"><a href="#打表程序" class="headerlink" title="打表程序"></a>打表程序</h3><ul>
+<li>用于计算所有情况的答案，不用关心时间复杂度，反正是提前计算</li>
+</ul>
+<p>比如计算素数集，你直接暴力就好了，不会欧拉筛又有什么关系呢？</p>
+<h3 id="判断程序"><a href="#判断程序" class="headerlink" title="判断程序"></a>判断程序</h3><ul>
+<li>用于直接获得答案的程序，时间复杂度O(n),n为数据规模，每次查询的时间复杂度为O(1)。</li>
+</ul>
+<p><strong>接下来就该思考怎么写一个无脑的程序来计算这些情况了</strong></p>
+<h2 id="做法"><a href="#做法" class="headerlink" title="做法"></a>做法</h2><ul>
+<li>首先先写一个无脑程序生成所有01组合的数</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;ll&gt; ans;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">100000</span>;i++)&#123;</span><br><span class="line">        ll x=i,cnt=<span class="number">0</span>,w=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(x)&#123;</span><br><span class="line">            <span class="keyword">if</span>(x%<span class="number">10</span>&lt;<span class="number">2</span>) cnt++;</span><br><span class="line">            w++;</span><br><span class="line">            x/=<span class="number">10</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(cnt==w) ans.<span class="built_in">push_back</span>(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> &amp;i:ans)</span><br><span class="line">        cout&lt;&lt;i&lt;&lt;<span class="string">&quot;,&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>此处是对每一位进行判断，如果01的个数和位数一样，那么就是一个合法的数字</p>
+</blockquote>
+<ul>
+<li>得到如下结果：</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="number">1</span>,<span class="number">10</span>,<span class="number">11</span>,<span class="number">100</span>,<span class="number">101</span>,<span class="number">110</span>,<span class="number">111</span>,<span class="number">1000</span>,<span class="number">1001</span>,<span class="number">1010</span>,<span class="number">1011</span>,<span class="number">1100</span>,<span class="number">1101</span>,<span class="number">1110</span>,<span class="number">1111</span>,<span class="number">10000</span>,<span class="number">10001</span>,<span class="number">10010</span>,<span class="number">10011</span>,<span class="number">10100</span>,<span class="number">10101</span>,<span class="number">10110</span>,<span class="number">10111</span>,<span class="number">11000</span>,<span class="number">11001</span>,<span class="number">11010</span>,<span class="number">11011</span>,<span class="number">11100</span>,<span class="number">11101</span>,<span class="number">11110</span>,<span class="number">11111</span>,<span class="number">100000</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>把以上结果复制进下一段生成代码，然后再计算所有合法的数字</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">ll number[<span class="number">1010</span>]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">10</span>,<span class="number">11</span>,<span class="number">100</span>,<span class="number">101</span>,<span class="number">110</span>,<span class="number">111</span>,<span class="number">1000</span>,<span class="number">1001</span>,</span><br><span class="line">    <span class="number">1010</span>,<span class="number">1011</span>,<span class="number">1100</span>,<span class="number">1101</span>,<span class="number">1110</span>,<span class="number">1111</span>,<span class="number">10000</span>,<span class="number">10001</span></span><br><span class="line">    ,<span class="number">10010</span>,<span class="number">10011</span>,<span class="number">10100</span>,<span class="number">10101</span>,<span class="number">10110</span>,<span class="number">10111</span>,<span class="number">11000</span></span><br><span class="line">    ,<span class="number">11001</span>,<span class="number">11010</span>,<span class="number">11011</span>,<span class="number">11100</span>,<span class="number">11101</span>,<span class="number">11110</span>,<span class="number">11111</span>,<span class="number">100000</span>&#125;;</span><br><span class="line">set&lt;ll&gt; s;</span><br><span class="line"><span class="function">ll <span class="title">dfs</span><span class="params">(ll n)</span></span>&#123;</span><br><span class="line">    s.<span class="built_in">insert</span>(n);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">2</span>;i&lt;=<span class="number">32</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(n*number[i]&lt;=<span class="number">100000</span>)</span><br><span class="line">           <span class="built_in">dfs</span>(n*number[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">signed</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">dfs</span>(<span class="number">1</span>);</span><br><span class="line">    ll cnt=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> &amp;i:s)&#123;</span><br><span class="line">        cout&lt;&lt;i&lt;&lt;<span class="string">&quot;,&quot;</span>;</span><br><span class="line">        cnt++;</span><br><span class="line">    &#125;</span><br><span class="line">    cout&lt;&lt;endl&lt;&lt;cnt&lt;&lt;endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>此处使用了dfs(Deep First Search)，文末会有详细介绍</p>
+</blockquote>
+<ul>
+<li>得到如下结果：</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>,<span class="number">10</span>,<span class="number">11</span>,<span class="number">100</span>,<span class="number">101</span>,<span class="number">110</span>,<span class="number">111</span>,<span class="number">121</span>,<span class="number">1000</span>,<span class="number">1001</span>,<span class="number">1010</span>,<span class="number">1011</span>,<span class="number">1100</span>,<span class="number">1101</span>,<span class="number">1110</span>,<span class="number">1111</span>,<span class="number">1210</span>,<span class="number">1221</span>,<span class="number">1331</span>,<span class="number">10000</span>,<span class="number">10001</span>,<span class="number">10010</span>,<span class="number">10011</span>,<span class="number">10100</span>,<span class="number">10101</span>,<span class="number">10110</span>,<span class="number">10111</span>,<span class="number">10201</span>,<span class="number">11000</span>,<span class="number">11001</span>,<span class="number">11010</span>,<span class="number">11011</span>,<span class="number">11100</span>,<span class="number">11101</span>,<span class="number">11110</span>,<span class="number">11111</span>,<span class="number">11121</span>,<span class="number">11211</span>,<span class="number">12100</span>,<span class="number">12111</span>,<span class="number">12210</span>,<span class="number">12221</span>,<span class="number">12321</span>,<span class="number">13310</span>,<span class="number">13431</span>,<span class="number">14641</span>,<span class="number">100000</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>最后再是无脑的判断程序：</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;string&gt; ans;</span><br><span class="line">ll a[<span class="number">1010</span>]=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">10</span>,<span class="number">11</span>,<span class="number">100</span>,<span class="number">101</span>,<span class="number">110</span>,<span class="number">111</span>,<span class="number">121</span>,<span class="number">1000</span>,<span class="number">1001</span>,<span class="number">1010</span>,<span class="number">1011</span>,<span class="number">1100</span>,<span class="number">1101</span>,</span><br><span class="line">    <span class="number">1110</span>,<span class="number">1111</span>,<span class="number">1210</span>,<span class="number">1221</span>,<span class="number">1331</span>,<span class="number">10000</span>,<span class="number">10001</span>,<span class="number">10010</span>,<span class="number">10011</span>,<span class="number">10100</span>,<span class="number">10101</span>,<span class="number">10110</span>,</span><br><span class="line">    <span class="number">10111</span>,<span class="number">10201</span>,<span class="number">11000</span>,<span class="number">11001</span>,<span class="number">11010</span>,<span class="number">11011</span>,<span class="number">11100</span>,<span class="number">11101</span>,<span class="number">11110</span>,<span class="number">11111</span>,<span class="number">11121</span>,</span><br><span class="line">    <span class="number">11211</span>,<span class="number">12100</span>,<span class="number">12111</span>,<span class="number">12210</span>,<span class="number">12221</span>,<span class="number">12321</span>,<span class="number">13310</span>,<span class="number">13431</span>,<span class="number">14641</span>,<span class="number">100000</span>&#125;;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ll x; cin&gt;&gt;x;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=<span class="number">47</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(a[i]==x)&#123;</span><br><span class="line">            ans.<span class="built_in">push_back</span>(<span class="string">&quot;YES&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ans.<span class="built_in">push_back</span>(<span class="string">&quot;NO&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ll T; cin&gt;&gt;T;</span><br><span class="line">    <span class="keyword">while</span>(T--) <span class="built_in">solve</span>();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">auto</span> &amp;i:ans)</span><br><span class="line">        cout&lt;&lt;i&lt;&lt;endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不是我说，这种做法在打表题目是真轮椅吧，时间复杂度完全没影响，计算出来总共就47个数字，简单版甚至20个都没到，非常适合不会搜索的蒻蒟(比如我)学习和理解。</p>
+<h3 id="下面是对dfs-Deep-First-Search-算法的详细介绍："><a href="#下面是对dfs-Deep-First-Search-算法的详细介绍：" class="headerlink" title="下面是对dfs(Deep First Search)算法的详细介绍："></a>下面是对dfs(Deep First Search)算法的详细介绍：</h3><ul>
+<li>什么是dfs？<br>dfs是深度优先搜索的英文缩写，以深度为优先来进行计算</li>
+</ul>
+<p>比如，要计算走n级楼梯（每次一到两级台阶）有几种走法，就可以使用dfs，假设第一次先走一步，依次遍历，如果能刚好走到n则方法数加1，如果超过了n则返回到上一步，回头找下一个方法。</p>
+<ul>
+<li>在本题的应用</li>
+</ul>
+<p>那么在这题，我们已经提前计算了所有合法的数字，我们每次乘上可能的数字，看看是否依旧合法，之后在超过1e5时返回，相当于楼梯数为1e5，每次可以走number[1….n]步，但是每一个小于n的位置都合法，并存储答案。</p>
+<p>如果想进一步了解dfs，可以访问OIwiki进行学习！</p>
+<p>那么本期的题解就到此结束了，感谢阅读！如果想交流算法题，也可以添加我的qq哦(717056060)</p>
+<h1 id="关注ZestfulYK，谢谢喵！"><a href="#关注ZestfulYK，谢谢喵！" class="headerlink" title="关注ZestfulYK，谢谢喵！"></a>关注ZestfulYK，谢谢喵！</h1>
+        </article>
+        <section class="post-near">
+            <ul>
+                
+                    <li>上一篇: 看完啦 (つд⊂)</li>
+                
+                
+                    <li>下一篇: <a href="/ZestfulYK-blog/2025/11/03/1/">算法挑战赛题解（11.2）</a></li>
+                
+            </ul>
+        </section>
+        
+    
+        <section class="post-author">
+        
+            <div class="author-info">
+                <h4>ZestfulYK</h4>
+                <p>纯前端萌新加算法萌新</p>
+            </div>
+        </section>
+    
+    </div>
+</main>
+
+    <footer>
+    <div class="buttons">
+        <button class="to-top" href="#"></button>
+    </div>
+    <div class="wrap min">
+        <section class="widget">
+            <div class="row">
+                <div class="col-m-4">
+                    <h3 class="title-recent">最新文章：</h3>
+                    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/11/20/2/">算法挑战赛题解</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/11/03/1/">算法挑战赛题解（11.2）</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/">压行技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/23/%E8%BF%87%E5%85%B3%E8%80%83%E6%A8%A1%E6%8B%9F%E8%80%83%E9%A2%98%E8%A7%A3/">过关考模拟考题解</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/">全排列函数的应用</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-date">时光机：</h3>
+                    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/11/">十一月 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/10/">十月 2025</a></li></ul>
+                </div>
+                <div class="col-m-4">
+                    <h3 class="title-tags">标签云：</h3>
+                    <a href="/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">技术</a> <a href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;">算法</a>
+                </div>
+            </div>
+        </section>
+        <section class="sub-footer">
+            <p>© 2025 <a href="/ZestfulYK-blog/">ZestfulYK的Blog</a>. All Rights Reserved. Theme By <a href="https://github.com/Dreamer-Paul/Hingle" target="_blank" rel="nofollow">Hingle</a>.</p>
+        </section>
+    </div>
+</footer>
+
+
+<script src="/ZestfulYK-blog/static/kico.js"></script>
+<script src="/ZestfulYK-blog/static/hingle.js"></script>
+
+
+<script>var hingle = new Paul_Hingle({"copyright":true,"night":true});</script>
+
+  </body>
+</html>
