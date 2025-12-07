@@ -1,5 +1,5 @@
 ---
-title: mod
+title: 模运算性质总结
 date: 2025-11-25 09:26:45
 tags: 算法
 mathjax: true
