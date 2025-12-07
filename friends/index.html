@@ -1,59 +1,154 @@
-<!DOCTYPE html>
-<html lang="zh">
-  <head>
-    
-    <meta charset="UTF-8">
-    <title>我的朋友 - ZestfulYK的Blog</title>
-    <link rel="shortcut icon" href="/ZestfulYK-blog/static/img/icon.png">
-    <link rel="icon" href="/static/img/icon.png" sizes="192x192"/>
-    
-<link rel="stylesheet" href="/ZestfulYK-blog/static/kico.css">
-<link rel="stylesheet" href="/ZestfulYK-blog/static/hingle.css">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>我的朋友 | ZestfulYK的Blog</title><meta name="author" content="ZestfulYK"><meta name="copyright" content="ZestfulYK"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="🤝 朋友们欢迎来到我的友链页面！这里收录了我欣赏的博客和朋友们。 申请友链如果你也想交换友链，请：  先添加我的链接到你的网站 在评论区留下你的信息 我会尽快添加！  我的朋友们 名称：群猫猫 简介：后端大手 链接：https:&#x2F;&#x2F;blog.v185v.xyz&#x2F;  名称：刘澈  简介：产品大手 链接：https:&#x2F;&#x2F;blog-eta-teal-77.vercel.app&#x2F;  我的信息&#96;&#96;&#96;yam">
+<meta property="og:type" content="website">
+<meta property="og:title" content="我的朋友">
+<meta property="og:url" content="https://zestfulyk.github.io/ZestfulYK-blog/friends/index.html">
+<meta property="og:site_name" content="ZestfulYK的Blog">
+<meta property="og:description" content="🤝 朋友们欢迎来到我的友链页面！这里收录了我欣赏的博客和朋友们。 申请友链如果你也想交换友链，请：  先添加我的链接到你的网站 在评论区留下你的信息 我会尽快添加！  我的朋友们 名称：群猫猫 简介：后端大手 链接：https:&#x2F;&#x2F;blog.v185v.xyz&#x2F;  名称：刘澈  简介：产品大手 链接：https:&#x2F;&#x2F;blog-eta-teal-77.vercel.app&#x2F;  我的信息&#96;&#96;&#96;yam">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png">
+<meta property="article:published_time" content="2025-10-20T14:45:45.000Z">
+<meta property="article:modified_time" content="2025-10-24T02:36:08.467Z">
+<meta property="article:author" content="ZestfulYK">
+<meta property="article:tag" content="算法，前端，音游">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png"><script type="application/ld+json"></script><link rel="shortcut icon" href="/ZestfulYK-blog/images/avatar.png"><link rel="canonical" href="https://zestfulyk.github.io/ZestfulYK-blog/friends/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/ZestfulYK-blog/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-    
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta property="og:site_name" content="ZestfulYK的Blog">
-    <meta property="og:title" content="我的朋友"/>
-    
-    <style>body:before{ content: ''; background-image: url(images/27090472f6d3b404fc352a7302fb8347.png) }</style>
-    
-<meta name="generator" content="Hexo 8.0.0"></head>
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-  <body>
-    <header>
-    <div class="head-title">
-        <h4>ZestfulYK的Blog</h4>
-    </div>
-    <div class="head-action">
-        <div class="toggle-btn"></div>
-        <div class="light-btn"></div>
-        <div class="search-btn"></div>
-    </div>
-    <form class="head-search" method="post">
-        <input type="text" name="s" placeholder="搜索什么？">
-    </form>
-    <nav class="head-menu">
-        <a href="/ZestfulYK-blog/">首页</a>
-        <div class="has-child">
-        </div>
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
         
-            <a href="/ZestfulYK-blog/about">关于我</a>
-        
-            <a href="/ZestfulYK-blog/friends">朋友们</a>
-        
-    </nav>
-</header>
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/ZestfulYK-blog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '我的朋友',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
 
-    <main>
-    <div class="wrap min">
-        <section class="page-title">
-            <h2>我的朋友</h2>
-        </section>
-        <article class="page-content">
-        
-            <h1 id="🤝-朋友们"><a href="#🤝-朋友们" class="headerlink" title="🤝 朋友们"></a>🤝 朋友们</h1><p>欢迎来到我的友链页面！这里收录了我欣赏的博客和朋友们。</p>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.0.0"></head><body><div class="page" id="body-wrap"><header class="not-home-page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/ZestfulYK-blog/"><span class="site-name">ZestfulYK的Blog</span></a></span><div id="menus"></div></nav><div id="page-site-info"><h1 id="site-title">我的朋友</h1></div></header><main class="layout" id="content-inner"><div id="page"><div class="container" id="article-container"><h1 id="🤝-朋友们"><a href="#🤝-朋友们" class="headerlink" title="🤝 朋友们"></a>🤝 朋友们</h1><p>欢迎来到我的友链页面！这里收录了我欣赏的博客和朋友们。</p>
 <h2 id="申请友链"><a href="#申请友链" class="headerlink" title="申请友链"></a>申请友链</h2><p>如果你也想交换友链，请：</p>
 <ol>
 <li>先添加我的链接到你的网站</li>
@@ -61,61 +156,51 @@
 <li>我会尽快添加！</li>
 </ol>
 <h2 id="我的朋友们"><a href="#我的朋友们" class="headerlink" title="我的朋友们"></a>我的朋友们</h2><ul>
-<li><p>名称：群猫猫</p>
-</li>
-<li><p>简介：后端大手</p>
-</li>
+<li>名称：群猫猫</li>
+<li>简介：后端大手</li>
 <li><p>链接：<a target="_blank" rel="noopener" href="https://blog.v185v.xyz/">https://blog.v185v.xyz/</a></p>
 </li>
 <li><p>名称：刘澈</p>
 </li>
-<li><p>简介：产品大手</p>
-</li>
-<li><p>链接：<a target="_blank" rel="noopener" href="https://blog-eta-teal-77.vercel.app/">https://blog-eta-teal-77.vercel.app/</a></p>
-</li>
+<li>简介：产品大手</li>
+<li>链接：<a target="_blank" rel="noopener" href="https://blog-eta-teal-77.vercel.app/">https://blog-eta-teal-77.vercel.app/</a></li>
 </ul>
-<h2 id="我的信息"><a href="#我的信息" class="headerlink" title="我的信息"></a>我的信息</h2><pre><code class="language-yaml">名称: ZestfulYK&#39;s Blog
-简介: 技术分享与生活随笔
-链接: https://zestfulyk.github.io/ZestfulYK-blog/
-</code></pre>
-
-        </article>
+<h2 id="我的信息"><a href="#我的信息" class="headerlink" title="我的信息"></a>我的信息</h2><p>```yaml<br>名称: ZestfulYK’s Blog<br>简介: 技术分享与生活随笔<br>链接: <a href="https://zestfulyk.github.io/ZestfulYK-blog/">https://zestfulyk.github.io/ZestfulYK-blog/</a></p>
+</div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/ZestfulYK-blog/images/avatar.png" onerror="this.onerror=null;this.src='/ZestfulYK-blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZestfulYK</div><div class="author-info-description">这是ZestfulYK的博客网站,求关注</div><div class="site-data"><a href="/ZestfulYK-blog/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/ZestfulYK-blog/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/ZestfulYK-blog/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/" title="有理函数积分">有理函数积分</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/" title="第一类换元积分">第一类换元积分</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E5%88%86%E6%AD%A5%E7%A7%AF%E5%88%86/" title="分步积分笔记">分步积分笔记</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E8%AE%A1%E7%AE%97%E6%9C%BA18%E8%AE%B2%E9%A2%98%E8%A7%A3/" title="计算机18讲题解">计算机18讲题解</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E7%A8%8BC%E7%AC%94%E8%AE%B0/" title="程C笔记">程C笔记</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div></div></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" style="font-size: 1.5em; color: #99a9bf">算法</a> <a href="/ZestfulYK-blog/tags/%E6%95%B0%E5%AD%A6/" style="font-size: 1.3em; color: #99a1ac">数学</a> <a href="/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 1.1em; color: #999">技术</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      
     </div>
-</main>
-
-    <footer>
-    <div class="buttons">
-        <button class="to-top" href="#"></button>
-    </div>
-    <div class="wrap min">
-        <section class="widget">
-            <div class="row">
-                <div class="col-m-4">
-                    <h3 class="title-recent">最新文章：</h3>
-                    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/11/20/2/">算法挑战赛题解</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/11/03/1/">算法挑战赛题解（11.2）</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/">压行技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/23/%E8%BF%87%E5%85%B3%E8%80%83%E6%A8%A1%E6%8B%9F%E8%80%83%E9%A2%98%E8%A7%A3/">过关考模拟考题解</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/">全排列函数的应用</a></li><li class="post-list-item"><a class="post-list-link" href="/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/">广工月赛</a></li></ul>
-                </div>
-                <div class="col-m-4">
-                    <h3 class="title-date">时光机：</h3>
-                    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/11/">十一月 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/ZestfulYK-blog/archives/2025/10/">十月 2025</a></li></ul>
-                </div>
-                <div class="col-m-4">
-                    <h3 class="title-tags">标签云：</h3>
-                    <a href="/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 10px;">技术</a> <a href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;">算法</a>
-                </div>
-            </div>
-        </section>
-        <section class="sub-footer">
-            <p>© 2025 <a href="/ZestfulYK-blog/">ZestfulYK的Blog</a>. All Rights Reserved. Theme By <a href="https://github.com/Dreamer-Paul/Hingle" target="_blank" rel="nofollow">Hingle</a>.</p>
-        </section>
-    </div>
-</footer>
-
-
-<script src="/ZestfulYK-blog/static/kico.js"></script>
-<script src="/ZestfulYK-blog/static/hingle.js"></script>
-
-
-<script>var hingle = new Paul_Hingle({"copyright":true,"night":true});</script>
-
-  </body>
-</html>
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/ZestfulYK-blog/archives/2025/12/">
+            <span class="card-archive-list-date">
+              十二月 2025
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/ZestfulYK-blog/archives/2025/11/">
+            <span class="card-archive-list-date">
+              十一月 2025
+            </span>
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/ZestfulYK-blog/archives/2025/10/">
+            <span class="card-archive-list-date">
+              十月 2025
+            </span>
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+    </ul>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">13</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-12-07T14:18:39.920Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By ZestfulYK</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/ZestfulYK-blog/js/utils.js?v=5.5.2"></script><script src="/ZestfulYK-blog/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="/ZestfulYK-blog/"></script></div></body></html>

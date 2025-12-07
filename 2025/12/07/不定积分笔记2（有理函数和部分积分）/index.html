@@ -1,0 +1,325 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>有理函数积分 | ZestfulYK的Blog</title><meta name="author" content="ZestfulYK"><meta name="copyright" content="ZestfulYK"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="基本方法 凑成能第一类换元积分的式子  例如$\frac{1}{…}$类的部分分式分解有理函数积分适用条件  有理函数积分当被积函数是有理函数（两个多项式的商）时：$\int \frac{Q(x)}{P(x)}\,​dx$其中 $P(x)$ 和 $Q(x)$ 都是多项式。    分母可因式分解    部分分式分解是处理有理函数积分的系统方法，特别适用于：  分母可明确因式分解 没有更简单的特殊技巧">
+<meta property="og:type" content="article">
+<meta property="og:title" content="有理函数积分">
+<meta property="og:url" content="https://zestfulyk.github.io/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/index.html">
+<meta property="og:site_name" content="ZestfulYK的Blog">
+<meta property="og:description" content="基本方法 凑成能第一类换元积分的式子  例如$\frac{1}{…}$类的部分分式分解有理函数积分适用条件  有理函数积分当被积函数是有理函数（两个多项式的商）时：$\int \frac{Q(x)}{P(x)}\,​dx$其中 $P(x)$ 和 $Q(x)$ 都是多项式。    分母可因式分解    部分分式分解是处理有理函数积分的系统方法，特别适用于：  分母可明确因式分解 没有更简单的特殊技巧">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png">
+<meta property="article:published_time" content="2025-12-07T14:15:00.000Z">
+<meta property="article:modified_time" content="2025-12-07T14:18:07.761Z">
+<meta property="article:author" content="ZestfulYK">
+<meta property="article:tag" content="数学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "有理函数积分",
+  "url": "https://zestfulyk.github.io/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/",
+  "image": "https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png",
+  "datePublished": "2025-12-07T14:15:00.000Z",
+  "dateModified": "2025-12-07T14:18:07.761Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ZestfulYK",
+      "url": "https://zestfulyk.github.io/ZestfulYK-blog"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/ZestfulYK-blog/images/avatar.png"><link rel="canonical" href="https://zestfulyk.github.io/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/ZestfulYK-blog/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/ZestfulYK-blog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '有理函数积分',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.0.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/ZestfulYK-blog/"><span class="site-name">ZestfulYK的Blog</span></a><a class="nav-page-title" href="/ZestfulYK-blog/"><span class="site-name">有理函数积分</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">有理函数积分</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-12-07T14:18:07.761Z" title="更新于 2025-12-07 22:18:07">2025-12-07</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h1><ul>
+<li>凑成能第一类换元积分的式子<br>  例如$\frac{1}{…}$类的<br>部分分式分解<h2 id="有理函数积分适用条件"><a href="#有理函数积分适用条件" class="headerlink" title="有理函数积分适用条件"></a>有理函数积分适用条件</h2></li>
+<li><ol>
+<li>有理函数积分<br>当被积函数是<strong>有理函数</strong>（两个多项式的商）时：$\int \frac{Q(x)}{P(x)}\,​dx$<br>其中 $P(x)$ 和 $Q(x)$ 都是多项式。</li>
+</ol>
+</li>
+<li><ol>
+<li>分母可因式分解</li>
+</ol>
+</li>
+</ul>
+<p>部分分式分解是处理<strong>有理函数积分</strong>的<strong>系统方法</strong>，特别适用于：</p>
+<ul>
+<li>分母可明确因式分解</li>
+<li>没有更简单的特殊技巧</li>
+<li>需要精确解析表达式</li>
+</ul>
+<p>当分母 $Q(x)$ 可以分解为<strong>一次因式</strong>和<strong>不可约二次因式</strong>的乘积时：</p>
+<ul>
+<li><strong>一次因式</strong>：$(x-a)$</li>
+<li><strong>不可约二次因式</strong>：$(x^2+px+q)$，其中 $p^2-4q&lt;0$<h4 id="具体分解规则"><a href="#具体分解规则" class="headerlink" title="具体分解规则"></a>具体分解规则</h4><h5 id="对于一次因式-x-a-k-："><a href="#对于一次因式-x-a-k-：" class="headerlink" title="对于一次因式 $(x-a)^k$："></a>对于一次因式 $(x-a)^k$：</h5></li>
+</ul>
+<p>对应部分为：</p>
+<script type="math/tex; mode=display">\frac{A_1}{x-a}+\frac{A_2}{(x-a)^2}+···+\frac{A_k}{(x-a)^k}</script><h5 id="对于二次因式-x-2-px-q-m-："><a href="#对于二次因式-x-2-px-q-m-：" class="headerlink" title="对于二次因式 $(x^2+px+q)^m$："></a>对于二次因式 $(x^2+px+q)^m$：</h5><script type="math/tex; mode=display">\frac{B_1x+C_1}{x^2+px+q}+\frac{B_2x+C_2}{(x^2+px+q)^2}+···+\frac{B_mx+C_m}{(x^2+px+q)^k}</script><p>但是，在这个部分有一种特殊情况，就是二次式:</p>
+<script type="math/tex; mode=display">\int \frac{P(x)}{Q(x)^2}</script><blockquote>
+<p>在这里，可以把函数看成$\frac{d}{dx}\frac{Ax+B}{Q(x)}+\frac{C}{Q(x)}$两种方法实际上是等价的，因为最后必然化成一个简单的倒数积分和简单的分数积分$\frac{1}{Q(x)}$。</p>
+</blockquote>
+<h3 id="例子："><a href="#例子：" class="headerlink" title="例子："></a>例子：</h3><ul>
+<li>计算$\int \frac{x^2+1}{(x^2+x+1)^2}\,dx$有两种方式，都能得到答案。<br>1.用标准公式计算<br>得到:<script type="math/tex; mode=display">\int \frac{x}{(x^2+x+1)^2}\,dx-\int \frac{1}{x^2+x+1}\,dx</script></li>
+</ul>
+<p>接着再分别计算前后的积分，前面得到的是一个分式加上一个含$\arctan x$的式子<br>比较麻烦，不过对于这类题目，我们知道一定能得到第二种简单的方法的式子，所以经过计算<br>得到:</p>
+<script type="math/tex; mode=display">\frac{1}{3}\frac{d}{dx}\frac{x+2}{x^2+x+1}-\frac{4}{3}\int · \frac{1}{x^2+x+1}\,dx</script><p>这种解法的好处是，得到前半段以后可以直接当作积分结果，不需要额外的处理。</p>
+<h4 id="判断步骤"><a href="#判断步骤" class="headerlink" title="判断步骤"></a>判断步骤</h4><h5 id="第一步：检查是否为真分式"><a href="#第一步：检查是否为真分式" class="headerlink" title="第一步：检查是否为真分式"></a>第一步：检查是否为真分式</h5><ul>
+<li>如果 $\deg P(x) \geq \deg Q(x)$：先进行<strong>多项式除法</strong>（大除法）</li>
+<li>如果 $\deg P(x) &lt; \deg Q(x)$：直接进行部分分式分解<br>就是说最高项次数小就能用这个方法<h5 id="第二步：因式分解分母"><a href="#第二步：因式分解分母" class="headerlink" title="第二步：因式分解分母"></a>第二步：因式分解分母</h5>将分母 $Q(x)$ 完全分解为：</li>
+<li>一次因式 $(x-a_i)^{k_i}$</li>
+<li>不可约二次因式 $(x^2+p_jx+q_j)^{m_j}$<h5 id="第三步：确定分解形式"><a href="#第三步：确定分解形式" class="headerlink" title="第三步：确定分解形式"></a>第三步：确定分解形式</h5>根据因式分解结果，写出部分分式的<strong>一般形式</strong>。<br>在计算过程中，可以通过给x赋值来快速计算带定值</li>
+</ul>
+<h4 id="具体例子分析"><a href="#具体例子分析" class="headerlink" title="具体例子分析"></a>具体例子分析</h4><h5 id="例1：-int-frac-x-3-1-x-2-1-2-dx"><a href="#例1：-int-frac-x-3-1-x-2-1-2-dx" class="headerlink" title="例1：$\int \frac{x^3+1}{(x^2+1)^2} dx$"></a>例1：$\int \frac{x^3+1}{(x^2+1)^2} dx$</h5><ul>
+<li>分母：$(x^2+1)^2$（二次因式的平方）</li>
+<li>分解形式：$\frac{Ax+B}{x^2+1} + \frac{Cx+D}{(x^2+1)^2}$</li>
+</ul>
+<h5 id="例2：-int-frac-1-x-x-1-2-dx"><a href="#例2：-int-frac-1-x-x-1-2-dx" class="headerlink" title="例2：$\int \frac{1}{x(x-1)^2} dx$"></a>例2：$\int \frac{1}{x(x-1)^2} dx$</h5><ul>
+<li>分母：$x(x-1)^2$（一次因式及其平方）</li>
+<li>分解形式：$\frac{A}{x} + \frac{B}{x-1} + \frac{C}{(x-1)^2}$</li>
+</ul>
+<h5 id="例3：-int-frac-x-2-1-x-x-2-4-dx"><a href="#例3：-int-frac-x-2-1-x-x-2-4-dx" class="headerlink" title="例3：$\int \frac{x^2+1}{x(x^2+4)} dx$"></a>例3：$\int \frac{x^2+1}{x(x^2+4)} dx$</h5><ul>
+<li>分母：$x(x^2+4)$（一次因式 + 二次因式）</li>
+<li>分解形式：$\frac{A}{x} + \frac{Bx+C}{x^2+4}$</li>
+</ul>
+<p><strong>例4：</strong>$\int \frac{x+1}{x^2+4x+6}\,dx$<br>这个题目看起来和裂项十分相似，但是分母无法因式分解，所以这个方法是不对的。<br>注意到这里上方的次数正好是分母求导结束后的次数，所以游客能采取分开计算的方法。<br>这里首先先把上面的分析翻倍，（因为分母的导数是$2x+4$），接下来在加一个2，减一个2外面再配上$\frac{1}{2}$即可。<br>所以式子变为:$\frac{1}{2} \int \frac{2x+4-2}{x^2+4x+6}\,dx$然后两个部分正好都是我们能计算的第一类换元积分，完成！</p>
+<ul>
+<li>$\int \frac{f’(x)}{f(x)} dx$：直接得到 $\ln|f(x)|$</li>
+<li>$\int \frac{1}{x^2+a^2} dx$：直接得到 $\frac{1}{a}\arctan\frac{x}{a}$</li>
+</ul>
+<h2 id="个人技巧"><a href="#个人技巧" class="headerlink" title="个人技巧"></a>个人技巧</h2><ul>
+<li>对于一般的式子，通常是去凑积分，先对其1次项，再分离常数项，这样就能直接得到一个ln积分和一个形如$\frac{p}{t^2+a^2}$的式子了，这个是很好积分的($\arctan x$)</li>
+<li>遇到三次式子，可能配凑一个$\pm 1$来计算</li>
+<li>遇到分母次数很高的，考虑倒代换</li>
+<li>其余的式子，直接展开就行了</li>
+</ul>
+<h2 id="三角代换部分"><a href="#三角代换部分" class="headerlink" title="三角代换部分"></a>三角代换部分</h2><h3 id="重要公式"><a href="#重要公式" class="headerlink" title="重要公式"></a>重要公式</h3><p>当取$\tan x=u$时</p>
+<script type="math/tex; mode=display">\begin{cases}
+\sin x=\frac{u}{\sqrt{1+u^2}} \\
+\cos x=\sqrt{1+u^2}
+\end{cases}</script><p>当取$\tan \frac{x}{2}=u$时</p>
+<script type="math/tex; mode=display">\begin{cases}
+\sin x=\frac{2u}{1+u^2} \\
+\cos x=\frac{1-u^2}{1+u^2}
+\end{cases}</script><p>然后不要忘记，第二类换元积分是需要乘上对应的导数的，<strong>这个导数是t关于x的函数</strong>，乘上的是含有t的导数<br>之后像前面一样计算就行了。</p>
+<h4 id="题型分类"><a href="#题型分类" class="headerlink" title="题型分类"></a>题型分类</h4><ul>
+<li>只含有一种三角函数的，用第一类换元积分，例如：$\int \frac{1}{\sin x^4}\,dx$</li>
+<li>上下均有且为一次式的，用上节课的方法代换，例如$\int \frac{\sin x}{\sin x+\cos x}\,dx$</li>
+<li>同名三角函数相加，和差化积，例如$\int \frac{1}{\sin x+\sin 3x}\,dx$</li>
+<li>正常幂(不含分母的)，按奇偶正常拆分</li>
+<li>分母含有高次项的，拆解1，例如$\int \frac{1}{\sin x\cos x^2}$<br>主要是把$\cos x$化成$\tan x$来计算。<br>例如：1<script type="math/tex">\int \frac{dx}{a^2+\sin x^2+b^2+\cos x^2}=\int \frac{\frac{1}{\cos x^2}}{a^2\tan x^2+b^2}\,dx=\int \frac{1+\tan x^2}{a^2\tan x^2+b^2}\,dx</script><h2 id="根式的代换"><a href="#根式的代换" class="headerlink" title="根式的代换"></a>根式的代换</h2></li>
+</ul>
+<h3 id="重要公式-1"><a href="#重要公式-1" class="headerlink" title="重要公式"></a>重要公式</h3><p>令<script type="math/tex">t=\sqrt[n]{ax+b}</script><br>令<script type="math/tex">t=\sqrt[n]{\frac{ax+b}{cx+d}}</script><br>令<script type="math/tex">t=\sqrt[mn]{ax+b}</script><br>看含有什么来决定怎么设t<br>最后反解出x带入其余部分即可。</p>
+<h3 id="重要例题根式代换类型"><a href="#重要例题根式代换类型" class="headerlink" title="重要例题根式代换类型"></a>重要例题根式代换类型</h3><p>求下面这个函数的积分</p>
+<script type="math/tex; mode=display">\int \frac{dx}{\sqrt[n]{(x-a)^{n+1}(x-b)^{n-1}}}\,dx</script><p>方法：先提取部分，构造类似上面2的一个式子，然后再考虑代换。</p>
+<script type="math/tex; mode=display">\text{原式}=\int\frac{1}{(x-a)(x-b)\sqrt[n]{\frac{x-a}{x-b}}}\,dx</script><p>不过接下来直接解出x再带回比较麻烦，所以考虑直接算出$\frac{dx}{(x-a)(x-b)}$这个部分</p>
+<script type="math/tex; mode=display">t^n=\frac{a-b}{(x-b)^2}</script><script type="math/tex; mode=display">\frac{nt^n\,dt}{t}=\frac{a-b}{(x-b)^2}\,dx</script><script type="math/tex; mode=display">\frac{n\,dt}{t}=\frac{a-b}{(x-b)^2t^n}\,dx=\frac{a-b}{(x-a)(x-b)}\,dx</script><p>所以得到原式变为：</p>
+<script type="math/tex; mode=display">-\frac{n}{a-b}\sqrt[n]{\frac{x-b}{x-a}}</script><h2 id="重要例题偶数次幂分数类型"><a href="#重要例题偶数次幂分数类型" class="headerlink" title="重要例题偶数次幂分数类型"></a>重要例题偶数次幂分数类型</h2><p>方法是化为平方分之括号内函数的导数<br>即：</p>
+<script type="math/tex; mode=display">\int \frac{f'(x)}{f(x)^2+a}</script><p>例如：</p>
+<script type="math/tex; mode=display">\int \frac{1}{x^4+1}\,dx=\frac{1}{2}\int\frac{1+\frac{1}{x^2}-1}{x^2+\frac{1}{x^2}}=\frac{1}{2}(\int \frac{d x-\frac{1}{x}}{(x-\frac{1}{x})^2+2}+\int \frac{d x+\frac{1}{x}}{(x+\frac{1}{x})^2+2})$$$$=\frac{1}{2\sqrt{2}}\arctan \frac{x-\frac{1}{x}}{\sqrt{2}}-\frac{1}{4\sqrt{2}}\ln|\frac{x^2-\sqrt{2}x+1}{x^2+\sqrt{2}x+1}|</script><p> 所以类似于$\frac{\text{二次}}{\text{四次}}$的式子，理论上都有可能用这种方式解决</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zestfulyk.github.io/ZestfulYK-blog">ZestfulYK</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zestfulyk.github.io/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/">https://zestfulyk.github.io/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://zestfulyk.github.io/ZestfulYK-blog" target="_blank">ZestfulYK的Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/ZestfulYK-blog/tags/%E6%95%B0%E5%AD%A6/">数学</a></div><div class="post-share"><div class="social-share" data-image="/ZestfulYK-blog/images/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/" title="第一类换元积分"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">第一类换元积分</div></div><div class="info-2"><div class="info-item-1">重要公式基本积分公式：不要忘记加C!!! $\xi \ \delta \ \alpha \ \beta \ \pi \  \theta \ \in \ \notin$$\Delta$ $\int k \, dx = kx + C$$\int x^n \, dx = \frac{x^{n+1}}{n+1} + C \quad (n \neq -1)$$\int \frac{1}{x} \, dx = \ln|x| + C$  指数函数：$\int e^x \, dx = e^x + C$$\int a^x \, dx = \frac{a^x}{\ln a} + C$  三角函数：$\int \sin x \, dx = -\cos x + C$$\int \cos x \, dx = \sin x + C$$\int \tan x \, dx = -\ln|\cos x| + C$$\int \cot x \, dx = \ln|\sin x| + C$$\int \sec^2 x \, dx = \tan x + C$$\int \csc^2 x \, dx = -\cot x ...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2025/11/25/mod/" title="mod"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">mod</div></div><div class="info-2"><div class="info-item-1">模运算（Mod）性质总结定义对于任意实数 $( x, y )$，有： x \mod y = x - y \left\lfloor \frac{x}{y} \right\rfloor, \quad y \neq 0模运算（在一些场合使用符号 % 表示）是一个二元运算。$( x \mod y )$ 的值范围如下：  当 $( y &gt; 0 )$ 时：$( 0 \leq x \mod y &lt; y )$ 当 $( y &lt; 0 )$ 时：$( 0 \geq x \mod y &gt; y )$ 当 $( y = 0 )$ 时：为避免除以零，定义 $( x \mod 0 = x )$  基本运算规则模运算与基本四则运算类似（除法除外）：  加法规则：$((a + b) \mod p = (a \mod p + b \mod p) \mod p)$ 减法规则：$((a - b) \mod p = (a \mod p - b \mod p) \mod p)$ 乘法规则：$((a \times b) \mod p = (a \mod p \times b \mod p) \mod ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/" title="第一类换元积分"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-07</div><div class="info-item-2">第一类换元积分</div></div><div class="info-2"><div class="info-item-1">重要公式基本积分公式：不要忘记加C!!! $\xi \ \delta \ \alpha \ \beta \ \pi \  \theta \ \in \ \notin$$\Delta$ $\int k \, dx = kx + C$$\int x^n \, dx = \frac{x^{n+1}}{n+1} + C \quad (n \neq -1)$$\int \frac{1}{x} \, dx = \ln|x| + C$  指数函数：$\int e^x \, dx = e^x + C$$\int a^x \, dx = \frac{a^x}{\ln a} + C$  三角函数：$\int \sin x \, dx = -\cos x + C$$\int \cos x \, dx = \sin x + C$$\int \tan x \, dx = -\ln|\cos x| + C$$\int \cot x \, dx = \ln|\sin x| + C$$\int \sec^2 x \, dx = \tan x + C$$\int \csc^2 x \, dx = -\cot x ...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2025/12/07/%E5%88%86%E6%AD%A5%E7%A7%AF%E5%88%86/" title="分步积分笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-07</div><div class="info-item-2">分步积分笔记</div></div><div class="info-2"><div class="info-item-1">核心公式\int u\,dv = uv - \int v\,du选择原则：”反对幂指三”优先级从高到低选择 $u$：  反三角函数（$arcsin$,$arccos$, $arctan$等） 对数函数（$\ln x$, $log x$等） 幂函数（$x^n$, $x^2$, $\sqrt{x}$等） 指数函数（$e^x$, $a^x$等） 三角函数（$\sin x$, $\cos x$等）  口诀解释：越靠前的类型越优先选为 $u$，越靠后的类型越优先放入 $dv$。  经典类型与解法类型1：幂函数 × 三角函数$\int x^n\cos x\,dx$ 或 $\int x^n\sin x\,dx$  将三角函数放入 $dv$（如 $\cos x\,dx = d(\sin x)$） 通过 $n$ 次分部积分逐次降幂  类型2：幂函数 × 指数函数$\int x^n e^{ax}\,dx$  将指数函数放入 $dv$（如 $e^{ax}\,dx = \frac{1}{a}d(e^{ax})$） 逐次降幂至 $x^0$  类型3：幂函数 × 对数函数$\int x^n \ln x\,d...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2025/12/07/%E7%A8%8BC%E7%AC%94%E8%AE%B0/" title="程C笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-07</div><div class="info-item-2">程C笔记</div></div><div class="info-2"><div class="info-item-1">1. 头文件和命名空间C++ 中的 string 类定义在头文件 string 中，通常使用 std 命名空间。 123456s3=strcat(s1,s2);//加在后面int x=strcmp(s1,s2)//返回三种情况,见下面cout&lt;&lt;strlen(s1)&lt;&lt;endl;//输出的是长度，等同于s1.length()strcpy(s1+x1,s2+x2);//把前面的对应部分添加到前面去，完全覆盖之前的内容memcpy(a+x1,b+x2,sizeof(int)*8);//也是把后面的放到前面，只不过需要规定放入的内容sizeof(s1);//考虑后面的&#x27;\0&#x27;，比strlen大1. x=strcmp(s1,s2)=  \begin{cases}  -1  \ \ \ \ \ s1 \leq s2\\ 0\ \ \ \ s1=s2\\ 1\ \ \ \ s1 \geq s2 \end{cases}memcpy例子：12345int a[8]=&#123;1,2,3,4,5,6,7,8&#125;;int b[10]=&#123;...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/ZestfulYK-blog/images/avatar.png" onerror="this.onerror=null;this.src='/ZestfulYK-blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZestfulYK</div><div class="author-info-description">这是ZestfulYK的博客网站,求关注</div><div class="site-data"><a href="/ZestfulYK-blog/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/ZestfulYK-blog/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/ZestfulYK-blog/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="toc-number">1.</span> <span class="toc-text">基本方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E7%A7%AF%E5%88%86%E9%80%82%E7%94%A8%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.1.</span> <span class="toc-text">有理函数积分适用条件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%88%86%E8%A7%A3%E8%A7%84%E5%88%99"><span class="toc-number">1.1.0.1.</span> <span class="toc-text">具体分解规则</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8E%E4%B8%80%E6%AC%A1%E5%9B%A0%E5%BC%8F-x-a-k-%EF%BC%9A"><span class="toc-number">1.1.0.1.1.</span> <span class="toc-text">对于一次因式 $(x-a)^k$：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8E%E4%BA%8C%E6%AC%A1%E5%9B%A0%E5%BC%8F-x-2-px-q-m-%EF%BC%9A"><span class="toc-number">1.1.0.1.2.</span> <span class="toc-text">对于二次因式 $(x^2+px+q)^m$：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A"><span class="toc-number">1.1.1.</span> <span class="toc-text">例子：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">判断步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E6%A3%80%E6%9F%A5%E6%98%AF%E5%90%A6%E4%B8%BA%E7%9C%9F%E5%88%86%E5%BC%8F"><span class="toc-number">1.1.1.1.1.</span> <span class="toc-text">第一步：检查是否为真分式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%9B%A0%E5%BC%8F%E5%88%86%E8%A7%A3%E5%88%86%E6%AF%8D"><span class="toc-number">1.1.1.1.2.</span> <span class="toc-text">第二步：因式分解分母</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E7%A1%AE%E5%AE%9A%E5%88%86%E8%A7%A3%E5%BD%A2%E5%BC%8F"><span class="toc-number">1.1.1.1.3.</span> <span class="toc-text">第三步：确定分解形式</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E4%BE%8B%E5%AD%90%E5%88%86%E6%9E%90"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">具体例子分析</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BE%8B1%EF%BC%9A-int-frac-x-3-1-x-2-1-2-dx"><span class="toc-number">1.1.1.2.1.</span> <span class="toc-text">例1：$\int \frac{x^3+1}{(x^2+1)^2} dx$</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BE%8B2%EF%BC%9A-int-frac-1-x-x-1-2-dx"><span class="toc-number">1.1.1.2.2.</span> <span class="toc-text">例2：$\int \frac{1}{x(x-1)^2} dx$</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BE%8B3%EF%BC%9A-int-frac-x-2-1-x-x-2-4-dx"><span class="toc-number">1.1.1.2.3.</span> <span class="toc-text">例3：$\int \frac{x^2+1}{x(x^2+4)} dx$</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AA%E4%BA%BA%E6%8A%80%E5%B7%A7"><span class="toc-number">1.2.</span> <span class="toc-text">个人技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E8%A7%92%E4%BB%A3%E6%8D%A2%E9%83%A8%E5%88%86"><span class="toc-number">1.3.</span> <span class="toc-text">三角代换部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%85%AC%E5%BC%8F"><span class="toc-number">1.3.1.</span> <span class="toc-text">重要公式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E5%9E%8B%E5%88%86%E7%B1%BB"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">题型分类</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B9%E5%BC%8F%E7%9A%84%E4%BB%A3%E6%8D%A2"><span class="toc-number">1.4.</span> <span class="toc-text">根式的代换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E5%85%AC%E5%BC%8F-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">重要公式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E4%BE%8B%E9%A2%98%E6%A0%B9%E5%BC%8F%E4%BB%A3%E6%8D%A2%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.4.2.</span> <span class="toc-text">重要例题根式代换类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E4%BE%8B%E9%A2%98%E5%81%B6%E6%95%B0%E6%AC%A1%E5%B9%82%E5%88%86%E6%95%B0%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.5.</span> <span class="toc-text">重要例题偶数次幂分数类型</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/" title="有理函数积分">有理函数积分</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/" title="第一类换元积分">第一类换元积分</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E5%88%86%E6%AD%A5%E7%A7%AF%E5%88%86/" title="分步积分笔记">分步积分笔记</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E8%AE%A1%E7%AE%97%E6%9C%BA18%E8%AE%B2%E9%A2%98%E8%A7%A3/" title="计算机18讲题解">计算机18讲题解</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/07/%E7%A8%8BC%E7%AC%94%E8%AE%B0/" title="程C笔记">程C笔记</a><time datetime="2025-12-07T14:15:00.000Z" title="发表于 2025-12-07 22:15:00">2025-12-07</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By ZestfulYK</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/ZestfulYK-blog/js/utils.js?v=5.5.2"></script><script src="/ZestfulYK-blog/js/main.js?v=5.5.2"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        loader: {
+          load: [
+            // Four font extension packages (optional)
+            //- '[tex]/bbm',
+            //- '[tex]/bboldx',
+            //- '[tex]/dsfont',
+            '[tex]/mhchem'
+          ],
+          paths: {
+            'mathjax-newcm': '[mathjax]/../@mathjax/mathjax-newcm-font',
+
+            //- // Four font extension packages (optional)
+            //- 'mathjax-bbm-extension': '[mathjax]/../@mathjax/mathjax-bbm-font-extension',
+            //- 'mathjax-bboldx-extension': '[mathjax]/../@mathjax/mathjax-bboldx-font-extension',
+            //- 'mathjax-dsfont-extension': '[mathjax]/../@mathjax/mathjax-dsfont-font-extension',
+            'mathjax-mhchem-extension': '[mathjax]/../@mathjax/mathjax-mhchem-font-extension'
+          }
+        },
+        output: {
+          font: 'mathjax-newcm',
+        },
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+          packages: {
+            '[+]': [
+              'mhchem'
+            ]
+          }
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          menuOptions: {
+            settings: {
+              enrich: false  // Turn off Braille and voice narration text automatic generation
+            }
+          },
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script></div><script async data-pjax src="/ZestfulYK-blog/"></script></div></body></html>
