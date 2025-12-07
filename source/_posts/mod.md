@@ -1,7 +1,8 @@
 ---
 title: mod
 date: 2025-11-25 09:26:45
-tags:
+tags: 算法
+mathjax: true
 ---
 # 模运算（Mod）性质总结
 
