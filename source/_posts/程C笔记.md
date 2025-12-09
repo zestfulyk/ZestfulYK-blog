@@ -80,4 +80,78 @@ int* fun1(int c){
 	return a;
 }
 ```
+# C++变量初始化
+
+
+```C++
+int a=10;
+bool b=1;//b=true;
+char c='c';
+int a[10]={1,2,3,4};
+int a[]={1,2,3,4};
+int a[3][3]={1,2,3,5,6};
+int a[3][3]={{1,2},{3,4}};
+int solve(int a,int b=10){//有时可能定义在mian函数前面
+	return a+b;//有值用值，反之用默认值
+}
+```
+
+# C++ 插入排序
+
+```C++
+void insertSort(int arr[],int n){
+	for(int i=1;i<n;i++){
+		int key=arr[i];
+		int j=i-1;
+		while(j>=0&&key<arr[j]){//注意不是和相邻元素比较
+			arr[j+1]=arr[j];
+			j--;
+		}
+		arr[j+1]=key;
+	}
+}
+```
+
+# C++斐波那契数列
+
+```C++
+int climbStair(int n){
+	if(n<=2) return n;
+	int prev2=1;
+	int prev1=2;//注意此处的定义是反过来的，上课被坑到了（
+	int current;
+	for(int i=3;i<=n;i++){
+		current=prev1+prev2;
+		prev2=prev1;
+		prev1=current;
+	}
+	return current;
+}
+```
+
+# 汉诺塔问题
+
+```C++
+void digui(int n,char start,char temp,char target){
+	if(n==1){
+		printf("%d:%c-->%c\n",n,start,target);//只有一个直接移动
+		return;
+	}
+	digui(n-1,start,target,temp);//前n-1个到转移柱子上
+	printf("%d:%c-->%c\n",n,start,target);//把第n个移动到目标柱子上
+	digui(n-1,temp,start,target);//前n-1个到目标柱子上
+}
+```
+
+# 最大公约数函数
+
+```C++
+#defien ll long long
+ll gcd(ll a,ll b){
+	if(b==0) return a;
+	//if(a%b==0) return b;
+	return gcd(b,a%b);
+}
+//pow返回的是浮点型，注意类型的转换
+```
 
