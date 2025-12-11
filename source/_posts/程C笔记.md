@@ -1,6 +1,6 @@
 ---
 title: 程C笔记
-date: 2025-12-7 22:15:00
+date: 2025-12-11 22:15:00
 tags: 数学
 mathjax: true
 ---
@@ -154,4 +154,27 @@ ll gcd(ll a,ll b){
 }
 //pow返回的是浮点型，注意类型的转换
 ```
+# 上机课J题
 
+## 算法原理
+- 这是$Stern–Brocot$ 树,用于生成全部有理数的一种函数
+OI wiki 链接：[Stern–Brocot 树与 Farey 序列 - OI Wiki](https://oi-wiki.org/math/number-theory/stern-brocot/)
+- 首先规定$\frac{0}{1}$是0,$\frac{1}{0}$是$\infty$，接下来每次在他们中间插入它们的中位分数，即$\frac{a+c}{b+d}$.
+- 其次也可以用三元组来计算这些有理分数，先设定$$\left(\frac{0}{1},\frac{1}{1},\frac{1}{0}\right)$$ 为初始状态，然后每一个节点设$$\left(\frac{a}{b},\frac{p}{q},\frac{c}{d}\right)$$
+  计算$$\left(\frac{a}{b},\frac{a+p}{b+q},\frac{c}{d}\right),\left(\frac{a}{b},\frac{p+c}{q+d},\frac{c}{d}\right)$$
+  作为左右节点，有用的部分是计算得到的节点
+## 证明
+
+- 考虑矩阵$$A= \begin{pmatrix} b & d \\ a & c \end{pmatrix}$$
+- 根是单位阵
+- 左边的节点是乘上矩阵$$L = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$$
+- 右边的节点是乘上$$R = \begin{pmatrix} 1 & 0 \\ 1 & 1 \end{pmatrix}$$
+- 当然，加入的节点还是原来的算法
+
+- 单调性的话自然成立，可以理解为糖水混合，不会比浓度高的浓，也不会比浓度低的淡
+**然后为什么一定是互质即最简呢？**
+
+根据**裴蜀定理**
+> 设 𝑎,𝑏 是不全为零的整数。那么，对于任意整数 𝑥,𝑦，都有 $gcd(𝑎,𝑏) ∣𝑎𝑥 +𝑏𝑦$ 成立；而且，存在整数 𝑥,𝑦，使得 $𝑎𝑥 +𝑏𝑦 =gcd(𝑎,𝑏)$ 成立。
+
+这里我们取x=y=1，那么就有新的分子分母也互质。
