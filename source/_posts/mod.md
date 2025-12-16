@@ -131,3 +131,36 @@ int main() {
 
 - 对于任意整数 $(k)$，有 $(a \mod m = (a + km) \mod m)$
 - 模运算的结果具有周期性，周期为模数 $(m)$
+
+# 逆元的计算
+
+- 如果是计算单个的逆元，那么使用小费定理：
+```C++
+ll qpow(ll a,b=mod-2) {
+    ll res = 1;
+    while (b) {
+        if (b & 1) res = res * a % mod;
+        a = a * a % mod;
+        b >>= 1;
+    }
+    return res;
+}
+```
+
+- 计算多个数字的逆元，使用拓展欧几里得算法
+```C++
+LL inv[mod+5]; 
+void getInv(LL mod) { 
+	inv[1]=1; 
+	for(int i=2;i<mod;i++) 
+		inv[i]=(mod-mod/i)*inv[mod%i]%mod; 
+}
+```
+
+- 然后如果是一个等式的话，考虑两边同时取逆元
+- 例如：计算$n!$的逆元，得到递推式子
+$$(i+1)! \equiv i \,!*(i+1) \mod p$$
+所以：$$inv[(i+1)!]\equiv inv[i]*inv[i+1] \mod p$$
+又因为：$$inv[i+1]*(i+1)\equiv1\mod p$$
+所以把已知的$inv[i+1]$移到左边，得到：$$inv[(i+1)!]*(i+1)\equiv inv[i] \mod p$$
+这就是求阶乘逆元的递推式了
