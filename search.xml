@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>算法挑战赛题解（11.2）</title>
+    <url>/ZestfulYK-blog/2025/11/03/1/</url>
+    <content><![CDATA[算法挑战赛题解（11.2）简单版本：题目大意：给定n个区间，判断这些区间能划分出几种不同的区域
+
+性质不同的数字
+
+题目分析：实际上是在讨论每个点被哪几个区包含，在样例中，数据是这样的，我们来分析一下这两个样例
+Sample Input 1 11 6Sample Output 12Sample Input 240 124 136 1312 13Sample Output 26
+样例分析：样例1: 0 1 1 1 1 1 1 0 0 … …  所以是两种区间样例2: 1   2  3   4   5   6   7  8    9   10  11  12  13 … …       1   1  1   1   1   1   1  1   1    1   1   1                  2   2   2   2  2   2    2   2   2   2                          3   3  3   3    3   3   3   3                                                  4   4       |&lt; ------ &gt;|&lt; ---- &gt;|&lt; ----------------- &gt;|&lt;-&gt;|&lt;-&gt;|&lt;--
+所以是6种区间这样,我们就弄明白了题目在讲什么,接下来就可以思考怎么实现了
+题目思路：实际上有些人会以为我们需要统计的是这个点有几个区间经过，但是这是错误的，在样例二就能发现这一点。（这也是我第一次的想法，测试样例二时发现的T_T）
+我们需要思考怎么表示这一个点有哪些区间经过，而且每一个区间是互不相同的。这里我们考虑类似状态压缩的思想。
+什么是状态压缩呢？简而言之就是用一个数来代替这个状态。比如说，我们用1表示未进行，2表示正在进行，3表示完成，那么一个含有4个任务的任务表可以是这样的：
+            1321
+（1，4任务未进行，2任务完成，3正在进行）
+我们使用了一个4位数表示了这一状态，这样就实现了状态压缩，我们没有用数组存储状态，而是一个数，这样我们在判断两个状态是否相同时就可以直接判断数字是否相同了，节约了时间和判断的复杂度。
+那么怎么把这个思想用在这一题呢？我们考虑给每个区间一个标号k，每个区间内的点加上2^k，这样就保证了每一个状态不会重复。但是这么写居然WA了！这是因为数据范围n是[0,300]也就是会有2^300，远大于long long的最大范围(2^64-1)这显然是不行的。
+实际上这个算法已经十分接近答案了,但我们还需要改进这个算法。接着我们想到一个类似的方法，哈希表(hash)。
+其实哈希表和刚才的思路差不多，不过加入了一些更高级的算法来防止数据溢出。
+那么什么是hash呢？实际上也是创建一种对应关系，使得在查询时能快速访问这种情况对应的值。就像上面的例子一样，我们通过我们规定的方式把任务状态和整数一一对应。
+怎么创建hash表呢？首先，找到一个质数作为进制数P，通常取131或者13331，模数mod通常取1e9+7或1e9+9，对应关系就是对应的P进制数%mod例如这个点上经过了134这三个集合，那么我们就把134转化为131进制，即1  131^2+3  131+4，在实际操作时，就是每一个集合的下标k作为对应的位数，则每一个点的表示可以是这样的：
+
+这样我们就计算出了每一个点的唯一标识，含有相同标识的才能算是同一个点。（这里选择质数是为了防止哈希碰撞，即不同状态的得到了相同的标记；选择mod是防止溢出）
+最后只要统计一下标识的个数就行了（可以用set实现）代码实现：对于简单版本，暴力完全够用了。
+#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long long#define endl &#x27;\n&#x27;const ll P=131,mod=1e9+7;int main()&#123;    ll n,z=1,a[1010]; cin&gt;&gt;n;    for(int i=0;i&lt;=1000;i++) a[i]=0;    while(n--)&#123;        ll l,r; cin&gt;&gt;l&gt;&gt;r;        for(int i=l;i&lt;=r;i++)&#123;            a[i]=(a[i]+z)%mod;        &#125;        z=(z*P)%mod;    &#125;    set&lt;ll&gt; q;    for(int i=0;i&lt;=1000;i++)&#123;        q.insert(a[i]);    &#125;    cout&lt;&lt;q.size()&lt;&lt;endl;&#125;
+所以这样我们就解决了简单版本。
+复杂版本：那么对于数据量大的复杂版本呢？
+这里我们依然采用hash，但是由于数据量大，为了防止冲突，我们给每一个区间都分配一个随机hash值，在计算时只考虑起点和终点，在进入起点时加入标记，离开时移除标记。这时我们就想到了具有可逆性质的异或，我们只要给对应的起终点打上相同标记就行了，最后还是用set统计产生的不同标记数
+参考代码：#include &lt;bits/stdc++.h&gt;using namespace std;#define ll long long#define ULL unsigned long long#define endl &#x27;\n&#x27;int main()&#123;    ll n; cin&gt;&gt;n;    vector&lt;pair&lt;ll,int&gt;&gt; box;    for (int i=0;i&lt;n;i++)&#123;        ll l,r; cin&gt;&gt;l&gt;&gt;r;        box.push_back(&#123;l,i&#125;);        box.push_back(&#123;r+1,i&#125;);    &#125;    sort(box.begin(),box.end());    vector&lt;unsigned long long&gt; h(n);    mt19937_64 rng(time(0));    for(int i=0;i&lt;n;i++)&#123;        h[i]=rng();    &#125;    set&lt;ULL&gt; s; s.insert(0);    ULL cur=0;ll last=-2e9;    for(auto&amp; i:box)&#123;        ll pos=i.first,idx=i.second;        if(pos&gt;last&amp;&amp;last!=-2e9) s.insert(cur);        cur^=h[idx];        last=pos;    &#125;    s.insert(cur);    cout&lt;&lt;s.size()&lt;&lt;endl;&#125;
+```yaml                     感谢观看！关注ZestfulYK喵，谢谢喵！
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>算法挑战赛题解</title>
     <url>/ZestfulYK-blog/2025/11/20/2/</url>
     <content><![CDATA[算法挑战赛第二期题解题目
@@ -85,36 +121,49 @@ vector&lt;string&gt; ans;ll a[1010]=&#123;0,1,10,11,100,101,110,111,121,1000,100
 关注ZestfulYK，谢谢喵！]]></content>
   </entry>
   <entry>
-    <title>算法挑战赛题解（11.2）</title>
-    <url>/ZestfulYK-blog/2025/11/03/1/</url>
-    <content><![CDATA[算法挑战赛题解（11.2）简单版本：题目大意：给定n个区间，判断这些区间能划分出几种不同的区域
+    <title>DP习题笔记</title>
+    <url>/ZestfulYK-blog/2025/12/16/DP%E4%B9%A0%E9%A2%98%E7%AC%94%E8%AE%B01(%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E5%BC%95%E5%85%A5)/</url>
+    <content><![CDATA[循环的遍历
+注意一下最内层的循环是什么，他决定了这一步的决策是什么。
 
-性质不同的数字
+例题纸币问题 2
 
-题目分析：实际上是在讨论每个点被哪几个区包含，在样例中，数据是这样的，我们来分析一下这两个样例
-Sample Input 1 11 6Sample Output 12Sample Input 240 124 136 1312 13Sample Output 26
-样例分析：样例1: 0 1 1 1 1 1 1 0 0 … …  所以是两种区间样例2: 1   2  3   4   5   6   7  8    9   10  11  12  13 … …       1   1  1   1   1   1   1  1   1    1   1   1                  2   2   2   2  2   2    2   2   2   2                          3   3  3   3    3   3   3   3                                                  4   4       |&lt; ------ &gt;|&lt; ---- &gt;|&lt; ----------------- &gt;|&lt;-&gt;|&lt;-&gt;|&lt;--
-所以是6种区间这样,我们就弄明白了题目在讲什么,接下来就可以思考怎么实现了
-题目思路：实际上有些人会以为我们需要统计的是这个点有几个区间经过，但是这是错误的，在样例二就能发现这一点。（这也是我第一次的想法，测试样例二时发现的T_T）
-我们需要思考怎么表示这一个点有哪些区间经过，而且每一个区间是互不相同的。这里我们考虑类似状态压缩的思想。
-什么是状态压缩呢？简而言之就是用一个数来代替这个状态。比如说，我们用1表示未进行，2表示正在进行，3表示完成，那么一个含有4个任务的任务表可以是这样的：
-            1321
-（1，4任务未进行，2任务完成，3正在进行）
-我们使用了一个4位数表示了这一状态，这样就实现了状态压缩，我们没有用数组存储状态，而是一个数，这样我们在判断两个状态是否相同时就可以直接判断数字是否相同了，节约了时间和判断的复杂度。
-那么怎么把这个思想用在这一题呢？我们考虑给每个区间一个标号k，每个区间内的点加上2^k，这样就保证了每一个状态不会重复。但是这么写居然WA了！这是因为数据范围n是[0,300]也就是会有2^300，远大于long long的最大范围(2^64-1)这显然是不行的。
-实际上这个算法已经十分接近答案了,但我们还需要改进这个算法。接着我们想到一个类似的方法，哈希表(hash)。
-其实哈希表和刚才的思路差不多，不过加入了一些更高级的算法来防止数据溢出。
-那么什么是hash呢？实际上也是创建一种对应关系，使得在查询时能快速访问这种情况对应的值。就像上面的例子一样，我们通过我们规定的方式把任务状态和整数一一对应。
-怎么创建hash表呢？首先，找到一个质数作为进制数P，通常取131或者13331，模数mod通常取1e9+7或1e9+9，对应关系就是对应的P进制数%mod例如这个点上经过了134这三个集合，那么我们就把134转化为131进制，即1  131^2+3  131+4，在实际操作时，就是每一个集合的下标k作为对应的位数，则每一个点的表示可以是这样的：
+这一题要我们求完全背包的方案数（考虑顺序）
+那么内层循环应该放的是面额的遍历，因为最后一步的面额是不一定的。
+正确写法✔：
+for(int i=1;i&lt;=w;i++)   for(int j=1;j&lt;=n;j++)      if(i&gt;=a[j])        dp[i]=(dp[i-a[j]]+dp[i])%mod;
 
-这样我们就计算出了每一个点的唯一标识，含有相同标识的才能算是同一个点。（这里选择质数是为了防止哈希碰撞，即不同状态的得到了相同的标记；选择mod是防止溢出）
-最后只要统计一下标识的个数就行了（可以用set实现）代码实现：对于简单版本，暴力完全够用了。
-#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long long#define endl &#x27;\n&#x27;const ll P=131,mod=1e9+7;int main()&#123;    ll n,z=1,a[1010]; cin&gt;&gt;n;    for(int i=0;i&lt;=1000;i++) a[i]=0;    while(n--)&#123;        ll l,r; cin&gt;&gt;l&gt;&gt;r;        for(int i=l;i&lt;=r;i++)&#123;            a[i]=(a[i]+z)%mod;        &#125;        z=(z*P)%mod;    &#125;    set&lt;ll&gt; q;    for(int i=0;i&lt;=1000;i++)&#123;        q.insert(a[i]);    &#125;    cout&lt;&lt;q.size()&lt;&lt;endl;&#125;
-所以这样我们就解决了简单版本。
-复杂版本：那么对于数据量大的复杂版本呢？
-这里我们依然采用hash，但是由于数据量大，为了防止冲突，我们给每一个区间都分配一个随机hash值，在计算时只考虑起点和终点，在进入起点时加入标记，离开时移除标记。这时我们就想到了具有可逆性质的异或，我们只要给对应的起终点打上相同标记就行了，最后还是用set统计产生的不同标记数
-参考代码：#include &lt;bits/stdc++.h&gt;using namespace std;#define ll long long#define ULL unsigned long long#define endl &#x27;\n&#x27;int main()&#123;    ll n; cin&gt;&gt;n;    vector&lt;pair&lt;ll,int&gt;&gt; box;    for (int i=0;i&lt;n;i++)&#123;        ll l,r; cin&gt;&gt;l&gt;&gt;r;        box.push_back(&#123;l,i&#125;);        box.push_back(&#123;r+1,i&#125;);    &#125;    sort(box.begin(),box.end());    vector&lt;unsigned long long&gt; h(n);    mt19937_64 rng(time(0));    for(int i=0;i&lt;n;i++)&#123;        h[i]=rng();    &#125;    set&lt;ULL&gt; s; s.insert(0);    ULL cur=0;ll last=-2e9;    for(auto&amp; i:box)&#123;        ll pos=i.first,idx=i.second;        if(pos&gt;last&amp;&amp;last!=-2e9) s.insert(cur);        cur^=h[idx];        last=pos;    &#125;    s.insert(cur);    cout&lt;&lt;s.size()&lt;&lt;endl;&#125;
-```yaml                     感谢观看！关注ZestfulYK喵，谢谢喵！
+错误写法❌：
+for(int i=1;i&lt;=n;i++)&#123;    ll x; cin&gt;&gt;x;    for(int j=x;j&lt;=w;j++)&#123;        dp[j]=(dp[j-x]+dp[j])%mod;    &#125;&#125;
+为什么下面那个是错误的？
+因为把当前面额作为内层循环，相当于固定了最后一步只能是这个面额，没法考虑到顺序问题。这样的话第二次只能在第一次的基础上增加。实际上，第一次的面额也可以在第二次的基础上增加。因此这个做法是不正确的。注意：下面那个方法因为只考虑了最开始的顺序(即输入顺序)，所以只有一种顺序，那么就可以拿来统计组合数
+
+在解决这类问题时，关键要问自己：
+
+题目要求的是组合数还是排列数？
+我的循环顺序是否允许不同的支付顺序？
+我是否在无意中强加了某种顺序限制？(关键点)对于这道题，既然要求考虑支付顺序，就必须使用金额在外层的循环方式。
+
+特殊例题计算容积不超过n得到的最大的占有体积
+思路：设$dp[i]$表示不超过i获得的最大值，那么每一个物品的体积是x，价值也是x。
+状态转移方程：dp[i]=max(dp[i],dp[i-x]+x)例题
+
+考前临时抱佛脚 - 洛谷
+
+题目说可以双核，那么只要一边最接近sum/2就彳亍了，所以可以用上面那个模型
+01背包0也有值的问题
+在正常的01背包中，如果遍历不到就不管了，但是现在要求不能放入时也有一定的值，那么这时就要管了，在体积不够时，每一个都只有一种选法，那就是不选。所以每一个都要加上不选所对应的值。
+例题：
+
+5 倍经验日 - 洛谷
+
+题目说了在打不过时也能得到经验，你要是不给玩家经验，当然是不对的啦
+
+DP的一般思路
+首先看看是否是背包或者背包的变形，要是是的话就简单了
+看一下每一次有几种转移方式，把可能的变化列一下，看看是否有规律
+在这一讲还是不用区分特殊类型的DP的
+
 ]]></content>
       <tags>
         <tag>算法</tag>
@@ -143,56 +192,6 @@ Cake Assignment
 这个题目的重要观察点是，当最后一步确定后，上一步的操作一定是确定的，于是我们就可以倒推
 XOR Array
 这题的要求是构造一个数组，满足仅在l到r上的异或和为0，其他位置全非0，异或有一个特点，和前缀和一样，可以构建前缀异或和，因为$x\oplus y \oplus x==x$此外非常容易陷入的一个点是，可能会想到之间填入1-n来构造，但是实际上，这么异或会产生很多的0，所以这个方法是不行的。（比如1，2，3）因此，这里我们的操作是构造最终异或的结果，写一个前缀异或数组，最后再反推原数组就行了。详细信息可以见异或的笔记部分
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>DP笔记</title>
-    <url>/ZestfulYK-blog/2025/12/07/DP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[DP题目的特点
-数据较小，至少有一维是可以接受的，比如每一步的决策小于3，总数小于1000等等
-每一步的答案可以由之前的答案得到，比如数字三角形
-
-DP题目的大致做法设DP数组
-明确DP数组的含义，保证每次求解的答案都是这个含义，不然就可能出错(这也是我之前的一大误区)
-
-分类讨论
-明确有几种决策方案，明确这一步的答案是怎么推断出来的(非常重要!!!)
-
-接下来编写代码就行了
-举例：迎新赛M题
-题目传送门：
-
-
-ZJUTOJ | 2024ZJUT迎新赛-决赛-M. 三色小屋
-
-题目理解：
-首先发现每一步的方案数可以接受，并且这一步的答案只由上一步转移而来，所以可以使用DP
-每个位置只能填R/G/B三种颜色，而且之和上一步和相邻的颜色有关，几种方案互不影响，符合动态规划的特点
-分类讨论：
-分为两大类，因为开头要初始化，所以单独讨论
-
-
-
-dp[i][j] = 
-\begin{cases}
-i==1\begin{cases}
-    c[i]==\ '0' & \text{可以用的颜色为1} \\
-    c[i]\ !=\ \ '0' & \text{这个颜色为1}
-\end{cases}\\ \\
-i\ !=1\begin{cases}
-    c[i]==\ '0' & \text{可以填入的颜色为前两个的和} \\
-    c[i] \ !=\ \ '0' & \text{这个颜色为前两个的和}
-\end{cases}
-\end{cases}DP概率题求期望的几个重要公式\begin{aligned}
-E(aX+b)=aE(x)+b \\ \\
-E(X+Y)=E(X)+E(Y)\\ \\
-E(XY)=E(X)E(Y)
-\end{aligned}
-上面两个说明了期望的线性关系，下面两个说明了期望的独立性
-
 ]]></content>
       <tags>
         <tag>算法</tag>
@@ -246,6 +245,56 @@ E(XY)=E(X)E(Y)
       </tags>
   </entry>
   <entry>
+    <title>DP笔记</title>
+    <url>/ZestfulYK-blog/2025/12/07/DP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[DP题目的特点
+数据较小，至少有一维是可以接受的，比如每一步的决策小于3，总数小于1000等等
+每一步的答案可以由之前的答案得到，比如数字三角形
+
+DP题目的大致做法设DP数组
+明确DP数组的含义，保证每次求解的答案都是这个含义，不然就可能出错(这也是我之前的一大误区)
+
+分类讨论
+明确有几种决策方案，明确这一步的答案是怎么推断出来的(非常重要!!!)
+
+接下来编写代码就行了
+举例：迎新赛M题
+题目传送门：
+
+
+ZJUTOJ | 2024ZJUT迎新赛-决赛-M. 三色小屋
+
+题目理解：
+首先发现每一步的方案数可以接受，并且这一步的答案只由上一步转移而来，所以可以使用DP
+每个位置只能填R/G/B三种颜色，而且之和上一步和相邻的颜色有关，几种方案互不影响，符合动态规划的特点
+分类讨论：
+分为两大类，因为开头要初始化，所以单独讨论
+
+
+
+dp[i][j] = 
+\begin{cases}
+i==1\begin{cases}
+    c[i]==\ '0' & \text{可以用的颜色为1} \\
+    c[i]\ !=\ \ '0' & \text{这个颜色为1}
+\end{cases}\\ \\
+i\ !=1\begin{cases}
+    c[i]==\ '0' & \text{可以填入的颜色为前两个的和} \\
+    c[i] \ !=\ \ '0' & \text{这个颜色为前两个的和}
+\end{cases}
+\end{cases}DP概率题求期望的几个重要公式\begin{aligned}
+E(aX+b)=aE(x)+b \\ \\
+E(X+Y)=E(X)+E(Y)\\ \\
+E(XY)=E(X)E(Y)
+\end{aligned}
+上面两个说明了期望的线性关系，下面两个说明了期望的独立性
+
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>模运算性质总结</title>
     <url>/ZestfulYK-blog/2025/11/25/mod/</url>
     <content><![CDATA[模运算（Mod）性质总结定义对于任意实数 $( x, y )$，有：
@@ -294,6 +343,17 @@ $6 / 3 \equiv 6 \times 5 = 30 \equiv 2 \pmod{7}$
 模运算的周期性质
 对于任意整数 $(k)$，有 $(a \mod m = (a + km) \mod m)$
 模运算的结果具有周期性，周期为模数 $(m)$
+
+逆元的计算
+如果是计算单个的逆元，那么使用小费定理：
+ll qpow(ll a,b=mod-2) &#123;    ll res = 1;    while (b) &#123;        if (b &amp; 1) res = res * a % mod;        a = a * a % mod;        b &gt;&gt;= 1;    &#125;    return res;&#125;
+
+计算多个数字的逆元，使用拓展欧几里得算法
+LL inv[mod+5]; void getInv(LL mod) &#123; 	inv[1]=1; 	for(int i=2;i&lt;mod;i++) 		inv[i]=(mod-mod/i)*inv[mod%i]%mod; &#125;
+
+然后如果是一个等式的话，考虑两边同时取逆元
+
+例如：计算$n!$的逆元，得到递推式子(i+1)! \equiv i \,!*(i+1) \mod p所以：inv[(i+1)!]\equiv inv[i]*inv[i+1] \mod p又因为：inv[i+1]*(i+1)\equiv1\mod p所以把已知的$inv[i+1]$移到左边，得到：inv[(i+1)!]*(i+1)\equiv inv[i] \mod p这就是求阶乘逆元的递推式了
 
 ]]></content>
       <tags>
@@ -575,6 +635,36 @@ t^n=\frac{a-b}{(x-b)^2}\frac{nt^n\,dt}{t}=\frac{a-b}{(x-b)^2}\,dx\frac{n\,dt}{t}
       </tags>
   </entry>
   <entry>
+    <title>全排列函数的应用</title>
+    <url>/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[全排列函数什么是全排列？简单来说就是排列组合的所有情况，并按照字典顺序输出例如：123全排列的结果为
+123132213231312321
+而实际上全排列需要在代码中用复杂的深度搜索来写这实在是太复杂了！！！于是我就发现了全排列函数这个东西^__^现在我们就来学习一下这个高级函数————next_permutation
+全排列函数#include &lt;iostream&gt;  #include &lt;algorithm&gt;  using namespace std;  int main()  &#123;      int num[3]=&#123;1,2,3&#125;;      do      &#123;          cout&lt;&lt;num[0]&lt;&lt;&quot; &quot;&lt;&lt;num[1]&lt;&lt;&quot; &quot;&lt;&lt;num[2]&lt;&lt;endl;    &#125;while(next_permutation(num,num+3));      return 0;  &#125;
+
+全排列函数详细定义对于next_permutation函数，其函数原型为：
+include   bool next_permutation(iterator start,iterator end)
+
+
+当当前序列不存在下一个排列时，函数返回false，否则返回true
+
+全排列函数的特性
+
+next_permutation(num,num+n)函数是对数组num中的前n个元素进行全排列，同时并改变num数组的值。
+另外，需要强调的是，next_permutation()在使用前需要对欲排列数组按升序排序，否则只能找出该序列之后的全排列数。比如，如果数组num初始化为2,3,1，那么输出就变为了：231312321
+全排列函数的应用题目链接
+题目要求我们按要求完成5*5数独，且只要填ABC，可以有空格子一种方法是遍历每一个格子，逐个填入，时间复杂度(4^25)，显然不行不过我的朋友使用了大量剪枝，最后还是过了%%%大佬 qinye_leaf
+代码链接
+但是我们刚学了全排列函数，就不能使用一下吗？你别说，还真能使用！我们只要先填写每一行，然后就只用40^5就能计算完了因为可以加上一个判断，看看每一行是否符合标准(也算剪枝吧)
+vector&lt;string&gt; eachrow(int row) &#123;    vector&lt;string&gt; result;    string h=string(n-3,&#x27;.&#x27;)+&quot;ABC&quot;;    do&#123; for(int i=0;i&lt;n;i++)&#123;        if(h[i]!=&#x27;.&#x27;)&#123;            if(h[i]==r[row]) result.push_back(h);            break;        &#125;    &#125;    &#125;while(next_permutation(h.begin(),h.end()));    return result;&#125;
+那么这样我们就能得到每一行的可能情况，每行40种之后就可以正常的DFS了
+个人AC代码链接
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>几何计算笔记</title>
     <url>/ZestfulYK-blog/2025/12/11/%E5%87%A0%E4%BD%95%E8%AE%A1%E7%AE%97%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[凹凸多边形的判断重要知识：叉积几何意义：符号代表了叉积两个向量的转向： > 0 逆时针 &lt; 0 顺时针 = 0 共线
@@ -645,36 +735,6 @@ C=p2_x*p1_y-p1_x*p2_y
 
 ]]></content>
       <tags>
-        <tag>数学 算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>全排列函数的应用</title>
-    <url>/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/</url>
-    <content><![CDATA[全排列函数什么是全排列？简单来说就是排列组合的所有情况，并按照字典顺序输出例如：123全排列的结果为
-123132213231312321
-而实际上全排列需要在代码中用复杂的深度搜索来写这实在是太复杂了！！！于是我就发现了全排列函数这个东西^__^现在我们就来学习一下这个高级函数————next_permutation
-全排列函数#include &lt;iostream&gt;  #include &lt;algorithm&gt;  using namespace std;  int main()  &#123;      int num[3]=&#123;1,2,3&#125;;      do      &#123;          cout&lt;&lt;num[0]&lt;&lt;&quot; &quot;&lt;&lt;num[1]&lt;&lt;&quot; &quot;&lt;&lt;num[2]&lt;&lt;endl;    &#125;while(next_permutation(num,num+3));      return 0;  &#125;
-
-全排列函数详细定义对于next_permutation函数，其函数原型为：
-include   bool next_permutation(iterator start,iterator end)
-
-
-当当前序列不存在下一个排列时，函数返回false，否则返回true
-
-全排列函数的特性
-
-next_permutation(num,num+n)函数是对数组num中的前n个元素进行全排列，同时并改变num数组的值。
-另外，需要强调的是，next_permutation()在使用前需要对欲排列数组按升序排序，否则只能找出该序列之后的全排列数。比如，如果数组num初始化为2,3,1，那么输出就变为了：231312321
-全排列函数的应用题目链接
-题目要求我们按要求完成5*5数独，且只要填ABC，可以有空格子一种方法是遍历每一个格子，逐个填入，时间复杂度(4^25)，显然不行不过我的朋友使用了大量剪枝，最后还是过了%%%大佬 qinye_leaf
-代码链接
-但是我们刚学了全排列函数，就不能使用一下吗？你别说，还真能使用！我们只要先填写每一行，然后就只用40^5就能计算完了因为可以加上一个判断，看看每一行是否符合标准(也算剪枝吧)
-vector&lt;string&gt; eachrow(int row) &#123;    vector&lt;string&gt; result;    string h=string(n-3,&#x27;.&#x27;)+&quot;ABC&quot;;    do&#123; for(int i=0;i&lt;n;i++)&#123;        if(h[i]!=&#x27;.&#x27;)&#123;            if(h[i]==r[row]) result.push_back(h);            break;        &#125;    &#125;    &#125;while(next_permutation(h.begin(),h.end()));    return result;&#125;
-那么这样我们就能得到每一行的可能情况，每行40种之后就可以正常的DFS了
-个人AC代码链接
-]]></content>
-      <tags>
         <tag>算法</tag>
       </tags>
   </entry>
@@ -704,20 +764,6 @@ int countSubarrays(vector&lt;int&gt;&amp; nums,int k) &#123;    unordered_map&lt
 vector&lt;int&gt; xorPre(n+1, 0);for (int i = 1; i &lt;= n; i++) &#123;    xorPre[i] = xorPre[i-1] ^ a[i];&#125;// 区间[l, r]的异或和int xorsum = xorPre[r] ^ xorPre[l-1];
 7.二维差分数组// 初始化二维差分vector&lt;vector&lt;int&gt;&gt; diff(m+2, vector&lt;int&gt;(n+2, 0));// 子矩阵(x1,y1)-(x2,y2)增加valvoid rangeAdd2D(int x1, int y1, int x2, int y2, int val) &#123;    diff[x1][y1] += val;    diff[x2+1][y1] -= val;    diff[x1][y2+1] -= val;    diff[x2+1][y2+1] += val;&#125;// 恢复原矩阵vector&lt;vector&lt;int&gt;&gt; res(m+1, vector&lt;int&gt;(n+1, 0));for (int i = 1; i &lt;= m; i++) &#123;    for (int j = 1; j &lt;= n; j++) &#123;        res[i][j] = res[i-1][j] + res[i][j-1] - res[i-1][j-1] + diff[i][j];    &#125;&#125;
 然后很重要的一点是，有时可能是假设前缀和数组，最后再反推原数组来进行构造。
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>华中农业达大学迎新赛题解与反思</title>
-    <url>/ZestfulYK-blog/2025/12/07/%E5%8D%8E%E4%B8%AD%E5%86%9C%E4%B8%9A%E8%BE%BE%E5%A4%A7%E5%AD%A6%E8%BF%8E%E6%96%B0%E8%B5%9B%E9%A2%98%E8%A7%A3%E4%B8%8E%E5%8F%8D%E6%80%9D/</url>
-    <content><![CDATA[M-终极考验
-这题的大致思路是对的，但是最后处理差分时，直接选择了min(i+x,n)，这个就不对了，因为我们要的不是二选1，而是只有在满足要求时才处理。所以把min改成if判断就行了，下次需要注意这个逻辑问题。
-H-对决
-这个题目是纯暴力的搜索题，那么只要一个一个判断就好了，但是此处注意循环范围是$\leq n-4$而不是$&lt;n-4$.最好自己先之上推导一下再提交
-B-爱的魔法
-这一题一开始的错误原因是没有注意到交换最接近的会导致得到的不是最大的数字，例如1999，交换以后是9199是不对的，所以要倒遍历。建议自己先多造几组数据再提交，包括一些边界情况等等。随机数也不错（较小范围能手推的）
 ]]></content>
       <tags>
         <tag>算法</tag>
@@ -822,47 +868,33 @@ $v$ 计算错误：求 $v$ 时积分常数可省略（因最后会抵消）
       </tags>
   </entry>
   <entry>
-    <title>容斥原理笔记</title>
-    <url>/ZestfulYK-blog/2025/12/09/%E5%AE%B9%E6%96%A5%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0-1/</url>
-    <content><![CDATA[容斥原理的定义以及计算方式
-容斥原理是十分有用的一种计算方法，通常用于子集统计中
-该原理通过交替加减不同层次交集的大小，确保每个元素在并集中只被计算一次。虽然描述中的“只被两个集合重复的”可能指恰好属于两个集合的元素，但容斥原理实际处理的是所有交集（包含属于更多集合的元素），并通过后续的加减进行修正。
-原理：整体减空白的思想，不过也有韦恩图的一点思想，当子集数量大于3时，就有些抽象了，这时我们就需要总结一下规律。基本公式
+    <title>定积分笔记</title>
+    <url>/ZestfulYK-blog/2025/12/10/%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[定义式\Sigma_{i=1}^nf(\xi_i)\Delta x_i几何意义曲线和x轴，直线$x=a$,$x=b$围成的面积
+用定义式写简单积分例题：\int_0^1x^2\,dx首先先把$[0,1]$分成n等份，每份是$\frac{1}{n}$然后按照定义式，取$xi=\frac{i}{n},\xi_i=\frac{i}{n}$所以：$$\int_0^1x^2\,dx=\Sigma{i=1}^nf(\xii)\Delta x_i=\Sigma{i=1}^n(\frac{i}{n})^2·\frac{1}{n}=\frac{1}{n^3}\Sigma_{i=1}^ni^2=\frac{1}{n^3}\frac{1}{6}(n+1)(2n+1)=\frac{n(n+1)(2n+1)}{6n^3}=\frac{1}{3}$$最后记得对n取一下极限就行了
+把极限改写成积分形式由于积分是可以转化为极限的，那么同样也可以反过来计算。
+例题：这里需要弄清改把什么看作是$\xi_i$,什么又看做是$\Delta x_i$不过通常是取相同的数
 
-|A_1\cup A_2\cup ··· \cup A_n|=\Sigma|A_i|-\Sigma|A_i\cap A_j|+\Sigma|A_i\cap A_j\cap A_k|+(-1)^{n+1}|A_1\cap A_2 \cap ···\cap A_n|
-先加上所有子集，再减去每两个子集的重叠部分，再加上每三个子集的重叠部分···最后再是所有子集的交集。重要观察：每一个求和前面的符号只和选择了几个集合有关，所以在写代码的时候就会变得简单了。代码实现
+1.\lim_{n\to \infty}\frac{1}{n}\Sigma_{i=1}^n\sqrt{1+\frac{i}{n}}然后会有一个非常重要的观察点，必然会有$\frac{i^a}{n^a}$和$\frac{a}{n}$出现，这就说明了你划分为n份的范围和每个区间的取值情况。
 
-以题目Count Good Numbers为例：题目要求我们统计因子里不含2,3,5,7的所有在区间$[l,r]$里的数字总量(翻译成人话)那么这不就是容斥原理吗？
-ll count_divisible(ll l, ll r, ll d) &#123;    ll first= (l%d==0) ? l : l+d-l%d;  // 第一个能被 d 整除的数    ll last=r-r%d;                         // 最后一个能被 d 整除的数    if (first&gt;last) return 0;                 // 如果没有这样的数    return (last-first)/d+1;&#125;void solve()&#123;    ll l,r;    cin&gt;&gt;l&gt;&gt;r;    int primes[]=&#123;2,3,5,7&#125;;               // 质数数组    ll ans=0;    // 枚举所有子集（包括空集），共 2^4 = 16 个    for(int mask=0;mask&lt;(1&lt;&lt;4);mask++) &#123;        ll d=1;        int cnt=0;                           // 子集中质数的个数        for(int i=0;i&lt;4;i++)&#123;            if(mask&amp;(1&lt;&lt;i))&#123;                d*=primes[i];                cnt++;            &#125;        &#125;        // 根据子集大小的奇偶性决定符号        int sign=(cnt%2==0)?1:-1;        ans+=sign*count_divisible(l,r,d);    &#125;    cout&lt;&lt;ans&lt;&lt;endl;&#125;
+所以对上面这个式子进行变形得到：\lim_{n\to \infty}\Sigma_{i=1}^n\frac{1}{n}\sqrt{1+\frac{i}{n}}所以每一份是$\frac{1}{n}$,每个区间的取值是$\frac{i}{n}$.答案为：\int_0^1\sqrt{1+x}但是就一定要这么理解吗？实际上，我们也可以把1-2的区间分成n份，那么每一份还是$\frac{1}{n}$,但是每份的取值变成了$1+\frac{i}{n}$。因此答案也可以是：\int_1^2\sqrt{x}
+定积分的性质：性质1\int_a^bf(x)\,dx=-\int_b^af(x)推论\int_a^af(x)=0解释
+代数角度$\Delta x_i=\frac{b-a}{n}$所以在上下反转时会变号
+几何角度：理解为有向的面积性质2
 
-主要思想：用二进制模拟是否要取得这一个集合，然后统计二进制中1出现的次数，即选择的集合数，来决定要加还是减。这样就大大减少了代码量，简单可维护性高。
+\int_a^b\,dx=b-a解释
+相当于一个矩形的面积，宽是1，长是b-a。性质3 线性性
 
-备注：整体减空白的思想可以看华农的K题来学习，这里就不再列举了
-]]></content>
+此性质又称作不定积分的线性性即满足数乘和加减法数乘：
+\int_a^bkf(x)\,dx=k\int_a^bf(x)\,dx加减法：
+\int_a^bf(x)\pm g(x)\,dx=\int_a^bf(x)\,dx\pm\int_a^bg(x)\,dx实际上，这个性质可以转换为极限的线性性
+性质4 拆分定理\int_a^bf(x)\,dx=\int_a^cf(x)\,dx+\int_c^bf(x)\,dx实际上，这个公式就是把要计算的面积拆成多个部分当位置不一样的时候，也可以看成是减去一部分
+性质5 保号性不定积分的保号性如果有在$[a,b]$上$f(x)\geq0$那么
+\int_a^bf(x)\,dx\geq0其实这又是极限的保号性
+然后就有：如果$f(x)\geq g(x)$
+\int_a^bf(x)\,dx\geq\int_a^bg(x)\,dx性质6\int_a^bf(x)\,dx\leq ∫_a^b|f(x)|\,dx\,(a]]></content>
       <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>广工月赛</title>
-    <url>/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/</url>
-    <content><![CDATA[ZestfulYK的战绩
-比赛难度中等，以基础题为主，拼尽全力战胜少量难题
-部分代码F
-分析很不错的博弈题目，使我的大脑旋转，最后打表做出来了
-
-题目链接
-
-代码:#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long longint main()&#123;    ll n,m;    cin&gt;&gt;n&gt;&gt;m;    if(n==0&amp;&amp;m==0) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==1&amp;m==0) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;    else if(n==2&amp;m==0) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==3&amp;m==0) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==0&amp;m==1) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;    else if(n==0&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==0&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;//    else if(n==1&amp;m==1) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==1&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==1&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;//    else if(n==2&amp;m==1) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==2&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==2&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;//    else if(n==3&amp;m==1) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==3&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==3&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;&#125;
-J
-分析这题目也不错，但其实看代码找规律就行了
-
-题目链接
-
-代码:
-#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long longint main()&#123;    ll n; cin&gt;&gt;n;    ll s=sqrt(n);    if(s*s!=n) s++;    ll last=n%s;    for(int i=last;i&gt;=1;i--) cout&lt;&lt;i&lt;&lt;&quot; &quot;;    for(int j=1;j&lt;=n/s;j++)&#123;        for(int i=last+j*s;i&gt;last+(j-1)*s;i--) cout&lt;&lt;i&lt;&lt;&quot; &quot;;    &#125;&#125;]]></content>
-      <tags>
-        <tag>算法</tag>
+        <tag>数学</tag>
       </tags>
   </entry>
   <entry>
@@ -894,33 +926,351 @@ for(int i=1;i&lt;=n;i++) cout&lt;&lt;i&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;
       </tags>
   </entry>
   <entry>
-    <title>定积分笔记</title>
-    <url>/ZestfulYK-blog/2025/12/10/%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[定义式\Sigma_{i=1}^nf(\xi_i)\Delta x_i几何意义曲线和x轴，直线$x=a$,$x=b$围成的面积
-用定义式写简单积分例题：\int_0^1x^2\,dx首先先把$[0,1]$分成n等份，每份是$\frac{1}{n}$然后按照定义式，取$xi=\frac{i}{n},\xi_i=\frac{i}{n}$所以：$$\int_0^1x^2\,dx=\Sigma{i=1}^nf(\xii)\Delta x_i=\Sigma{i=1}^n(\frac{i}{n})^2·\frac{1}{n}=\frac{1}{n^3}\Sigma_{i=1}^ni^2=\frac{1}{n^3}\frac{1}{6}(n+1)(2n+1)=\frac{n(n+1)(2n+1)}{6n^3}=\frac{1}{3}$$最后记得对n取一下极限就行了
-把极限改写成积分形式由于积分是可以转化为极限的，那么同样也可以反过来计算。
-例题：这里需要弄清改把什么看作是$\xi_i$,什么又看做是$\Delta x_i$不过通常是取相同的数
+    <title>广工月赛</title>
+    <url>/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/</url>
+    <content><![CDATA[ZestfulYK的战绩
+比赛难度中等，以基础题为主，拼尽全力战胜少量难题
+部分代码F
+分析很不错的博弈题目，使我的大脑旋转，最后打表做出来了
 
-1.\lim_{n\to \infty}\frac{1}{n}\Sigma_{i=1}^n\sqrt{1+\frac{i}{n}}然后会有一个非常重要的观察点，必然会有$\frac{i^a}{n^a}$和$\frac{a}{n}$出现，这就说明了你划分为n份的范围和每个区间的取值情况。
+题目链接
 
-所以对上面这个式子进行变形得到：\lim_{n\to \infty}\Sigma_{i=1}^n\frac{1}{n}\sqrt{1+\frac{i}{n}}所以每一份是$\frac{1}{n}$,每个区间的取值是$\frac{i}{n}$.答案为：\int_0^1\sqrt{1+x}但是就一定要这么理解吗？实际上，我们也可以把1-2的区间分成n份，那么每一份还是$\frac{1}{n}$,但是每份的取值变成了$1+\frac{i}{n}$。因此答案也可以是：\int_1^2\sqrt{x}
-定积分的性质：性质1\int_a^bf(x)\,dx=-\int_b^af(x)推论\int_a^af(x)=0解释
-代数角度$\Delta x_i=\frac{b-a}{n}$所以在上下反转时会变号
-几何角度：理解为有向的面积性质2
+代码:#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long longint main()&#123;    ll n,m;    cin&gt;&gt;n&gt;&gt;m;    if(n==0&amp;&amp;m==0) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==1&amp;m==0) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;    else if(n==2&amp;m==0) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==3&amp;m==0) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==0&amp;m==1) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;    else if(n==0&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==0&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;//    else if(n==1&amp;m==1) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==1&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==1&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;//    else if(n==2&amp;m==1) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==2&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==2&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;//    else if(n==3&amp;m==1) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==3&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==3&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;&#125;
+J
+分析这题目也不错，但其实看代码找规律就行了
 
-\int_a^b\,dx=b-a解释
-相当于一个矩形的面积，宽是1，长是b-a。性质3 线性性
+题目链接
 
-此性质又称作不定积分的线性性即满足数乘和加减法数乘：
-\int_a^bkf(x)\,dx=k\int_a^bf(x)\,dx加减法：
-\int_a^bf(x)\pm g(x)\,dx=\int_a^bf(x)\,dx\pm\int_a^bg(x)\,dx实际上，这个性质可以转换为极限的线性性
-性质4 拆分定理\int_a^bf(x)\,dx=\int_a^cf(x)\,dx+\int_c^bf(x)\,dx实际上，这个公式就是把要计算的面积拆成多个部分当位置不一样的时候，也可以看成是减去一部分
-性质5 保号性不定积分的保号性如果有在$[a,b]$上$f(x)\geq0$那么
-\int_a^bf(x)\,dx\geq0其实这又是极限的保号性
-然后就有：如果$f(x)\geq g(x)$
-\int_a^bf(x)\,dx\geq\int_a^bg(x)\,dx性质6\int_a^bf(x)\,dx\leq ∫_a^b|f(x)|\,dx\,(a]]></content>
+代码:
+#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long longint main()&#123;    ll n; cin&gt;&gt;n;    ll s=sqrt(n);    if(s*s!=n) s++;    ll last=n%s;    for(int i=last;i&gt;=1;i--) cout&lt;&lt;i&lt;&lt;&quot; &quot;;    for(int j=1;j&lt;=n/s;j++)&#123;        for(int i=last+j*s;i&gt;last+(j-1)*s;i--) cout&lt;&lt;i&lt;&lt;&quot; &quot;;    &#125;&#125;]]></content>
       <tags>
-        <tag>数学</tag>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>华中农业达大学迎新赛题解与反思</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E5%8D%8E%E4%B8%AD%E5%86%9C%E4%B8%9A%E8%BE%BE%E5%A4%A7%E5%AD%A6%E8%BF%8E%E6%96%B0%E8%B5%9B%E9%A2%98%E8%A7%A3%E4%B8%8E%E5%8F%8D%E6%80%9D/</url>
+    <content><![CDATA[M-终极考验
+这题的大致思路是对的，但是最后处理差分时，直接选择了min(i+x,n)，这个就不对了，因为我们要的不是二选1，而是只有在满足要求时才处理。所以把min改成if判断就行了，下次需要注意这个逻辑问题。
+H-对决
+这个题目是纯暴力的搜索题，那么只要一个一个判断就好了，但是此处注意循环范围是$\leq n-4$而不是$&lt;n-4$.最好自己先之上推导一下再提交
+B-爱的魔法
+这一题一开始的错误原因是没有注意到交换最接近的会导致得到的不是最大的数字，例如1999，交换以后是9199是不对的，所以要倒遍历。建议自己先多造几组数据再提交，包括一些边界情况等等。随机数也不错（较小范围能手推的）
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我这学期犯过的唐</title>
+    <url>/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/</url>
+    <content><![CDATA[不知道vector的size是size_t类型
+因为是size_t所以直接加减会出错，比如减成负数的时候。
+
+内层循环变量写错
+这个会导致外层循环少了几次
+
+sort里面的数据范围没开正确
+例如要对n* m的数据排序，却只写了n
+
+不看清读入顺序
+看清读入的是有序的还是乱序的，不要被样例蒙蔽了双眼
+
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>容斥原理笔记</title>
+    <url>/ZestfulYK-blog/2025/12/09/%E5%AE%B9%E6%96%A5%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0-1/</url>
+    <content><![CDATA[容斥原理的定义以及计算方式
+容斥原理是十分有用的一种计算方法，通常用于子集统计中
+该原理通过交替加减不同层次交集的大小，确保每个元素在并集中只被计算一次。虽然描述中的“只被两个集合重复的”可能指恰好属于两个集合的元素，但容斥原理实际处理的是所有交集（包含属于更多集合的元素），并通过后续的加减进行修正。
+原理：整体减空白的思想，不过也有韦恩图的一点思想，当子集数量大于3时，就有些抽象了，这时我们就需要总结一下规律。基本公式
+
+|A_1\cup A_2\cup ··· \cup A_n|=\Sigma|A_i|-\Sigma|A_i\cap A_j|+\Sigma|A_i\cap A_j\cap A_k|+(-1)^{n+1}|A_1\cap A_2 \cap ···\cap A_n|
+先加上所有子集，再减去每两个子集的重叠部分，再加上每三个子集的重叠部分···最后再是所有子集的交集。重要观察：每一个求和前面的符号只和选择了几个集合有关，所以在写代码的时候就会变得简单了。代码实现
+
+以题目Count Good Numbers为例：题目要求我们统计因子里不含2,3,5,7的所有在区间$[l,r]$里的数字总量(翻译成人话)那么这不就是容斥原理吗？
+ll count_divisible(ll l, ll r, ll d) &#123;    ll first= (l%d==0) ? l : l+d-l%d;  // 第一个能被 d 整除的数    ll last=r-r%d;                         // 最后一个能被 d 整除的数    if (first&gt;last) return 0;                 // 如果没有这样的数    return (last-first)/d+1;&#125;void solve()&#123;    ll l,r;    cin&gt;&gt;l&gt;&gt;r;    int primes[]=&#123;2,3,5,7&#125;;               // 质数数组    ll ans=0;    // 枚举所有子集（包括空集），共 2^4 = 16 个    for(int mask=0;mask&lt;(1&lt;&lt;4);mask++) &#123;        ll d=1;        int cnt=0;                           // 子集中质数的个数        for(int i=0;i&lt;4;i++)&#123;            if(mask&amp;(1&lt;&lt;i))&#123;                d*=primes[i];                cnt++;            &#125;        &#125;        // 根据子集大小的奇偶性决定符号        int sign=(cnt%2==0)?1:-1;        ans+=sign*count_divisible(l,r,d);    &#125;    cout&lt;&lt;ans&lt;&lt;endl;&#125;
+
+主要思想：用二进制模拟是否要取得这一个集合，然后统计二进制中1出现的次数，即选择的集合数，来决定要加还是减。这样就大大减少了代码量，简单可维护性高。
+
+备注：整体减空白的思想可以看华农的K题来学习，这里就不再列举了
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>时空间复杂度笔记</title>
+    <url>/ZestfulYK-blog/2025/12/09/%E6%97%B6%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[2秒时间限制下的可执行操作数一般经验估算
+保守估计：C++在2秒内可执行约 $210^8-410^8$ 次基本操作（加减、比较、赋值等）
+实际表现：
+简单循环操作：约$110^8-210^8$
+复杂操作（除法、取模、函数调用）：约$0.510^8-110^8$
+浮点运算：约$0.310^8-0.510^8$不同复杂度对应的最大数据规模O(1)        -&gt; 几乎无限（&gt;10^9）O(logn)     -&gt; 几乎无限（&gt;10^9）O(n)        -&gt; 约 2×10^8O(nlogn)    -&gt; 约 2×10^7（2000万）O(n√n)      -&gt; 约 2×10^6（200万）O(n²)       -&gt; 约 2×10^4（2万）O(n³)       -&gt; 约 2×10^3（2000）O(2ⁿ)       -&gt; 约 n ≤ 25O(n!)       -&gt; 约 n ≤ 11
+
+
+
+
+实战参考表
+
+
+
+数据规模
+可接受的复杂度
+常见算法
+
+
+
+
+n ≤ 10
+任意（包括O(n!)）
+全排列、暴力搜索
+
+
+n ≤ 20
+O(2ⁿ)
+子集枚举、状态压缩DP
+
+
+n ≤ 100
+O(n³)
+Floyd、简单DP
+
+
+n ≤ 1000
+O(n²)
+二维DP、Dijkstra朴素版
+
+
+n ≤ 10^4
+O(n√n)
+数论分块
+
+
+n ≤ 10^5
+O(nlogn)
+线段树、树状数组、堆
+
+
+n ≤ 10^6
+O(n) 或 O(nlogn)
+前缀和、KMP、单调栈
+
+
+n ≤ 10^7
+O(n)
+筛法、线性DP
+
+
+n ≤ 10^8
+O(n)（必须常数小）
+位运算、简单遍历
+
+
+
+
+256MB内存限制下的数组大小不同数据类型可开数组大小
+
+
+
+数据类型
+字节大小
+最大元素数
+备注
+
+
+
+
+bool
+1字节
+约 2.68亿
+实际比赛中常设为 bool 数组
+
+
+char
+1字节
+约 2.68亿
+
+
+
+int
+4字节
+约 6700万
+常用
+
+
+long long
+8字节
+约 3300万
+
+
+
+double
+8字节
+约 3300万
+
+
+
+结构体（16字节）
+16字节
+约 1600万
+视具体结构而定
+
+
+
+
+// 安全范围（考虑程序其他部分占用）int arr1[10000000];     // 4000万字节 ≈ 38MB ✅int arr2[50000000];     // 2亿字节 ≈ 190MB ✅（接近极限）int matrix1[5000][5000]; // 1亿字节 ≈ 95MB ✅int matrix2[10000][10000]; // 4亿字节 ≈ 381MB ❌（超限）// 多个数组时需累加int arrA[30000000];  // 114MBint arrB[30000000];  // 114MB// 总计228MB ✅（但接近极限）// 危险情况vector&lt;vector&lt;int&gt;&gt; graph(100000);  // 每个vector开销// 虽可能未立即超限，但动态扩展时可能意外超限
+实用安全上限表
+
+
+
+数组类型
+推荐最大规模
+实际内存占用
+安全系数
+
+
+
+
+一维int数组
+≤ 5×10⁷
+≤ 200MB
+留有余地
+
+
+一维long long数组
+≤ 2.5×10⁷
+≤ 200MB
+
+
+
+二维int数组[n][m]
+n×m ≤ 3×10⁷
+≤ 120MB
+常用
+
+
+邻接表（图）
+边数 ≤ 2×10⁶
+变长，通常安全
+
+
+
+位集bitset
+≤ 2×10⁸位
+≤ 25MB
+非常节省
+
+
+
+
+
+快速判断方法时间判断口诀n=10⁵ → 想想O(nlogn)n=10⁶ → 必须O(n)或优化常数n≤5000 → O(n²)或许可行n≤20 → 可能是状压
+空间判断口诀int数组：百万级安全，千万级要小心二维数组：相乘别超千万结构体：注意对齐开销STL容器：额外开销约50%
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ACM数字类题目</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E6%95%B0%E5%AD%97%E7%B1%BB%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[数字类题目
+定义：通常有乘除法，或者时分解质因数之类的
+
+重要观察
+$2^{30} &gt;= 10^9$所以一般不需要几个数就能乘到上界，除法的话同理，分解质因数实际上也算乘法。因此这类题目往往可以比较暴力的解决。因为只要枚举这几个位置即可。
+重要例题：
+1.题目传送门Strange Machine
+
+重要观察：$log_2(10^9)=30$,所以除去全是1的情况，每次除2最多30次循环就结束了，因此可以暴力解决。除了有1的情况，因为n最大为20，所以最多$20*30$每个数据。
+
+2.题目传送门Even Modulo Pair
+
+重要观察，要塞大量数据来导致超时的话是不可能的，因为在30个数内必然能找到。理由：首先如果只有偶数，那么一定有解。（因为严格递增）  当只有奇数时：  因为当$y&lt;2x$时，必然有$y \mod x \ = \ y-x \ = \text{偶数}$,因此要构造较大的数据的话，只能让$y \geq x 2$  要让$y \mod x \ !=  \text{偶数}$，那么最小只能构造$y=x*2$那么和上一题就一样了。
+
+3.题目传送门Add 0 or K
+
+题目理解，首先要求吧原数组每个元素加上K的若干倍，构成含有相同因子的数组。
+重要观察：加完以后，因为含有相同的因子，所以考虑把每个加完以后的数字拆分，得到一串质数，而前29个质数的乘积已经大于$10^9$了，所以直接可以算出最终的共同因子。接下来对最后结果化简$a_i+c_ik \equiv 0  (mod\ g)$,所以$c_i=(-a_i)inv_k$而k存在$mod \ g$下有逆元，需要g和k互质，所以可以简单完成。
+
+4.题目传送门C-区间乘_2025年广东工业大学新生赛（同步赛）
+
+希望我们计算一个区间的乘积，判断是否可能达到给定的输出。
+数据规模n和查询规模q都是$2*10^5$所以不能直接查询。
+重要观察：如果把1去掉算法就能变简单，而如果不是全为1的话，查询数据$x \leq 10^9$，所以当不是1的时候，只要30个2就能超过数据范围了，每个位置计算一下，可以直接提取计算可能出现的数字，故最多$30210^5$次计算，查询$q\log_2(x)$次就行了所以最终时间复杂度是$O(Tcountq\log_2(q))$dirt=（总提交次数-过题数量）/总提交次数
+
+然后注意，只有质因数时可以用，其他的如因子就不行出现奇偶判断的也不要用这个方法，用奇偶性分析特判
+GCD二级结论结论1lcm(a,b)*gcd(a,b)=ab结论2gcd(a,b) = gcd(a,|b-a|)结论3gcd(a,b,c)=1等价于存在ax+by+cz =1结论4gcd(a,b) = g * gcd(a >> k,b >> k)\,(g = 2 ^ k)结论5gcd(a^{n-1},a^{m-1})=a^{gcd(n,m)-1}结论6gcd(f_n,f_m)=f_{gcd(n,m)}斐波那契数列
+数论题目例题
+题目描述：求N个数，相乘等于M
+题目转化，因为相乘等于M，那么得到的每一个数必然都是由M的质因数转化而来的，那么考虑每一个质因数在排列中出现的位置，就得到实际上是求把m个球放到n个不同的盒子里的方案数，每一个质因数都要计算一次，相乘得到答案。那么怎么计算把m个球放到n个不同的盒子里的方案数呢？引用一下某大佬的解释：
+我们回头看看2(球同，盒不同，不允许空盒)。在2的条件下，我们可以给出另一个处理方案：如果我们给每个盒子都放上1个球，那么剩下的n-m个球放入m个盒子里，就不需要管是否有空盒了（因为已经事先给每个盒子都放了一个球）。如果用T(n-m, m)表示加粗部分的方案数量，那么2的答案 = 1（先每个盒子一个球，只有1种放法） * T(n-m, m)。那么显然，T(n-m, m)就是情况3，只不过是n-m个球入m个盒，而不是我们要求的n个球入m个盒。那么我们只需要把2情况里，球的总数量变成n+m个，在上述方案里，就会变成“如果我们给每个盒子都放上1个球，那么剩下的n + m - m = n个球放入m个盒子里，就不需要管是否有空盒了”因此，方案数量在数值上是等于2里，把n替换成n+m的：方案数量 = C(n + m - 1, m - 1)
+
+
+
+那么接下来我们计算阶乘和逆元就能解答了（（怎么这么麻烦，没招了）
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>构造操作类题目</title>
+    <url>/ZestfulYK-blog/2025/12/16/%E6%9E%84%E9%80%A0%E6%93%8D%E4%BD%9C%E7%B1%BB%E9%A2%98%E7%9B%AE/</url>
+    <content><![CDATA[定义
+构造一些操作，使得数据满足操作要求，通常还会有次数限制
+
+方法此类题目现在遇到过三种做法：
+
+一种是直接操作，不关心部分值，直接对全局操作，使得再让全局满足要求的同时，使得部分也满足要求
+另一种是进行操作，最后只改变一个量，每次用多步做一步（和魔方有点像？）
+
+例题1.B. Siga ta Kymata
+
+题目描述：给你一个排列 $^{\text{∗}}$ 。从 $1$ 到 $n$ 的每个整数的排列 $p$ 。您还拥有一个大小为 $n$ 的二进制 $^{\text{†}}$ 字符串 $s$ ，其中 $s_i = \mathtt{0}$ 代表所有 $1 \le i \le n$ 。您最多可以执行以下操作 $5$ 次：选择任意两个整数 $l$ 和 $r$ ，使得 $1 \le l \le r \le n$ .然后，对于每一个 $i$ 使得 $l&lt; i&lt; q$ 和 $\min(p_l, p_r) &lt; p_i &lt; \max(p_l, p_r)$ 同时成立，你将把 $s_i$设为 $\mathtt{1}$ 。您还会得到一个大小为 $n$ 的二进制字符串 $x$ 。执行运算后，对于每一个 $1 \le i \le n$ 都必须成立：如果 $x_i = \mathtt{1}$ ，则 $s_i = \mathtt{1}$ 。注意，如果 $x_i = \mathtt{0}$ ，那么 $s_i$ 可以有任意值。找出最多5个运算序列，使上述条件得到满足，或者报告不可能做到这一点。请注意，您不必尽量减少操作次数。
+
+解法：|----------------|-------------------n------------|                |                   |           ||----------------|-------------------|——————————a[n]|                |                   |           |a[1]----------------------------------------------|                |                   |           ||                |                   |           ||----------------1--------------------------------
+
+一共画了5个框，也就是5次操作的范围
+这里实际上是把所有能改变的全改变了，然后也就满足了要求
+所以5次也是合理的，证明了做法的正确
+
+2.西安之泪 - 洛谷
+
+题目描述：给定一颗无根树,共有n个顶点。每个顶点 i 都具有一个点权$a_i$，初始所有点权都为0。你可以进行如下的操作最多不超过$3n$次：指定顶点的编号 r,u (1≤r,u≤n)，使得这棵树暂时以顶点 r 为根，随后对于顶点 u 的子树中的每一个顶点 v，将其点权修改为 av​⊕u。此处的 ⊕ 表示按位异或。
+
+这一题就是尝试操作每一个顶点，分步完成。让每个顶点的邻居给这个顶点发一次，那么最终剩下的节点就被⊕了出度数-1次。如果是偶数，不变；但是奇数时，为了保持不变，那么我们在自己给自己发一次就行了。
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>程C笔记2</title>
+    <url>/ZestfulYK-blog/2025/12/16/%E7%A8%8BC%E7%AC%94%E8%AE%B02/</url>
+    <content><![CDATA[递归函数的定义注意一下在命名函时，可以不写参数的名称，比如：void fun(int,int)
+结构体排序void mySwap(Data *p1,Data *p2)&#123;//交换函数    Data t=*p1;    *p1=*p2;    *p2=t;&#125;for(int i=0;i&lt;n-1;i++)&#123;    for(int j=0;j&lt;n-i-1;j++)&#123;       if(a[j].num&gt;a[j+1].num ||        (a[j].num==a[j+1].num &amp;&amp; a[j].value&gt;a[j+1].value))&#123;           mySwap(&amp;a[j],&amp;a[j+1]);        &#125;    &#125;&#125;
+
+传入时注意，要加上&amp;，传入地址，使得函数可以交换地址。
+
+数组的定义
+使用new和delete一起运算。
+
+基本方法// 创建一维动态数组数据类型* 指针名 = new 数据类型[元素个数];// 释放内存delete[] 指针名;
+一维数组示例// 方法1：创建基本类型的一维数组int n = 5;int* arr1 = new int[n];  // 创建包含5个整数的数组delete[] arr1;
+二维数组
+比一维数组多了一个*
+
+内存连续 // 分配连续内存int** arr = new int*[rows];  // 创建行指针数组arr[0] = new int[rows * cols];  // 分配所有元素的空间// 设置行指针for (int i = 1; i &lt; rows; i++) &#123;    arr[i] = arr[i-1] + cols;&#125;
+内存不连续// 创建二维数组int** arr = new int*[rows];  // 创建行指针数组for (int i = 0; i &lt; rows; i++) &#123;    arr[i] = new int[cols];  // 为每一行分配内存&#125;]]></content>
+      <tags>
+        <tag>算法</tag>
       </tags>
   </entry>
   <entry>
@@ -994,40 +1344,6 @@ for(int i=1;i&lt;=n;i++) cout&lt;&lt;i&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;
 
 总结一下，异或问题的核心思路是：利用前缀异或转化区间问题，利用归零律和结合律进行抵消与配对，利用位独立性进行按位处理或使用Trie。多练习，你会对这种“魔力”运算越来越有感觉。
 因为异或可以逆运算，所以此处直接先算1-n的异或和再和现在的异或和异或一下就行了。这样就找到了那个没有出现过的数字。找出现奇数次的数字时，可以直接异或，因为只有一个数字满足这个要求，那么最后剩下的那个就是无法完成匹配的数字，就是答案了。找两个只出现一次的数字时，也是先异或得到$x=x_1\oplus x_2$，然后看不一样的那一位来分开数组。解释：就是看这一位是否是1，然后就和只出现一次的数那题一样了。出现两次的数，分组一定在一起，那么就相互异或抵消了。
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ACM数字类题目</title>
-    <url>/ZestfulYK-blog/2025/12/07/%E6%95%B0%E5%AD%97%E7%B1%BB%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[数字类题目
-定义：通常有乘除法，或者时分解质因数之类的
-
-重要观察
-$2^{30} &gt;= 10^9$所以一般不需要几个数就能乘到上界，除法的话同理，分解质因数实际上也算乘法。因此这类题目往往可以比较暴力的解决。因为只要枚举这几个位置即可。
-重要例题：
-1.题目传送门Strange Machine
-
-重要观察：$log_2(10^9)=30$,所以除去全是1的情况，每次除2最多30次循环就结束了，因此可以暴力解决。除了有1的情况，因为n最大为20，所以最多$20*30$每个数据。
-
-2.题目传送门Even Modulo Pair
-
-重要观察，要塞大量数据来导致超时的话是不可能的，因为在30个数内必然能找到。理由：首先如果只有偶数，那么一定有解。（因为严格递增）  当只有奇数时：  因为当$y&lt;2x$时，必然有$y \mod x \ = \ y-x \ = \text{偶数}$,因此要构造较大的数据的话，只能让$y \geq x 2$  要让$y \mod x \ !=  \text{偶数}$，那么最小只能构造$y=x*2$那么和上一题就一样了。
-
-3.题目传送门Add 0 or K
-
-题目理解，首先要求吧原数组每个元素加上K的若干倍，构成含有相同因子的数组。
-重要观察：加完以后，因为含有相同的因子，所以考虑把每个加完以后的数字拆分，得到一串质数，而前29个质数的乘积已经大于$10^9$了，所以直接可以算出最终的共同因子。接下来对最后结果化简$a_i+c_ik \equiv 0  (mod\ g)$,所以$c_i=(-a_i)inv_k$而k存在$mod \ g$下有逆元，需要g和k互质，所以可以简单完成。
-
-4.题目传送门C-区间乘_2025年广东工业大学新生赛（同步赛）
-
-希望我们计算一个区间的乘积，判断是否可能达到给定的输出。
-数据规模n和查询规模q都是$2*10^5$所以不能直接查询。
-重要观察：如果把1去掉算法就能变简单，而如果不是全为1的话，查询数据$x \leq 10^9$，所以当不是1的时候，只要30个2就能超过数据范围了，每个位置计算一下，可以直接提取计算可能出现的数字，故最多$30210^5$次计算，查询$q\log_2(x)$次就行了所以最终时间复杂度是$O(Tcountq\log_2(q))$dirt=（总提交次数-过题数量）/总提交次数
-
-然后注意，只有质因数时可以用，其他的如因子就不行出现奇偶判断的也不要用这个方法，用奇偶性分析特判
 ]]></content>
       <tags>
         <tag>算法</tag>
@@ -1221,180 +1537,6 @@ J质因数分解
 参考代码:
 
 #include&lt;bits/stdc++.h&gt;using namespace std;#define ll long longint main()&#123;    ll n,i=2; cin&gt;&gt;n;    cout&lt;&lt;n&lt;&lt;&quot;=&quot;;    for(i=2;i&lt;=n;)&#123;        if(n%i==0&amp;&amp;n/i!=1)&#123;            cout&lt;&lt;i&lt;&lt;&quot;*&quot;;            n/=i;        &#125;        else&#123;            i++;        &#125;    &#125;    cout&lt;&lt;i-1&lt;&lt;endl;&#125;]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>时空间复杂度笔记</title>
-    <url>/ZestfulYK-blog/2025/12/09/%E6%97%B6%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[2秒时间限制下的可执行操作数一般经验估算
-保守估计：C++在2秒内可执行约 $210^8-410^8$ 次基本操作（加减、比较、赋值等）
-实际表现：
-简单循环操作：约$110^8-210^8$
-复杂操作（除法、取模、函数调用）：约$0.510^8-110^8$
-浮点运算：约$0.310^8-0.510^8$不同复杂度对应的最大数据规模O(1)        -&gt; 几乎无限（&gt;10^9）O(logn)     -&gt; 几乎无限（&gt;10^9）O(n)        -&gt; 约 2×10^8O(nlogn)    -&gt; 约 2×10^7（2000万）O(n√n)      -&gt; 约 2×10^6（200万）O(n²)       -&gt; 约 2×10^4（2万）O(n³)       -&gt; 约 2×10^3（2000）O(2ⁿ)       -&gt; 约 n ≤ 25O(n!)       -&gt; 约 n ≤ 11
-
-
-
-
-实战参考表
-
-
-
-数据规模
-可接受的复杂度
-常见算法
-
-
-
-
-n ≤ 10
-任意（包括O(n!)）
-全排列、暴力搜索
-
-
-n ≤ 20
-O(2ⁿ)
-子集枚举、状态压缩DP
-
-
-n ≤ 100
-O(n³)
-Floyd、简单DP
-
-
-n ≤ 1000
-O(n²)
-二维DP、Dijkstra朴素版
-
-
-n ≤ 10^4
-O(n√n)
-数论分块
-
-
-n ≤ 10^5
-O(nlogn)
-线段树、树状数组、堆
-
-
-n ≤ 10^6
-O(n) 或 O(nlogn)
-前缀和、KMP、单调栈
-
-
-n ≤ 10^7
-O(n)
-筛法、线性DP
-
-
-n ≤ 10^8
-O(n)（必须常数小）
-位运算、简单遍历
-
-
-
-
-256MB内存限制下的数组大小不同数据类型可开数组大小
-
-
-
-数据类型
-字节大小
-最大元素数
-备注
-
-
-
-
-bool
-1字节
-约 2.68亿
-实际比赛中常设为 bool 数组
-
-
-char
-1字节
-约 2.68亿
-
-
-
-int
-4字节
-约 6700万
-常用
-
-
-long long
-8字节
-约 3300万
-
-
-
-double
-8字节
-约 3300万
-
-
-
-结构体（16字节）
-16字节
-约 1600万
-视具体结构而定
-
-
-
-
-// 安全范围（考虑程序其他部分占用）int arr1[10000000];     // 4000万字节 ≈ 38MB ✅int arr2[50000000];     // 2亿字节 ≈ 190MB ✅（接近极限）int matrix1[5000][5000]; // 1亿字节 ≈ 95MB ✅int matrix2[10000][10000]; // 4亿字节 ≈ 381MB ❌（超限）// 多个数组时需累加int arrA[30000000];  // 114MBint arrB[30000000];  // 114MB// 总计228MB ✅（但接近极限）// 危险情况vector&lt;vector&lt;int&gt;&gt; graph(100000);  // 每个vector开销// 虽可能未立即超限，但动态扩展时可能意外超限
-实用安全上限表
-
-
-
-数组类型
-推荐最大规模
-实际内存占用
-安全系数
-
-
-
-
-一维int数组
-≤ 5×10⁷
-≤ 200MB
-留有余地
-
-
-一维long long数组
-≤ 2.5×10⁷
-≤ 200MB
-
-
-
-二维int数组[n][m]
-n×m ≤ 3×10⁷
-≤ 120MB
-常用
-
-
-邻接表（图）
-边数 ≤ 2×10⁶
-变长，通常安全
-
-
-
-位集bitset
-≤ 2×10⁸位
-≤ 25MB
-非常节省
-
-
-
-
-
-快速判断方法时间判断口诀n=10⁵ → 想想O(nlogn)n=10⁶ → 必须O(n)或优化常数n≤5000 → O(n²)或许可行n≤20 → 可能是状压
-空间判断口诀int数组：百万级安全，千万级要小心二维数组：相乘别超千万结构体：注意对齐开销STL容器：额外开销约50%
-]]></content>
       <tags>
         <tag>算法</tag>
       </tags>

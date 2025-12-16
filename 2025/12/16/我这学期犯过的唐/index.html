@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>我这学期犯过的唐 | ZestfulYK的Blog</title><meta name="author" content="ZestfulYK"><meta name="copyright" content="ZestfulYK"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="不知道vector的size是size_t类型 因为是size_t所以直接加减会出错，比如减成负数的时候。  内层循环变量写错 这个会导致外层循环少了几次  sort里面的数据范围没开正确 例如要对n* m的数据排序，却只写了n  不看清读入顺序 看清读入的是有序的还是乱序的，不要被样例蒙蔽了双眼">
+<meta property="og:type" content="article">
+<meta property="og:title" content="我这学期犯过的唐">
+<meta property="og:url" content="https://zestfulyk.github.io/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/index.html">
+<meta property="og:site_name" content="ZestfulYK的Blog">
+<meta property="og:description" content="不知道vector的size是size_t类型 因为是size_t所以直接加减会出错，比如减成负数的时候。  内层循环变量写错 这个会导致外层循环少了几次  sort里面的数据范围没开正确 例如要对n* m的数据排序，却只写了n  不看清读入顺序 看清读入的是有序的还是乱序的，不要被样例蒙蔽了双眼">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png">
+<meta property="article:published_time" content="2025-12-16T15:15:00.000Z">
+<meta property="article:modified_time" content="2025-12-16T15:16:39.778Z">
+<meta property="article:author" content="ZestfulYK">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "我这学期犯过的唐",
+  "url": "https://zestfulyk.github.io/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/",
+  "image": "https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png",
+  "datePublished": "2025-12-16T15:15:00.000Z",
+  "dateModified": "2025-12-16T15:16:39.778Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ZestfulYK",
+      "url": "https://zestfulyk.github.io/ZestfulYK-blog"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/ZestfulYK-blog/images/avatar.png"><link rel="canonical" href="https://zestfulyk.github.io/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/ZestfulYK-blog/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/ZestfulYK-blog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '我这学期犯过的唐',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.0.0"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/ZestfulYK-blog/"><span class="site-name">ZestfulYK的Blog</span></a><a class="nav-page-title" href="/ZestfulYK-blog/"><span class="site-name">我这学期犯过的唐</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">我这学期犯过的唐</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-12-16T15:15:00.000Z" title="发表于 2025-12-16 23:15:00">2025-12-16</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-12-16T15:16:39.778Z" title="更新于 2025-12-16 23:16:39">2025-12-16</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="不知道vector的size是size-t类型"><a href="#不知道vector的size是size-t类型" class="headerlink" title="不知道vector的size是size_t类型"></a>不知道vector的size是size_t类型</h1><ul>
+<li>因为是size_t所以直接加减会出错，比如减成负数的时候。</li>
+</ul>
+<h1 id="内层循环变量写错"><a href="#内层循环变量写错" class="headerlink" title="内层循环变量写错"></a>内层循环变量写错</h1><ul>
+<li>这个会导致外层循环少了几次</li>
+</ul>
+<h1 id="sort里面的数据范围没开正确"><a href="#sort里面的数据范围没开正确" class="headerlink" title="sort里面的数据范围没开正确"></a>sort里面的数据范围没开正确</h1><ul>
+<li>例如要对n* m的数据排序，却只写了n</li>
+</ul>
+<h1 id="不看清读入顺序"><a href="#不看清读入顺序" class="headerlink" title="不看清读入顺序"></a>不看清读入顺序</h1><ul>
+<li>看清读入的是有序的还是乱序的，不要被样例蒙蔽了双眼</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zestfulyk.github.io/ZestfulYK-blog">ZestfulYK</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zestfulyk.github.io/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/">https://zestfulyk.github.io/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://zestfulyk.github.io/ZestfulYK-blog" target="_blank">ZestfulYK的Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/">算法</a></div><div class="post-share"><div class="social-share" data-image="/ZestfulYK-blog/images/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/ZestfulYK-blog/2025/12/16/%E6%9E%84%E9%80%A0%E6%93%8D%E4%BD%9C%E7%B1%BB%E9%A2%98%E7%9B%AE/" title="构造操作类题目"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">构造操作类题目</div></div><div class="info-2"><div class="info-item-1">定义 构造一些操作，使得数据满足操作要求，通常还会有次数限制  方法此类题目现在遇到过三种做法：  一种是直接操作，不关心部分值，直接对全局操作，使得再让全局满足要求的同时，使得部分也满足要求 另一种是进行操作，最后只改变一个量，每次用多步做一步（和魔方有点像？）  例题1.B. Siga ta Kymata  题目描述：给你一个排列 $^{\text{∗}}$ 。从 $1$ 到 $n$ 的每个整数的排列 $p$ 。您还拥有一个大小为 $n$ 的二进制 $^{\text{†}}$ 字符串 $s$ ，其中 $s_i = \mathtt{0}$ 代表所有 $1 \le i \le n$ 。您最多可以执行以下操作 $5$ 次：选择任意两个整数 $l$ 和 $r$ ，使得 $1 \le l \le r \le n$ .然后，对于每一个 $i$ 使得 $l&lt; i&lt; q$ 和 $\min(p_l, p_r) &lt; p_i &lt; \max(p_l, p_r)$ 同时成立，你将把 $s_i$设为 $\mathtt{1}$ 。您还会得到一个大小为 $n$ 的二进制字符串 $x$...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2025/12/16/DP%E4%B9%A0%E9%A2%98%E7%AC%94%E8%AE%B01(%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E5%BC%95%E5%85%A5)/" title="DP习题笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">DP习题笔记</div></div><div class="info-2"><div class="info-item-1">循环的遍历 注意一下最内层的循环是什么，他决定了这一步的决策是什么。  例题纸币问题 2  这一题要我们求完全背包的方案数（考虑顺序） 那么内层循环应该放的是面额的遍历，因为最后一步的面额是不一定的。 正确写法✔： 1234for(int i=1;i&lt;=w;i++)   for(int j=1;j&lt;=n;j++)      if(i&gt;=a[j])        dp[i]=(dp[i-a[j]]+dp[i])%mod;  错误写法❌： 123456for(int i=1;i&lt;=n;i++)&#123;    ll x; cin&gt;&gt;x;    for(int j=x;j&lt;=w;j++)&#123;        dp[j]=(dp[j-x]+dp[j])%mod;    &#125;&#125; 为什么下面那个是错误的？ 因为把当前面额作为内层循环，相当于固定了最后一步只能是这个面额，没法考虑到顺序问题。这样的话第二次只能在第一次的基础上增加。实际上，第一次的面额也可以在第二次的基础上增加。因此这个做法是不正确的。注意：下面那个方法因为只考...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/ZestfulYK-blog/2025/11/03/1/" title="算法挑战赛题解（11.2）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-03</div><div class="info-item-2">算法挑战赛题解（11.2）</div></div><div class="info-2"><div class="info-item-1">算法挑战赛题解（11.2）简单版本：题目大意：给定n个区间，判断这些区间能划分出几种不同的区域  性质不同的数字  题目分析：实际上是在讨论每个点被哪几个区包含，在样例中，数据是这样的，我们来分析一下这两个样例 123456789101112131415161718192021Sample Input 1 11 6Sample Output 12Sample Input 240 124 136 1312 13Sample Output 26 样例分析：12345678样例1: 0 1 1 1 1 1 1 0 0 … …  所以是两种区间样例2: 1   2  3   4   5   6   7  8    9   10  11  12  13 … …       1   1  1   1   1   1   1  1   1    1   1   1                  2   2   2   2  2   2    2   2   2   2                          3   3  3   3    3   3   3   3       ...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2025/12/16/DP%E4%B9%A0%E9%A2%98%E7%AC%94%E8%AE%B01(%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E5%BC%95%E5%85%A5)/" title="DP习题笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-16</div><div class="info-item-2">DP习题笔记</div></div><div class="info-2"><div class="info-item-1">循环的遍历 注意一下最内层的循环是什么，他决定了这一步的决策是什么。  例题纸币问题 2  这一题要我们求完全背包的方案数（考虑顺序） 那么内层循环应该放的是面额的遍历，因为最后一步的面额是不一定的。 正确写法✔： 1234for(int i=1;i&lt;=w;i++)   for(int j=1;j&lt;=n;j++)      if(i&gt;=a[j])        dp[i]=(dp[i-a[j]]+dp[i])%mod;  错误写法❌： 123456for(int i=1;i&lt;=n;i++)&#123;    ll x; cin&gt;&gt;x;    for(int j=x;j&lt;=w;j++)&#123;        dp[j]=(dp[j-x]+dp[j])%mod;    &#125;&#125; 为什么下面那个是错误的？ 因为把当前面额作为内层循环，相当于固定了最后一步只能是这个面额，没法考虑到顺序问题。这样的话第二次只能在第一次的基础上增加。实际上，第一次的面额也可以在第二次的基础上增加。因此这个做法是不正确的。注意：下面那个方法因为只考...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2025/12/07/ACM%E8%AE%AD%E7%BB%83%E9%A2%98%E7%9B%AE%E8%A7%A3%E6%9E%90/" title="ACM训练"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-07</div><div class="info-item-2">ACM训练</div></div><div class="info-2"><div class="info-item-1">简单题 对于简单题目，最好还是仔细一点，或者使用最暴力的解法，而不是投机取巧，或者构造高级方法，通常样例数据都是片面的，常常会有坑。  sleeping through classes 比如这一题，数据没有包含i+k中间有1的情况，直接i+=k导致错误。 中等题目 中等题目就需要强观察力和trick技巧了  Niko’s Tactical Cards 这一道题目是动态规划的变种，虽然要求每一步最优，但是可能发生最小值突然转变成最大值的情况，因此，计算最小值也是必要的。只要计算这两个值就行了。 Kanade’s Perfect Multiples 这题希望我们构造一个满足要求的B，这个就有点类似于筛法求素数了，实际上两者的代码几乎是一样的，但是在做的时候要注意区分原始数据和v数组，一个一个遍历就行了，找不到就可以直接退出，因为不然当前确定的最小值就无法被覆盖了。 Merging the Sets 你想选择其中的一些集合（可能一个都不选，也可能全部都选），使得 1 和 m 之间的每个整数都包含在个所选集合中的至少一个中。思维误区，不用一边读入一边判断，因为数据保证$l\leq 2*1...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2025/12/07/DP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="DP笔记"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-12-07</div><div class="info-item-2">DP笔记</div></div><div class="info-2"><div class="info-item-1">DP题目的特点 数据较小，至少有一维是可以接受的，比如每一步的决策小于3，总数小于1000等等 每一步的答案可以由之前的答案得到，比如数字三角形  DP题目的大致做法设DP数组 明确DP数组的含义，保证每次求解的答案都是这个含义，不然就可能出错(这也是我之前的一大误区)  分类讨论 明确有几种决策方案，明确这一步的答案是怎么推断出来的(非常重要!!!)  接下来编写代码就行了 举例：迎新赛M题 题目传送门：   ZJUTOJ | 2024ZJUT迎新赛-决赛-M. 三色小屋  题目理解： 首先发现每一步的方案数可以接受，并且这一步的答案只由上一步转移而来，所以可以使用DP 每个位置只能填R/G/B三种颜色，而且之和上一步和相邻的颜色有关，几种方案互不影响，符合动态规划的特点 分类讨论： 分为两大类，因为开头要初始化，所以单独讨论    dp[i][j] =  \begin{cases} i==1\begin{cases}     c[i]==\ '0' & \text{可以用的颜色为1} \\     c[i]\ !=\ \ '0' & \text{这个颜色为1} \end{ca...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2025/11/25/mod/" title="模运算性质总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-25</div><div class="info-item-2">模运算性质总结</div></div><div class="info-2"><div class="info-item-1">模运算（Mod）性质总结定义对于任意实数 $( x, y )$，有： x \mod y = x - y \left\lfloor \frac{x}{y} \right\rfloor, \quad y \neq 0模运算（在一些场合使用符号 % 表示）是一个二元运算。$( x \mod y )$ 的值范围如下：  当 $( y &gt; 0 )$ 时：$( 0 \leq x \mod y &lt; y )$ 当 $( y &lt; 0 )$ 时：$( 0 \geq x \mod y &gt; y )$ 当 $( y = 0 )$ 时：为避免除以零，定义 $( x \mod 0 = x )$  基本运算规则模运算与基本四则运算类似（除法除外）：  加法规则：$((a + b) \mod p = (a \mod p + b \mod p) \mod p)$ 减法规则：$((a - b) \mod p = (a \mod p - b \mod p) \mod p)$ 乘法规则：$((a \times b) \mod p = (a \mod p \times b \mod p) \mod ...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/" title="全排列函数的应用"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-10-22</div><div class="info-item-2">全排列函数的应用</div></div><div class="info-2"><div class="info-item-1">全排列函数什么是全排列？简单来说就是排列组合的所有情况，并按照字典顺序输出例如：123全排列的结果为 123456123132213231312321 而实际上全排列需要在代码中用复杂的深度搜索来写这实在是太复杂了！！！于是我就发现了全排列函数这个东西^__^现在我们就来学习一下这个高级函数————next_permutation 全排列函数123456789101112#include &lt;iostream&gt;  #include &lt;algorithm&gt;  using namespace std;  int main()  &#123;      int num[3]=&#123;1,2,3&#125;;      do      &#123;          cout&lt;&lt;num[0]&lt;&lt;&quot; &quot;&lt;&lt;num[1]&lt;&lt;&quot; &quot;&lt;&lt;num[2]&lt;&lt;endl;    &#125;while(next_permutation(num,num+3));    ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/ZestfulYK-blog/images/avatar.png" onerror="this.onerror=null;this.src='/ZestfulYK-blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZestfulYK</div><div class="author-info-description">这是ZestfulYK的博客网站,求关注</div><div class="site-data"><a href="/ZestfulYK-blog/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/ZestfulYK-blog/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/ZestfulYK-blog/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E7%9F%A5%E9%81%93vector%E7%9A%84size%E6%98%AFsize-t%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">不知道vector的size是size_t类型</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%85%E5%B1%82%E5%BE%AA%E7%8E%AF%E5%8F%98%E9%87%8F%E5%86%99%E9%94%99"><span class="toc-number">2.</span> <span class="toc-text">内层循环变量写错</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sort%E9%87%8C%E9%9D%A2%E7%9A%84%E6%95%B0%E6%8D%AE%E8%8C%83%E5%9B%B4%E6%B2%A1%E5%BC%80%E6%AD%A3%E7%A1%AE"><span class="toc-number">3.</span> <span class="toc-text">sort里面的数据范围没开正确</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8D%E7%9C%8B%E6%B8%85%E8%AF%BB%E5%85%A5%E9%A1%BA%E5%BA%8F"><span class="toc-number">4.</span> <span class="toc-text">不看清读入顺序</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/16/DP%E4%B9%A0%E9%A2%98%E7%AC%94%E8%AE%B01(%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E5%BC%95%E5%85%A5)/" title="DP习题笔记">DP习题笔记</a><time datetime="2025-12-16T15:15:00.000Z" title="发表于 2025-12-16 23:15:00">2025-12-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/" title="我这学期犯过的唐">我这学期犯过的唐</a><time datetime="2025-12-16T15:15:00.000Z" title="发表于 2025-12-16 23:15:00">2025-12-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/16/%E6%9E%84%E9%80%A0%E6%93%8D%E4%BD%9C%E7%B1%BB%E9%A2%98%E7%9B%AE/" title="构造操作类题目">构造操作类题目</a><time datetime="2025-12-16T15:15:00.000Z" title="发表于 2025-12-16 23:15:00">2025-12-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/16/%E7%A8%8BC%E7%AC%94%E8%AE%B02/" title="程C笔记2">程C笔记2</a><time datetime="2025-12-16T15:15:00.000Z" title="发表于 2025-12-16 23:15:00">2025-12-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2025/12/13/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E4%B9%A0%E9%A2%98/" title="不定积分习题">不定积分习题</a><time datetime="2025-12-13T14:38:37.000Z" title="发表于 2025-12-13 22:38:37">2025-12-13</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By ZestfulYK</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/ZestfulYK-blog/js/utils.js?v=5.5.2"></script><script src="/ZestfulYK-blog/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="/ZestfulYK-blog/"></script></div></body></html>
