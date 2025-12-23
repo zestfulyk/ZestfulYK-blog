@@ -187,12 +187,11 @@ double len(const Point& a) {
 
 ## 求$\vec a$在$\vec b$上的投影向量
 
-公式$$\frac{\vec a ·\vec b}{\vec b}$$
+公式$$\frac{\vec a ·\vec b}{|\vec b|}$$
 
 ```C++
-// 向量投影长度：向量a在向量b上的投影长度(projection length(投影长度))
 double proj_len(const Point& a, const Point& b) {
-    return dot(a, b) / len(b);
+    return b * ( dot(a, b) / len2(b) );
 }
 ```
 
