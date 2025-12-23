@@ -1,0 +1,1652 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>算法挑战赛题解（11.2）</title>
+    <url>/ZestfulYK-blog/2025/11/03/1/</url>
+    <content><![CDATA[算法挑战赛题解（11.2）简单版本：题目大意：给定n个区间，判断这些区间能划分出几种不同的区域
+
+性质不同的数字
+
+题目分析：实际上是在讨论每个点被哪几个区包含，在样例中，数据是这样的，我们来分析一下这两个样例
+Sample Input 1 11 6Sample Output 12Sample Input 240 124 136 1312 13Sample Output 26
+样例分析：样例1: 0 1 1 1 1 1 1 0 0 … …  所以是两种区间样例2: 1   2  3   4   5   6   7  8    9   10  11  12  13 … …       1   1  1   1   1   1   1  1   1    1   1   1                  2   2   2   2  2   2    2   2   2   2                          3   3  3   3    3   3   3   3                                                  4   4       |&lt; ------ &gt;|&lt; ---- &gt;|&lt; ----------------- &gt;|&lt;-&gt;|&lt;-&gt;|&lt;--
+所以是6种区间这样,我们就弄明白了题目在讲什么,接下来就可以思考怎么实现了
+题目思路：实际上有些人会以为我们需要统计的是这个点有几个区间经过，但是这是错误的，在样例二就能发现这一点。（这也是我第一次的想法，测试样例二时发现的T_T）
+我们需要思考怎么表示这一个点有哪些区间经过，而且每一个区间是互不相同的。这里我们考虑类似状态压缩的思想。
+什么是状态压缩呢？简而言之就是用一个数来代替这个状态。比如说，我们用1表示未进行，2表示正在进行，3表示完成，那么一个含有4个任务的任务表可以是这样的：
+            1321
+（1，4任务未进行，2任务完成，3正在进行）
+我们使用了一个4位数表示了这一状态，这样就实现了状态压缩，我们没有用数组存储状态，而是一个数，这样我们在判断两个状态是否相同时就可以直接判断数字是否相同了，节约了时间和判断的复杂度。
+那么怎么把这个思想用在这一题呢？我们考虑给每个区间一个标号k，每个区间内的点加上2^k，这样就保证了每一个状态不会重复。但是这么写居然WA了！这是因为数据范围n是[0,300]也就是会有2^300，远大于long long的最大范围(2^64-1)这显然是不行的。
+实际上这个算法已经十分接近答案了,但我们还需要改进这个算法。接着我们想到一个类似的方法，哈希表(hash)。
+其实哈希表和刚才的思路差不多，不过加入了一些更高级的算法来防止数据溢出。
+那么什么是hash呢？实际上也是创建一种对应关系，使得在查询时能快速访问这种情况对应的值。就像上面的例子一样，我们通过我们规定的方式把任务状态和整数一一对应。
+怎么创建hash表呢？首先，找到一个质数作为进制数P，通常取131或者13331，模数mod通常取1e9+7或1e9+9，对应关系就是对应的P进制数%mod例如这个点上经过了134这三个集合，那么我们就把134转化为131进制，即1  131^2+3  131+4，在实际操作时，就是每一个集合的下标k作为对应的位数，则每一个点的表示可以是这样的：
+
+这样我们就计算出了每一个点的唯一标识，含有相同标识的才能算是同一个点。（这里选择质数是为了防止哈希碰撞，即不同状态的得到了相同的标记；选择mod是防止溢出）
+最后只要统计一下标识的个数就行了（可以用set实现）代码实现：对于简单版本，暴力完全够用了。
+#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long long#define endl &#x27;\n&#x27;const ll P=131,mod=1e9+7;int main()&#123;    ll n,z=1,a[1010]; cin&gt;&gt;n;    for(int i=0;i&lt;=1000;i++) a[i]=0;    while(n--)&#123;        ll l,r; cin&gt;&gt;l&gt;&gt;r;        for(int i=l;i&lt;=r;i++)&#123;            a[i]=(a[i]+z)%mod;        &#125;        z=(z*P)%mod;    &#125;    set&lt;ll&gt; q;    for(int i=0;i&lt;=1000;i++)&#123;        q.insert(a[i]);    &#125;    cout&lt;&lt;q.size()&lt;&lt;endl;&#125;
+所以这样我们就解决了简单版本。
+复杂版本：那么对于数据量大的复杂版本呢？
+这里我们依然采用hash，但是由于数据量大，为了防止冲突，我们给每一个区间都分配一个随机hash值，在计算时只考虑起点和终点，在进入起点时加入标记，离开时移除标记。这时我们就想到了具有可逆性质的异或，我们只要给对应的起终点打上相同标记就行了，最后还是用set统计产生的不同标记数
+参考代码：#include &lt;bits/stdc++.h&gt;using namespace std;#define ll long long#define ULL unsigned long long#define endl &#x27;\n&#x27;int main()&#123;    ll n; cin&gt;&gt;n;    vector&lt;pair&lt;ll,int&gt;&gt; box;    for (int i=0;i&lt;n;i++)&#123;        ll l,r; cin&gt;&gt;l&gt;&gt;r;        box.push_back(&#123;l,i&#125;);        box.push_back(&#123;r+1,i&#125;);    &#125;    sort(box.begin(),box.end());    vector&lt;unsigned long long&gt; h(n);    mt19937_64 rng(time(0));    for(int i=0;i&lt;n;i++)&#123;        h[i]=rng();    &#125;    set&lt;ULL&gt; s; s.insert(0);    ULL cur=0;ll last=-2e9;    for(auto&amp; i:box)&#123;        ll pos=i.first,idx=i.second;        if(pos&gt;last&amp;&amp;last!=-2e9) s.insert(cur);        cur^=h[idx];        last=pos;    &#125;    s.insert(cur);    cout&lt;&lt;s.size()&lt;&lt;endl;&#125;
+```yaml                     感谢观看！关注ZestfulYK喵，谢谢喵！
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ACM训练</title>
+    <url>/ZestfulYK-blog/2025/12/07/ACM%E8%AE%AD%E7%BB%83%E9%A2%98%E7%9B%AE%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[简单题
+对于简单题目，最好还是仔细一点，或者使用最暴力的解法，而不是投机取巧，或者构造高级方法，通常样例数据都是片面的，常常会有坑。
+
+sleeping through classes
+比如这一题，数据没有包含i+k中间有1的情况，直接i+=k导致错误。
+中等题目
+中等题目就需要强观察力和trick技巧了
+
+Niko’s Tactical Cards
+这一道题目是动态规划的变种，虽然要求每一步最优，但是可能发生最小值突然转变成最大值的情况，因此，计算最小值也是必要的。只要计算这两个值就行了。
+Kanade’s Perfect Multiples
+这题希望我们构造一个满足要求的B，这个就有点类似于筛法求素数了，实际上两者的代码几乎是一样的，但是在做的时候要注意区分原始数据和v数组，一个一个遍历就行了，找不到就可以直接退出，因为不然当前确定的最小值就无法被覆盖了。
+Merging the Sets
+你想选择其中的一些集合（可能一个都不选，也可能全部都选），使得 1 和 m 之间的每个整数都包含在个所选集合中的至少一个中。思维误区，不用一边读入一边判断，因为数据保证$l\leq 2*10^5$所以先读入再判断就行了，此外，要方法合法需要这个集合不存在也合法，那么只要用桶来看看去掉会不会变0就行了。原先想到的覆盖才合法的思路不对的原因是前后都有可能覆盖。
+Abraham’s Great Escape
+要求构造一个方阵，每个位置一个箭头，满足有k个格子能沿箭头出去。其实只要管最后一行，前面k个填U，后面的填D，最后一行填$RRR……RL$就行了比如：19 4UUUUDDRRL这样在最后一行产生循环，前面的不管。原来的做法是两个两个组合，产生循环，虽然也能做，但是不方便。
+Cake Assignment
+这个题目的重要观察点是，当最后一步确定后，上一步的操作一定是确定的，于是我们就可以倒推
+XOR Array
+这题的要求是构造一个数组，满足仅在l到r上的异或和为0，其他位置全非0，异或有一个特点，和前缀和一样，可以构建前缀异或和，因为$x\oplus y \oplus x==x$此外非常容易陷入的一个点是，可能会想到之间填入1-n来构造，但是实际上，这么异或会产生很多的0，所以这个方法是不行的。（比如1，2，3）因此，这里我们的操作是构造最终异或的结果，写一个前缀异或数组，最后再反推原数组就行了。详细信息可以见异或的笔记部分
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>算法挑战赛题解</title>
+    <url>/ZestfulYK-blog/2025/11/20/2/</url>
+    <content><![CDATA[算法挑战赛第二期题解题目
+二进制小数的乘积~HC哥哥说这个很困！难！
+
+Description
+
+
+
+HC哥哥今天又突发奇想，它依然定义一个数字为二进制小数，如果它是一个正整数，并且其十进制表示中的所有数字都是0或1。例如，110 是一个二进制小数，而 102 和 787 不是。
+现在HC哥哥给定你一个数 n，你被要求判断是否可能将 n 表示为一些（不一定是不同的）二进制小数的乘积。
+
+
+Input
+
+
+第一行包含一个整数 t（1≤t≤5⋅10^4）— 测试用例的数量。
+每个测试用例的唯一一行包含一个整数 n（1≤n≤10^5）。
+
+
+Output
+
+
+对于每个测试用例，如果 n 可以表示为一些二进制小数的乘积，则输出 “YES”（不带引号），否则输出 “NO”（不带引号）。
+
+
+题目解释 （翻译成人话）
+
+计算把01串强制转换为整数，再相乘得到的数就是合法的数字，其余都是不合法的。那么直接打表就行了，总共1e5个数，打表还是很容易实现的
+接下来我们来学习一下该怎么打表
+打表
+定义 : 计算出所有情况，然后直接判断。
+
+比如问你100以内的数是否是质数，你肯定能直接回答，因为你已经把100以内的质数全部背下来了。这其实就是打表的一种体现，你提前计算前100内的数是否是质数，然后直接调用答案。
+但是我们的计算机实际上并不知道一个问题的所有解，那么你自己提前算好告诉它不就彳亍了吗。
+这时我们需要两个重要程序：打表程序和判断程序。
+打表程序
+用于计算所有情况的答案，不用关心时间复杂度，反正是提前计算
+
+比如计算素数集，你直接暴力就好了，不会欧拉筛又有什么关系呢？
+判断程序
+用于直接获得答案的程序，时间复杂度O(n),n为数据规模，每次查询的时间复杂度为O(1)。
+
+接下来就该思考怎么写一个无脑的程序来计算这些情况了
+做法
+首先先写一个无脑程序生成所有01组合的数vector&lt;ll&gt; ans;int main()&#123;    for(int i=1;i&lt;=100000;i++)&#123;        ll x=i,cnt=0,w=0;        while(x)&#123;            if(x%10&lt;2) cnt++;            w++;            x/=10;        &#125;        if(cnt==w) ans.push_back(i);    &#125;    for(auto &amp;i:ans)        cout&lt;&lt;i&lt;&lt;&quot;,&quot;;&#125;
+
+
+
+此处是对每一位进行判断，如果01的个数和位数一样，那么就是一个合法的数字
+
+
+得到如下结果：
+1,10,11,100,101,110,111,1000,1001,1010,1011,1100,1101,1110,1111,10000,10001,10010,10011,10100,10101,10110,10111,11000,11001,11010,11011,11100,11101,11110,11111,100000
+
+把以上结果复制进下一段生成代码，然后再计算所有合法的数字
+ll number[1010]=&#123;0,1,10,11,100,101,110,111,1000,1001,    1010,1011,1100,1101,1110,1111,10000,10001    ,10010,10011,10100,10101,10110,10111,11000    ,11001,11010,11011,11100,11101,11110,11111,100000&#125;;set&lt;ll&gt; s;ll dfs(ll n)&#123;    s.insert(n);    for(int i=2;i&lt;=32;i++)&#123;        if(n*number[i]&lt;=100000)           dfs(n*number[i]);    &#125;    return 0;&#125;signed main()&#123;    dfs(1);    ll cnt=0;    for(auto &amp;i:s)&#123;        cout&lt;&lt;i&lt;&lt;&quot;,&quot;;        cnt++;    &#125;    cout&lt;&lt;endl&lt;&lt;cnt&lt;&lt;endl;    return 0;&#125;
+
+
+
+此处使用了dfs(Deep First Search)，文末会有详细介绍
+
+
+得到如下结果：
+1,10,11,100,101,110,111,121,1000,1001,1010,1011,1100,1101,1110,1111,1210,1221,1331,10000,10001,10010,10011,10100,10101,10110,10111,10201,11000,11001,11010,11011,11100,11101,11110,11111,11121,11211,12100,12111,12210,12221,12321,13310,13431,14641,100000
+
+最后再是无脑的判断程序：
+vector&lt;string&gt; ans;ll a[1010]=&#123;0,1,10,11,100,101,110,111,121,1000,1001,1010,1011,1100,1101,    1110,1111,1210,1221,1331,10000,10001,10010,10011,10100,10101,10110,    10111,10201,11000,11001,11010,11011,11100,11101,11110,11111,11121,    11211,12100,12111,12210,12221,12321,13310,13431,14641,100000&#125;;void solve()&#123;    ll x; cin&gt;&gt;x;    for(int i=1;i&lt;=47;i++)&#123;        if(a[i]==x)&#123;            ans.push_back(&quot;YES&quot;);            return;        &#125;    &#125;    ans.push_back(&quot;NO&quot;);&#125;int main()&#123;    ll T; cin&gt;&gt;T;    while(T--) solve();    for(auto &amp;i:ans)        cout&lt;&lt;i&lt;&lt;endl;&#125;
+
+
+不是我说，这种做法在打表题目是真轮椅吧，时间复杂度完全没影响，计算出来总共就47个数字，简单版甚至20个都没到，非常适合不会搜索的蒻蒟(比如我)学习和理解。
+下面是对dfs(Deep First Search)算法的详细介绍：
+什么是dfs？dfs是深度优先搜索的英文缩写，以深度为优先来进行计算
+
+比如，要计算走n级楼梯（每次一到两级台阶）有几种走法，就可以使用dfs，假设第一次先走一步，依次遍历，如果能刚好走到n则方法数加1，如果超过了n则返回到上一步，回头找下一个方法。
+
+在本题的应用
+
+那么在这题，我们已经提前计算了所有合法的数字，我们每次乘上可能的数字，看看是否依旧合法，之后在超过1e5时返回，相当于楼梯数为1e5，每次可以走number[1….n]步，但是每一个小于n的位置都合法，并存储答案。
+如果想进一步了解dfs，可以访问OIwiki进行学习！
+那么本期的题解就到此结束了，感谢阅读！如果想交流算法题，也可以添加我的qq哦(717056060)
+关注ZestfulYK，谢谢喵！]]></content>
+  </entry>
+  <entry>
+    <title>DP习题笔记</title>
+    <url>/ZestfulYK-blog/2025/12/16/DP%E4%B9%A0%E9%A2%98%E7%AC%94%E8%AE%B01(%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E5%BC%95%E5%85%A5)/</url>
+    <content><![CDATA[循环的遍历
+注意一下最内层的循环是什么，他决定了这一步的决策是什么。
+
+例题纸币问题 2
+
+这一题要我们求完全背包的方案数（考虑顺序）
+那么内层循环应该放的是面额的遍历，因为最后一步的面额是不一定的。
+正确写法✔：
+for(int i=1;i&lt;=w;i++)   for(int j=1;j&lt;=n;j++)      if(i&gt;=a[j])        dp[i]=(dp[i-a[j]]+dp[i])%mod;
+
+错误写法❌：
+for(int i=1;i&lt;=n;i++)&#123;    ll x; cin&gt;&gt;x;    for(int j=x;j&lt;=w;j++)&#123;        dp[j]=(dp[j-x]+dp[j])%mod;    &#125;&#125;
+为什么下面那个是错误的？
+因为把当前面额作为内层循环，相当于固定了最后一步只能是这个面额，没法考虑到顺序问题。这样的话第二次只能在第一次的基础上增加。实际上，第一次的面额也可以在第二次的基础上增加。因此这个做法是不正确的。注意：下面那个方法因为只考虑了最开始的顺序(即输入顺序)，所以只有一种顺序，那么就可以拿来统计组合数
+
+在解决这类问题时，关键要问自己：
+
+题目要求的是组合数还是排列数？
+我的循环顺序是否允许不同的支付顺序？
+我是否在无意中强加了某种顺序限制？(关键点)对于这道题，既然要求考虑支付顺序，就必须使用金额在外层的循环方式。
+
+特殊例题计算容积不超过n得到的最大的占有体积
+思路：设$dp[i]$表示不超过i获得的最大值，那么每一个物品的体积是x，价值也是x。
+状态转移方程：dp[i]=max(dp[i],dp[i-x]+x)例题
+
+考前临时抱佛脚 - 洛谷
+
+题目说可以双核，那么只要一边最接近sum/2就彳亍了，所以可以用上面那个模型
+01背包0也有值的问题
+在正常的01背包中，如果遍历不到就不管了，但是现在要求不能放入时也有一定的值，那么这时就要管了，在体积不够时，每一个都只有一种选法，那就是不选。所以每一个都要加上不选所对应的值。
+例题：
+
+5 倍经验日 - 洛谷
+
+题目说了在打不过时也能得到经验，你要是不给玩家经验，当然是不对的啦
+
+DP的一般思路
+首先看看是否是背包或者背包的变形，要是是的话就简单了
+看一下每一次有几种转移方式，把可能的变化列一下，看看是否有规律
+在这一讲还是不用区分特殊类型的DP的
+
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>C++几何计算(保姆级教程)</title>
+    <url>/ZestfulYK-blog/2025/12/23/C++%E5%87%A0%E4%BD%95%E8%AE%A1%E7%AE%97(%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B)/</url>
+    <content><![CDATA[版权说明此文章的所有代码均由qinye_leaf 勤叶大佬收集整理，感谢喵Orz Orz Orz
+初始化由于双精度和单精度存在精度问题，所以补能直接判断是否为0或者相等，那么怎么办呢？我们可以取绝对值，然后和一个非常小的数字比较
+代码示例：// 浮点数精度阈值(根据题目要求调整，通常1e-8)const double EPS = 1e-8;
+符号函数判断正负号的函数，但是是浮点数数版本的
+// 符号函数：判断浮点数正负int sgn(double x) &#123;    if (fabs(x) &lt; EPS) return 0;    return x &gt; 0 ? 1 : -1;&#125;
+构造函数介绍解释一下构造函数的用法，这里可以直接赋初始值，方便初始化
+Point(double x_ = 0, double y_ = 0) : x(x_), y(y_) &#123;&#125;//那么我们可以这么来定义一个变量Point p1(2.0,3.0);Point p2;
+如果不传参数，那么就是直接得到初始值0,0,要是有值的化就是直接赋值，这样就避免了先定义再赋值的痛点。
+点点的定义点的定义我们使用结构体struct和重载操作符定义点的操作，这样我们就能直接计算两个点构成的向量这里面最重要的是加减，但是既然定义了那么就完整定义
+// 点/向量结构体（二维）struct Point &#123;    double x, y;    // 构造函数    Point(double x_ = 0, double y_ = 0) : x(x_), y(y_) &#123;&#125;    // 向量运算重载（核心）    // 向量加法    Point operator+ (const Point&amp; other) const &#123;        return Point(x + other.x, y + other.y);    &#125;    // 向量减法    Point operator- (const Point&amp; other) const &#123;        return Point(x - other.x, y - other.y);    &#125;    // 向量数乘（缩放）    Point operator* (double k) const &#123;        return Point(x * k, y * k);    &#125;    // 向量数除    Point operator/ (double k) const &#123;        return Point(x / k, y / k);    &#125;    // 浮点数相等判断（带精度）    bool operator== (const Point&amp; other) const &#123;        return sgn(x - other.x) == 0 &amp;&amp; sgn(y - other.y) == 0;    &#125;&#125;;
+两点间的距离根据上面的定义，相减以后得到向量，然后再套用下面的向量长度计算公式
+// 两点间距离double dist(const Point&amp; a, const Point&amp; b) &#123;    return len(a - b);&#125;
+线段只要这两个变量就能确定一个线段，所以存点
+// 线段结构体struct Segment &#123;    Point a, b; // 线段端点    Segment() &#123;&#125;    Segment(Point a_, Point b_) : a(a_), b(b_) &#123;&#125;&#125;;
+线段的旋转这里的化，先转化为极坐标，得到：设$\vec a$和x轴的夹角为$\alpha$,所以$a=(x,y)=(r\cos\alpha,r\sin\alpha)$旋转后得到$a’=(r\cos(\alpha+\theta),r\sin(\alpha+\theta))$展开得到$a’=(r\cos(\alpha)\cos(\theta) - r\sin(\alpha)\sin(\theta), r\sin(\alpha)\cos(\theta) + r\cos(\alpha)\sin(\theta)$带回坐标就得到公式了。如果是原点，直接计算，如果不是，那么先平移一下再计算
+// 向量a绕原点旋转rad弧度(逆时针为正，顺时针为负)Point rotate(const Point&amp; a, double rad) &#123;    double c = cos(rad), s = sin(rad);    return Point(a.x * c - a.y * s, a.x * s + a.y * c);&#125;// 向量a绕点p旋转rad弧度Point rotate_point(const Point&amp; a, const Point&amp; p, double rad) &#123;    return rotate(a - p, rad) + p;&#125;
+用处的化，要是一个几何图形，你一个一个转过去，最后再连起来，就是旋转后的图形了
+圆需要圆心和半径
+// 圆结构体struct Circle &#123;    Point o; // 圆心    double r; // 半径    Circle() &#123;&#125;    Circle(Point o_, double r_) : o(o_), r(r_) &#123;&#125;&#125;;
+向量的计算向量点乘这里直接用Point来代替向量了，但是实际上差不多,不过是先处理一下而已。
+// 向量点乘(a·b)double dot(const Point&amp; a, const Point&amp; b) &#123;    return a.x * b.x + a.y * b.y;&#125;
+用途：计算向量夹角、投影长度、判断向量垂直；公式：$\vec a · \vec b = |\vec a||\vec b|\cos(\theta)$   ($\theta$为两向量的夹角)
+向量的单位化计算$\frac{\vec a}{|\vec a|}$
+// 向量单位化(避免零向量)Point normalize(const Point&amp; a) &#123;    double l = len(a);    if (sgn(l) == 0) return Point(0, 0);    return a / l;&#125;
+求向量的模长和单纯平方计算$|\vec a|$和$|\vec a|^2$
+//点乘延伸:// 向量的模长(长度)平方,(避免开根号，提升效率)double len2(const Point&amp; a) &#123;    return dot(a, a);&#125;// 向量的模长(长度)double len(const Point&amp; a) &#123;    return sqrt(len2(a));&#125;
+求$\vec a$在$\vec b$上的投影向量公式\frac{\vec a ·\vec b}{\vec b}
+// 向量投影长度：向量a在向量b上的投影长度(projection length(投影长度))double proj_len(const Point&amp; a, const Point&amp; b) &#123;    return dot(a, b) / len(b);&#125;
+求$\vec a$在$\vec b$上的投影向量的模长// 向量投影长度：向量a在向量b上的投影长度 ( projection length（投影长度）)double proj_len(const Point&amp; a, const Point&amp; b) &#123;    return dot(a, b) / len(b);&#125;
+判断向量是否垂直这个很好理解，因为\vec a·\vec b=0\iff\vec a\perp\vec b// 判断两向量垂直bool is_vertical(const Point&amp; a, const Point&amp; b) &#123;    return sgn(dot(a, b)) == 0;&#125;
+向量的叉乘叉乘的定义首先叉乘的定义是什么说实话我也不知道该怎么解释，反正知道它的性质就能计算了
+计算方式\vec a\times \vec b=x_1*y_2-y_1*x_2// 向量叉乘(a×b)double cross(const Point&amp; a, const Point&amp; b) &#123;    return a.x * b.y - a.y * b.x;&#125;
+长度(模长)\vec a\times \vec b=|\vec a||\vec b|\sin叉乘的性质方向的表示根据我的理解叉乘的符号，表示了$\vec a$到$\vec b$的方向变化方式从a到b：即$\vec a\times \vec b$如果是正的，那么是逆时针转的如果是负的，那么是顺时针转的
+此处的额外要求是把向量的起点放到同一个位置，不过实际上你会发现把向量头尾衔接起来貌似更好理解。下面我都会详细讲解的，保证记住示例：顺时针(对应负)从a到b
+         b        ^        |        |a&lt;-------
+逆时针(对应正)从a到b
+ b^||-------&gt;a
+但是直接记结论貌似不简单？那么试试我的理解方式
+首先先把向量整成头尾相接的形式，如下：
+b^ \  \   \    ^a    |    |    |
+然后拿出你的右手，手心向着左边，手掌的走向和a一致，手指的走向和b一致，那么再看看你的大拇指是什么方向呢？朝上对不对？所以是正的。那么我们就记住了正对应逆时针。易如反掌实际操作时，只要摆对手心和手指的方向就彳亍了，你总不会把手指掰到反面吧 (找到舒服的那一侧就是正确的摆法，总之重要的还是记住方向和正负号的关系。
+下面给出代码：
+// 判断向量a是否在向量b的顺时针方向bool is_clockwise(const Point&amp; a, const Point&amp; b) &#123;    return sgn(cross(a, b)) &lt; 0;&#125;// 判断向量a是否在向量b的逆时针方向bool is_counter_clockwise(const Point&amp; a, const Point&amp; b) &#123;    return sgn(cross(a, b)) &gt; 0;&#125;//直接使用的话是这样的:// 判断向量b相对于向量a的方向double val = cross(a, b);if (val &gt; 0) &#123;    // b在a的逆时针方向&#125; else if (val &lt; 0) &#123;    // b在a的顺时针方向&#125; else &#123;    // a和b共线(同向或反向)&#125;
+所以下面我们就可以延申到对点和直线关系的判断上了
+首先我们判断点和直线关系的本质还是看顺逆时针的变化，构造一条直线，连接向量的尾和这个点，看顺逆时针的变化，所以代码就很理解了
+值得注意的是，这里是相对向量的方向而言的，主要作用是为后面点和多边形关系做铺垫
+// 判断点c在直线ab的左侧/右侧/线上// 返回值：&gt;0 左侧，&lt;0 右侧，=0 线上int point_line_side(const Point&amp; a, const Point&amp; b, const Point&amp; c) &#123;    return sgn(cross(b - a, c - a));//注意顺序&#125;
+和面积的关系因为叉乘的模长定义为了\vec a\times \vec b=|\vec a||\vec b|\sin也就是2*\frac{1}{2}|\vec a||\vec b|\sin那么就是这三个顶点构成的三角形面积的两倍，或者说，是向量构成的平行四边形的面积
+于是我们的三角形的计算公式就有了，下面给出对应的代码
+// 三点构成的三角形面积(绝对值/2)double triangle_area(const Point&amp; a, const Point&amp; b, const Point&amp; c) &#123;    return fabs(cross(b - a, c - a)) / 2.0;&#125;
+四边形的计算方法如下：因为我们只要两个向量就彳亍了，这里选择的是$\vec {AB}$和$\vec {AD}$，
+// 四点构成的四边形面积（平行四边形）double parallelogram_area(const Point&amp; a, const Point&amp; b, const Point&amp; d) &#123;    return fabs(cross(b - a, d - a));&#125;
+叉乘的运算规律加法的左分配律a\times(b+c)=a\times b+a\times c加法的右分配律(a+b)\times c=a\times c+b\times c标量乘法(\lambda a)\times b=\lambda(a\times b)=a\times(\lambda b)
+计算点到直线的距离因为能表示面积，所以能拿来计算距离，具体的推导如下：
+\vec a\times \vec b=|\vec a||\vec b|\sin=h_1*|\vec a|=h_2*|\vec b|所以计算点到直线的距离也可以这么来拆分：首先画出三角形，计算这个三角形的面积，然后乘2再除以AB的长度，化简一下就是：
+d=\frac{\vec{AP}\times\vec{AB}}{|\vec{AB}|}// 点p到直线ab的距离double point_line_dist(const Point&amp; a, const Point&amp; b, const Point&amp; p) &#123;    return fabs(cross(b - a, p - a)) / len(b - a);&#125;
+那么有人会问了，要是是线段怎么办？其实差不多
+// 点p到线段ab的距离double point_segment_dist(const Point&amp; a, const Point&amp; b, const Point&amp; p) &#123;    if (a == b) return dist(a, p); // 线段退化为点    // 投影参数t：判断垂足是否在线段上    double t = proj_len(p - a, b - a);    if (sgn(t) &lt;= 0) return dist(p, a); // 垂足在a外侧    if (sgn(t - len(b - a)) &gt;= 0) return dist(p, b); // 垂足在b外侧    return point_line_dist(a, b, p); // 垂足在线段内，返回点到直线距离&#125;
+计算点在线段上的垂足首先先计算一下投影向量，然后加上起点a就彳亍啦
+// 计算点p在直线ab上的垂足Point foot_point(const Point&amp; a, const Point&amp; b, const Point&amp; p) &#123;    Point ab = b - a;    double t = dot(p - a, ab) / len2(ab); // 投影参数t(归一化)    return a + ab * t;&#125;
+判断点是否在线段上这里有两个要求，首先p得在这条线上，可以通过计算$\vec {AP}$和$\vec {BP}$的叉乘得到，叉乘必须为0；其次，需要两个向量方向相反，那么点乘为负。
+// 判断点p是否在线段ab上（含端点）bool point_on_segment(const Point&amp; a, const Point&amp; b, const Point&amp; p) &#123;    // 1. p在直线ab上；2. p的坐标在a和b之间    return sgn(cross(b - a, p - a)) == 0 &amp;&amp; sgn(dot(p - a, p - b)) &lt;= 0;&#125;
+判断两直线是否相交这里我们引入一下包围盒的概念，包围盒的意思是能吧图形包围进去的最小的矩阵，且这个矩阵的边界得和坐标轴平行。
+例如：-----B|   /||  / || /  ||/   |A-----
+上面这个就是AB的包围盒
+那么有什么用呢？要是包围盒都不相交，那么一定不相交
+所以代码如下：
+// 快速排斥：判断两线段的包围盒是否相交bool rect_intersect(const Point&amp; a1, const Point&amp; a2, const Point&amp; b1, const Point&amp; b2) &#123;    double min_x1 = min(a1.x, a2.x), max_x1 = max(a1.x, a2.x);    double min_y1 = min(a1.y, a2.y), max_y1 = max(a1.y, a2.y);    double min_x2 = min(b1.x, b2.x), max_x2 = max(b1.x, b2.x);    double min_y2 = min(b1.y, b2.y), max_y2 = max(b1.y, b2.y);    return max_x1 &gt;= min_x2 - EPS &amp;&amp; max_x2 &gt;= min_x1 - EPS        &amp;&amp; max_y1 &gt;= min_y2 - EPS &amp;&amp; max_y2 &gt;= min_y1 - EPS;&#125;
+要是严格判定的话，需要用叉乘，实际上，保证A，B在CD异侧就彳亍了要是线段AB相交于直线CD的话，那么AC，CD的叉积符号必然和BC，CD的符号相反
+这样得到的图实际上可能是这样的：
+      C     ^|^    / | \   /  v  \  /   D   \ /         \A-----------B
+那么我们就发现了，AC到CD和BC到CD的方向一定是不一样的，但是不适用与线段的情况
+// 跨立实验：判断线段ab是否跨立直线cdbool cross_stand(const Point&amp; a, const Point&amp; b, const Point&amp; c, const Point&amp; d) &#123;    return sgn(cross(d - c, a - c)) * sgn(cross(d - c, b - c)) &lt;= 0;&#125;
+但是要是都是线段的话，还要保证C，D在AB异侧，所以代码：也就是保证CD和AB也有类似的关系，那么化工图发现这样的一定相交
+// 判断两线段是否相交（含端点）bool segment_intersect(const Segment&amp; s1, const Segment&amp; s2) &#123;    Point a = s1.a, b = s1.b, c = s2.a, d = s2.b;    // 快速排斥    if (!rect_intersect(a, b, c, d)) return false;    // 跨立实验(双向)    return cross_stand(a, b, c, d) &amp;&amp; cross_stand(c, d, a, b);&#125;
+求直线或者线段的交点首先先保证相交再来计算
+建议在使用函数之前先调用一下上面的相交函数
+下面是交点函数的证明：
+             A            /|           / |h1C---------E---------------D    h2|  /      | /      |/      B
+我们先计算A和B分别到CD的距离，记作$h_1\text{和} h_2$那么先相似一下，然后再比例得到E的坐标
+E=\frac{h_1}{h_1+h_2}\times\vec{AB}+A然后，前面刚讲过，高可以由面积得到，那么直接用叉乘代替高就得到计算公式了设$s_1=\vec{CD}\times\vec{CA},s_2=\vec{CD}\times\vec{CB}$由于符号相反，所以可以这么写：
+E=\frac{s_1}{s_1-s_2}\times\vec{AB}+A但是上面考虑的时AB在CD的异侧时的情况那么我们来考虑一下如果AB在CD的同侧该怎么计算
+	             A	            /|	           / |h1		      /  |	         B   |	         |   |	         |h2 |C---------E---------------D    
+我们用叉乘的话可以发现，叉乘符号相同，那么发现公式还是上面那个，统一一下，所以代码写起来就简单了然后我们把点带入得到：
+E=\frac{s_1}{s_1-s_2}\times(B-A)+A=\frac{B*s_1-A*s_2}{s_1-s_2}// 计算两直线ab和cd的交点（需保证直线不平行）Point line_intersect(const Point&amp; a, const Point&amp; b, const Point&amp; c, const Point&amp; d) &#123;    double s1 = cross(d - c, a - c);    double s2 = cross(d - c, b - c);    return (a * s2 - b * s1) / (s2 - s1);&#125;
+线段的话，可以先算出交点，然后判断交点是不是在线段上
+// 计算两线段的交点（仅当相交时返回有效点）Point segment_intersect_point(const Segment&amp; s1, const Segment&amp; s2) &#123;    return line_intersect(s1.a, s1.b, s2.a, s2.b);&#125;
+圆相关的计算判断点和圆的关系为了保证精度，所以采用平方
+// 判断点p与圆c的位置：&gt;0 圆外，=0 圆上，&lt;0 圆内int point_circle_relation(const Point&amp; p, const Circle&amp; c) &#123;    double d2 = len2(p - c.o); // 距离平方(避免开根号)    double r2 = c.r * c.r;    return sgn(d2 - r2);&#125;
+点到圆的切线长度这个很好理解，就是勾股定理
+// 点p到圆c的切线长度double tangent_len(const Point&amp; p, const Circle&amp; c) &#123;    double d = dist(p, c.o);    if (sgn(d - c.r) &lt;= 0) return 0.0; // 点在圆内/圆上，无切线    return sqrt(d * d - c.r * c.r);&#125;
+求直线与圆的交点首先先计算垂足，判断交点个数的情况，要是有两个交点的话，计算方式是，垂足+垂足到交点的距离乘上直线AB的单位向量
+// 计算直线ab与圆c的交点（返回交点列表）vector&lt;Point&gt; line_circle_intersect(const Point&amp; a, const Point&amp; b, const Circle&amp; c) &#123;    vector&lt;Point&gt; res;    Point foot = foot_point(a, b, c.o); // 圆心到直线的垂足    double d = point_line_dist(a, b, c.o); // 圆心到直线的距离    if (sgn(d - c.r) &gt; 0) return res; // 无交点    if (sgn(d - c.r) == 0) &#123; // 相切，一个交点        res.push_back(foot);        return res;    &#125;    // 相交，两个交点：垂足向两侧移动 len = sqrt(r² - d²)    double Len = sqrt(c.r * c.r - d * d);    Point dir = (b - a) / len(b - a); // 直线方向单位向量    res.push_back(foot + dir * Len);    res.push_back(foot - dir * Len);    return res;&#125;
+线段与圆的交点首先先算直线和圆的交点，然后再判断这个点是否在线段上
+// 计算线段ab与圆c的交点（返回交点列表）vector&lt;Point&gt; segment_circle_intersect(const Point&amp; a, const Point&amp; b, const Circle&amp; c) &#123;    vector&lt;Point&gt; res, line_inter = line_circle_intersect(a, b, c);    // 筛选交点是否在线段上    for (auto&amp; p : line_inter) &#123;        if (point_on_segment(a, b, p)) &#123;            res.push_back(p);        &#125;    &#125;    return res;&#125;
+多边形的计算多边形的面积计算这个由于我们已经有了一个很好的工具，叉乘，那么我们划分一下面积再计算比较好理解的方法是，以$P0$为每个三角形的顶点，依次计算，所以公式$$\frac{1}{2}\sum{i=1}^n(Pi-P_0)\times(P{i+1}-P0)但是注意到我们的叉乘具有向量加法的左右分配律，所以展开上面这个式子\begin{split}&amp;\frac{1}{2}\sum{i=1}^nPi\times P{i+1}-Pi\times P_0-P_0\times P{i+1}+P0\times P_0\&amp;=\frac{1}{2}\sum{i=1}^nPi\times P{i+1}\end{split}$$首先$P0\times P_0$一定是等于0的，其次，因为所有点都遍历了，那么$\sum{i=1}^nPi\times P_0=-\sum{i=1}^nP0\times P{i+1}$相当于只是后移了一位，但是结果一样，所以直接遍历点的叉乘就可以计算了。
+// 计算多边形面积（顶点数组，闭合：最后一个点无需等于第一个）double polygon_area(const vector&lt;Point&gt;&amp; poly) &#123;    int n = poly.size();    double area = 0.0;    for (int i = 0; i &lt; n; i++) &#123;        int j = (i + 1) % n;        area += cross(poly[i], poly[j]);    &#125;    return fabs(area) / 2.0;&#125;
+判断点是否在多边形内部首先做一条射线，向右射出，计算这条射线和多边形的交点数量，奇数则在内部，偶数则在外部
+// 判断点p是否在多边形poly内（含边界）bool point_in_polygon(const Point&amp; p, const vector&lt;Point&gt;&amp; poly) &#123;    int n = poly.size();    int cnt = 0;    for (int i = 0; i &lt; n; i++) &#123;        Point a = poly[i], b = poly[(i + 1) % n];        if (point_on_segment(a, b, p)) return true; // 在边界上        // 射线法：判断射线与线段是否相交        if (sgn(a.y - p.y) &gt; sgn(b.y - p.y)) swap(a, b);        if (sgn(b.y - p.y) &lt;= 0) continue;        if (sgn(cross(b - a, p - a)) &gt; 0) cnt++;    &#125;    return cnt % 2 == 1; // 奇数：内部，偶数：外部&#125;
+感谢看完这篇文章！要是有什么想法或者建议，欢迎来交流讨论！
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DP笔记</title>
+    <url>/ZestfulYK-blog/2025/12/07/DP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[DP题目的特点
+数据较小，至少有一维是可以接受的，比如每一步的决策小于3，总数小于1000等等
+每一步的答案可以由之前的答案得到，比如数字三角形
+
+DP题目的大致做法设DP数组
+明确DP数组的含义，保证每次求解的答案都是这个含义，不然就可能出错(这也是我之前的一大误区)
+
+分类讨论
+明确有几种决策方案，明确这一步的答案是怎么推断出来的(非常重要!!!)
+
+接下来编写代码就行了
+举例：迎新赛M题
+题目传送门：
+
+
+ZJUTOJ | 2024ZJUT迎新赛-决赛-M. 三色小屋
+
+题目理解：
+首先发现每一步的方案数可以接受，并且这一步的答案只由上一步转移而来，所以可以使用DP
+每个位置只能填R/G/B三种颜色，而且之和上一步和相邻的颜色有关，几种方案互不影响，符合动态规划的特点
+分类讨论：
+分为两大类，因为开头要初始化，所以单独讨论
+
+
+
+dp[i][j] = 
+\begin{cases}
+i==1\begin{cases}
+    c[i]==\ '0' & \text{可以用的颜色为1} \\
+    c[i]\ !=\ \ '0' & \text{这个颜色为1}
+\end{cases}\\ \\
+i\ !=1\begin{cases}
+    c[i]==\ '0' & \text{可以填入的颜色为前两个的和} \\
+    c[i] \ !=\ \ '0' & \text{这个颜色为前两个的和}
+\end{cases}
+\end{cases}DP概率题求期望的几个重要公式\begin{aligned}
+E(aX+b)=aE(x)+b \\ \\
+E(X+Y)=E(X)+E(Y)\\ \\
+E(XY)=E(X)E(Y)
+\end{aligned}
+上面两个说明了期望的线性关系，下面两个说明了期望的独立性
+
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>markdown使用教程</title>
+    <url>/ZestfulYK-blog/2025/10/20/markdown%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[标题的使用# 一级标题## 二级标题### 三级标题
+字体粗体 斜体 删除线 行内代码
+小标题的使用
+无序列表项
+另一个项目
+
+
+有序列表
+第二项
+
+链接，图片[链接文字](https://example.com)![图片描述](https://example.com/image.jpg)
+引用块&gt; 这是一个引用块&gt; 可以多行使用
+
+这是一个引用块可以多行使用
+
+表格| 姓名 | 年龄 | 城市 ||------|------|------|| 张三 | 25   | 北京 || 李四 | 30   | 上海 |
+
+
+
+
+姓名
+年龄
+城市
+
+
+
+
+张三
+25
+北京
+
+
+李四
+30
+上海
+
+
+
+
+]]></content>
+      <tags>
+        <tag>技术</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>模运算性质总结</title>
+    <url>/ZestfulYK-blog/2025/11/25/mod/</url>
+    <content><![CDATA[模运算（Mod）性质总结定义对于任意实数 $( x, y )$，有：
+x \mod y = x - y \left\lfloor \frac{x}{y} \right\rfloor, \quad y \neq 0模运算（在一些场合使用符号 % 表示）是一个二元运算。$( x \mod y )$ 的值范围如下：
+
+当 $( y &gt; 0 )$ 时：$( 0 \leq x \mod y &lt; y )$
+当 $( y &lt; 0 )$ 时：$( 0 \geq x \mod y &gt; y )$
+当 $( y = 0 )$ 时：为避免除以零，定义 $( x \mod 0 = x )$
+
+基本运算规则模运算与基本四则运算类似（除法除外）：
+
+加法规则：$((a + b) \mod p = (a \mod p + b \mod p) \mod p)$
+减法规则：$((a - b) \mod p = (a \mod p - b \mod p) \mod p)$
+乘法规则：$((a \times b) \mod p = (a \mod p \times b \mod p) \mod p)$
+幂运算规则：$(a^b \mod p = ((a \mod p)^b) \mod p)$
+求和规则：由第1个公式可推导出 $(\left(\sum{i=1}^{n} x_i\right) \mod p = \left(\sum{i=1}^{n} (x_i \mod p)\right) \mod p)$
+
+运算律A. 结合律((a + b) \mod p + c) \mod p = (a + (b + c) \mod p) \mod p((a \times b) \mod p \times c) \mod p = (a \times (b \times c) \mod p) \mod pB. 交换律(a + b) \mod p = (b + a) \mod p(a \times b) \mod p = (b \times a) \mod pC. 分配律(a + b) \mod p = (a \mod p + b \mod p) \mod p((a + b) \mod p \times c) \mod p = ((a \times c) \mod p + (b \times c) \mod p) \mod p补充性质同余性质
+反身性：$(a \equiv a \pmod{m})$
+对称性：如果 $(a \equiv b \pmod{m})$，则 $(b \equiv a \pmod{m})$
+传递性：如果 $(a \equiv b \pmod{m})$ 且 $(b \equiv c \pmod{m})$，则 $(a \equiv c \pmod{m})$
+
+模运算与除法模运算与除法不直接兼容，但有以下性质：
+
+如果 $(ac \equiv bc \pmod{m})$ 且 $(\gcd(c, m) = 1)$，则 $(a \equiv b \pmod{m})$
+
+模逆元：如果 $(\gcd(a, m) = 1)$，则存在整数 $(b)$ 使得 $(ab \equiv 1 \pmod{m})$，称 $(b)$ 为 $(a)$ 模 $(m)$ 的逆元
+
+核心性质：在模运算里除以一个数等于乘以这个数的逆元，即：c/a≡c×a^{−1} (modm)其中 $a^{-1}$ 是 $a$ 在模 $m$ 下的逆元。
+
+
+重要前提：模逆元存在的充分必要条件是 $\gcd(a, m) = 1$（即 $a$ 与 $m$ 互质）。如果 $a$ 与 $m$ 不互质，则 $a$ 在模 $m$ 下没有逆元，除法操作无法进行。
+
+计算模逆元的方法常用的计算模逆元的方法是扩展欧几里得算法，它不仅能求最大公约数，还能找到满足贝祖等式的系数。
+示例代码;#include &lt;iostream&gt;using namespace std;// 扩展欧几里得算法求逆元long long mod_inverse(long long a, long long m) &#123;    long long m0 = m;    long long y = 0, x = 1;        if (m == 1) return 0;        while (a &gt; 1) &#123;        long long q = a / m;        long long t = m;                m = a % m;        a = t;        t = y;                y = x - q * y;        x = t;    &#125;        if (x &lt; 0) x += m0;        return (a == 1) ? x : -1; // 如果逆元不存在返回 -1&#125;// 使用示例int main() &#123;    long long a = 3, m = 7;    long long inv = mod_inverse(a, m);    if (inv != -1) &#123;        cout &lt;&lt; a &lt;&lt; &quot; 在模 &quot; &lt;&lt; m &lt;&lt; &quot; 下的逆元是: &quot; &lt;&lt; inv &lt;&lt; endl;    &#125; else &#123;        cout &lt;&lt; a &lt;&lt; &quot; 在模 &quot; &lt;&lt; m &lt;&lt; &quot; 下没有逆元&quot; &lt;&lt; endl;    &#125;    return 0;&#125;
+应用示例计算 $6 / 3 \pmod{7}$：
+
+先求 $3^{-1} \pmod{7}$：$3 \times 5 = 15 \equiv 1 \pmod{7}$，所以逆元为 5
+
+$6 / 3 \equiv 6 \times 5 = 30 \equiv 2 \pmod{7}$
+
+验证：$2 \times 3 = 6 \equiv 6 \pmod{7}$ ✓
+
+
+这个性质在密码学、组合数学和算法竞赛中都有广泛应用。
+模运算的周期性质
+对于任意整数 $(k)$，有 $(a \mod m = (a + km) \mod m)$
+模运算的结果具有周期性，周期为模数 $(m)$
+
+逆元的计算
+如果是计算单个的逆元，那么使用小费定理：
+ll qpow(ll a,b=mod-2) &#123;    ll res = 1;    while (b) &#123;        if (b &amp; 1) res = res * a % mod;        a = a * a % mod;        b &gt;&gt;= 1;    &#125;    return res;&#125;
+
+计算多个数字的逆元，使用拓展欧几里得算法
+LL inv[mod+5]; void getInv(LL mod) &#123; 	inv[1]=1; 	for(int i=2;i&lt;mod;i++) 		inv[i]=(mod-mod/i)*inv[mod%i]%mod; &#125;
+
+然后如果是一个等式的话，考虑两边同时取逆元
+
+例如：计算$n!$的逆元，得到递推式子(i+1)! \equiv i \,!*(i+1) \mod p所以：inv[(i+1)!]\equiv inv[i]*inv[i+1] \mod p又因为：inv[i+1]*(i+1)\equiv1\mod p所以把已知的$inv[i+1]$移到左边，得到：inv[(i+1)!]*(i+1)\equiv inv[i] \mod p这就是求阶乘逆元的递推式了
+
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>不定积分习题</title>
+    <url>/ZestfulYK-blog/2025/12/13/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E4%B9%A0%E9%A2%98/</url>
+    <content><![CDATA[第一类有理积分主要方法
+放入分子
+放入分子的部分
+放入分母
+放入分母的部分
+特殊构造|—商的导数求积分部分|—两个函数相乘求导$e^x$|—三角函数构造$\tan x$
+最后复习一下一些特殊的积分公式放入分子
+这一中方法比较基础。
+如果是放入分子的，那么必然是如下形式的\int \frac{f'(x)}{f(x)}\,dx
+这样就能得到\int \frac{df(x)}{f(x)}
+所以先看一下分母求导的结果有没有可能等于分子，如果是，那么就可以用这种方法
+例题\int \frac{\sin x+\cos x}{\sqrt[3]{\sin x-\cos x}}\,dx放入分子的部分
+这个通常出现在三角函数中，因为这样可以把所有三角函数化程同名。
+
+然后放入时注意一下和分子的形式要对上。例题\int \frac{\sin x\cos x^3}{1+\cos x^2}\,dx
+这题直接放入$\sin x$还不行，因为要注意一下分母的形式。所以注意到可以凑出$\sin 2x$，这样放入时形式就一样了
+
+放入分母
+放入分母的实际上是这种形式\int f'(x)f(x)\,dx
+然后被$f’(x)$正好是分数的形式，看起来就像分式罢了。
+所以记得先看看分子求导是否可能是一个分式，比如$\ln x$或者是$\sqrt{x^2-1}$这种形式的式子
+所以也有可能是分子的导数会穿一部分到分子来，所以建议是先对分子的部分进行求导
+主要问题是，出题人会把求导结果化到最简，导致看不出来
+例题
+\int \frac{\sqrt{\ln(x+\sqrt{1+x^2})+1}}{\sqrt{1+x^2}}\,dx
+\int\frac{e^{\sqrt{1+\sin x}}\cos x}{\sqrt{1+\sin x}}\,dx放入分母的部分
+
+
+这一种情况通常是在含有$\ln x$和$\frac{1}{x}$时使用，因为可以把$\frac{1}{x}$放入。目前只发现这一种情况可以用这个来解决
+
+
+例题\int \frac{\ln x^2}{x(1+\ln x^2)}\,dx特殊构造
+比较难想到，但是遇到以后下次就有概率会写
+商的导数求积分部分
+这一种之前做过一次，可以看一下分部积分的商的导数求积分部分。
+
+传送门：分步积分笔记
+
+两个函数相乘导数的积分
+实际上，这个是\int e^{ax}f(x)\,dx然后可以被转化为\int e^{ax}(ah(x)+h'(x))\,dx所以是$e^{ax}$和别的函数的乘积得到的，通常也只有$e^{ax}$能有这种特殊做法。
+
+为什么只有$e^{ax}$有这个性质
+$e^{ax}$求导有不变性，这样求导了以后才会出现这种情况，所以只有$e^{ax}$才应当考虑有无这种特殊解法，其余的直接计算就好了，不要想那么多
+
+识别方法：
+观察结构：被积函数通常包含指数函数$e^{ax}$与另一个函数f(x)的乘积。
+分析 $f(x)$：尝试将 $f(x)$拆分为两部分，其中一部分是某个函数 $h(x)$，另一部分是其导数 $h’(x)$（或 $ah(x)+h’(x)$）。常见的线索包括：
+
+
+$f(x)$ 为有理函数或三角函数，且分子或分母具有导数的特征。
+通过经验猜测$h(x)$的形式.
+
+
+验证：对猜想的 $h(x)$ 求导，检查是否满足 $f(x)=ah(x)+h’(x)$
+
+例题：\int \frac{(1+\sin x)e^x}{1+\cos x}\,dx发现有$e^{ax}$考虑一下是否可以这么做，那么先计算前面能否拆成$f(x)=ah(x)+h’(x)$，计算得到:(\frac{\sin x}{1+\cos x})'=\frac{1}{(1+\cos x)}所以这么拆分是合法的。最后得到：
+\frac{e^x \sin x}{1+\cos x}+C此外，还有一题和这个思路十分类似：\int \frac{\cos x^2-\sin x}{\cos x(1+e^{\sin x}\cos x)}\,dx注意到：(e^{\sin x}\cos x)'=\cos x^2-\sin x所以可以把分子放入进行计算，这里依然是$e^{ax}$的性质。此外放入以后发现少了一个$e^{\sin x}$，那么再加上一个$e^{\sin x}$再$dx$里面，正好使得分母多了一个$e^{\sin x}$，那么换元一下就是有理函数的积分了
+总结：遇到$e^{ax}$，求导一下总是有用的，能简化计算。
+余正弦化正切
+遇到这么一种情况，有$\sin x$和$\cos x$，但是表现出的却是加法的形式，无法把其中一部分提取出来，那么这时我们就应该考虑一下是不是可以化成$\tan x$来计算。
+
+例题1.
+\int \frac{dx}{\sin x^2+2\cos x^2}
+这里无法采用上述提及的所有方法，于是我们采用上下同时除以$\cos x^2$的方法来计算，得到有关$\sec x^2$和$\tan x^2$的式子，这样就可以计算了。
+
+2.\int \frac{x+\sin x\cos x}{(\cos x-x\sin x)^2}\,dx
+
+注意到下面部分的导数并非上半部分，上半部分也不能被提取，那么考虑能否转换为$\tan x$和$\sec x$的式子，于是先提取一个$\cos x$，得到：\int \frac{x\sec x+\tan x}{(1-x\tan x)^2}\,dx
+接着就发现下面的导数等于上面部分了，那么就好做了。
+
+特殊积分公式复习
+首先是特殊的三角公式\int \sec x\,dx=ln|\sec x+\tan x|+C\int \csc x\,dx= ln|\csc x-\cot x|+C
+接下来是裂项公式\int \frac{1}{x^2-a^2} \, dx = \frac{1}{2a}\ln\left|\frac{x-a}{x+a}\right| + C\int \frac{1}{a^2-x^2} \, dx = \frac{1}{2a}\ln\left|\frac{a+x}{a-x}\right| + C(要是记不住这个好像也可以直接当有理函数来做？)
+最后是反三角式
+\int \frac{1}{\sqrt{a^2-x^2}} \, dx = \arcsin\frac{x}{a} + C\int \frac{1}{x^2+a^2} \, dx = \frac{1}{a}\arctan\frac{x}{a} + C这一个只有两种情况，剩下的老老实实进行$\sec x$和$\tan x$代换上下其实都会消去一个$\frac{1}{a}$但是下面那个是二次式子，所以就剩下了一个$\frac{1}{a}$.
+额外提醒
+注意$\frac{1}{\cos x}$和$\sec x$的转换，如果只是单出现一个，那么就转换成没有分数的式子
+
+注意一下同时含有$\tan x\text{和}\sec x$的分式，可能需要展开消去部分$\cos x$来简化计算
+需不需要展开计算看你是否可以消去
+
+第二类换元积分主要方法
+第二类换元积分开始和有理积分接近，所以换元完要考虑一下有理积分。
+含有根式的只有$\sqrt{a^2-x^2}$有公式，其他老老实实计算！
+倒带换是把x换为$\frac{1}{t}$，别代换错了
+要是根式含有$a^x$，那么令整一个根号为t，其他令$a^x$为t
+
+简单根式代换
+除了$\tan x\text{和}\sec x$的代换以外，还有这么一种情况：\int \frac{x^2\,dx}{\sqrt{(x^2-a^2)^3}}
+实际上，里面的次数是没有影响的，因为每一个都可以拆出一个，得到三次式，然后再老老实实计算。
+其他含有根式的，要么时属于有理函数的积分，有吗就是可以直接按照三角换元做出来。例题
+
+\int \frac{dx}{(1+x^2)\sqrt{1-x^2}}
+直接把x代换为$\sin t$即可，然后这个式子貌似很熟悉？
+质数函数的代换
+例如分母含有$e^x$等赘述函数时，直接代换这一部分
+
+如果在根式中，代换整个根式例题
+
+代换指数函数
+例如求\int \frac{1}{e^x+e^{2x}}\,dx
+代换$x=\ln t(e^x=t)$得到\int \frac{1}{t+t^2}\frac{1}{t}\,dt
+就能变成有理函数的积分了
+代换整个根式
+例如求\int \frac{1}{\sqrt{e^x+1}}\,dx
+
+代换整个根号$x=\ln(t^2-1)\,(t=\sqrt{e^x+1})$得到\int \frac{1}{t}\frac{2t}{t^2-1}\,dt
+从而又被化成了有理函数的积分
+
+倒代换
+代换为$\frac{1}{t}$，别把$\frac{1}{x}$代换成了t就彳亍
+然后注意时用在幂函数上，别搞错就彳亍
+例题
+如计算\int \frac{1}{x(x^6+1)}\,dx
+
+直接代换得到$$-\int \frac{1}{\frac{1}{t}((\frac{1}{t})^6+1)}\frac{1}{t^2}\,dt=
+\int \frac{t^5}{1+t^6}\,dt$$
+就变成第一类换元积分了
+
+特殊例子
+看似一般的根式，凑成可以三角代换的式子
+
+例题\int \sqrt{2x-x^2}\,dx
+先凑一下，得到\int \sqrt{1-(x-1)^2}\,dx
+然后就会计算了
+关注ZestfulYK喵，谢谢喵！
+
+
+]]></content>
+      <tags>
+        <tag>数学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第一类换元积分</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[重要公式基本积分公式：不要忘记加C!!!
+$\xi \ \delta \ \alpha \ \beta \ \pi \  \theta \ \in \ \notin$$\Delta$
+$\int k \, dx = kx + C$$\int x^n \, dx = \frac{x^{n+1}}{n+1} + C \quad (n \neq -1)$$\int \frac{1}{x} \, dx = \ln|x| + C$
+
+指数函数：$\int e^x \, dx = e^x + C$$\int a^x \, dx = \frac{a^x}{\ln a} + C$
+
+三角函数：$\int \sin x \, dx = -\cos x + C$$\int \cos x \, dx = \sin x + C$$\int \tan x \, dx = -\ln|\cos x| + C$$\int \cot x \, dx = \ln|\sin x| + C$$\int \sec^2 x \, dx = \tan x + C$$\int \csc^2 x \, dx = -\cot x + C$$\int \sec x \tan x \, dx = \sec x + C$$\int \csc x \cot x \, dx = -\csc x + C$$\int secx\,dx= ln|secx+tanx|+C$$\int cscx\,dx= ln|cscx-cotx|+C$
+
+
+
+反三角函数：$\int \frac{1}{\sqrt{1-x^2}} \, dx = \arcsin x + C$$\int \frac{1}{1+x^2} \, dx = \arctan x + C$
+
+双曲函数：$\int \sinh x \, dx = \cosh x + C$$\int \cosh x \, dx = \sinh x + C$
+
+特殊积分：$\int \frac{1}{x^2+a^2} \, dx = \frac{1}{a}\arctan\frac{x}{a} + C$$\int \frac{1}{\sqrt{a^2-x^2}} \, dx = \arcsin\frac{x}{a} + C$$\int \frac{1}{x^2-a^2} \, dx = \frac{1}{2a}\ln\left|\frac{x-a}{x+a}\right| + C$
+
+和差化积公式：$\sin A + \sin B = 2 \sin\left(\frac{A+B}{2}\right) \cos\left(\frac{A-B}{2}\right)$$\sin A - \sin B = 2 \cos\left(\frac{A+B}{2}\right) \sin\left(\frac{A-B}{2}\right)$$\cos A + \cos B = 2 \cos\left(\frac{A+B}{2}\right) \cos\left(\frac{A-B}{2}\right)$$\cos A - \cos B = -2 \sin\left(\frac{A+B}{2}\right) \sin\left(\frac{A-B}{2}\right)$
+
+积化和差公式：$\sin A \cos B = \frac{1}{2}[\sin(A+B) + \sin(A-B)]$$\cos A \sin B = \frac{1}{2}[\sin(A+B) - \sin(A-B)]$$\cos A \cos B = \frac{1}{2}[\cos(A+B) + \cos(A-B)]$$\sin A \sin B = -\frac{1}{2}[\cos(A+B) - \cos(A-B)]$
+
+
+对部分公式的推导：$\int \tan x \, dx = -\ln|\cos x| + C$$\int \tan x \, dx = \int \frac{sinx}{cosx} \,dx = - \int \frac{dcosx}{sinx} \, = -ln|cosx|+ C$
+
+对于 $\int cotx$ 同理
+小技巧：
+$sinx^m cosx^n$之类的，奇数的话拆一个进去积分，偶数的话用倍角或半角公式
+
+在对$\int tanx\,dx$或者$\int secx\,dx$等方法一样，可以类比
+
+奇数如$\int sin^3 \, dx$或者$\int sin^3cosx\,dx$等比如$\int sinx^3\,dx=-\int sinx^2\,dcosx=-\int(1-cos^2x)\,dcosx$$=-cosx+\frac{1}{3}cosx^3+C$
+偶数如$\int cosx^4\,dx$等比如$\int cosx^4\,dx=\int(\frac{1+cos2x}{2})^2\,dx=\frac{1}{4}\int1+cos2x^2+2cos2x\,dx$$=\frac{1}{4}(x+\frac{1}{2}\int cos2x^2\,d2x+\int cos2x\,d2x)+C$$=\frac{1}{4}(x+sin2x+\frac{1}{2}\int \frac{1+cos4x}{2}\,d2x)+C$$=\frac{1}{4}(x+sin2x+\frac{1}{8} \int(1+cos4x)\,d4x)+C$$=\frac{1}{4}(x+sin2x+\frac{1}{8}(4x+sin4x))+C$$=\frac{3}{8}x+\frac{1}{4}sin2x+\frac{1}{32}sin4x+C$
+
+对于$\frac{…+…}{…}$类的可能是把上面的式子拆成两个分别计算例如：$\int \frac{1+x}{\sqrt{2-3x^2}}\,dx$$=\int \frac{1}{\sqrt{2-3x^2}}\,dx+\int \frac{x}{\sqrt{2-3x^2}}\,dx$
+
+要熟记各种三角函数的导数和公式以及转换关系：$secx^2-1=tanx^2$$cscx^2-1=cotx^2$
+arctan(\frac{1}{x})=\begin{cases}
+arccot(x)\ \ \ \ \ \ \ \ \ x>0\\
+arccot(x)-\pi  \ \ x]]></content>
+      <tags>
+        <tag>数学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>全排列函数的应用</title>
+    <url>/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[全排列函数什么是全排列？简单来说就是排列组合的所有情况，并按照字典顺序输出例如：123全排列的结果为
+123132213231312321
+而实际上全排列需要在代码中用复杂的深度搜索来写这实在是太复杂了！！！于是我就发现了全排列函数这个东西^__^现在我们就来学习一下这个高级函数————next_permutation
+全排列函数#include &lt;iostream&gt;  #include &lt;algorithm&gt;  using namespace std;  int main()  &#123;      int num[3]=&#123;1,2,3&#125;;      do      &#123;          cout&lt;&lt;num[0]&lt;&lt;&quot; &quot;&lt;&lt;num[1]&lt;&lt;&quot; &quot;&lt;&lt;num[2]&lt;&lt;endl;    &#125;while(next_permutation(num,num+3));      return 0;  &#125;
+
+全排列函数详细定义对于next_permutation函数，其函数原型为：
+include   bool next_permutation(iterator start,iterator end)
+
+
+当当前序列不存在下一个排列时，函数返回false，否则返回true
+
+全排列函数的特性
+
+next_permutation(num,num+n)函数是对数组num中的前n个元素进行全排列，同时并改变num数组的值。
+另外，需要强调的是，next_permutation()在使用前需要对欲排列数组按升序排序，否则只能找出该序列之后的全排列数。比如，如果数组num初始化为2,3,1，那么输出就变为了：231312321
+全排列函数的应用题目链接
+题目要求我们按要求完成5*5数独，且只要填ABC，可以有空格子一种方法是遍历每一个格子，逐个填入，时间复杂度(4^25)，显然不行不过我的朋友使用了大量剪枝，最后还是过了%%%大佬 qinye_leaf
+代码链接
+但是我们刚学了全排列函数，就不能使用一下吗？你别说，还真能使用！我们只要先填写每一行，然后就只用40^5就能计算完了因为可以加上一个判断，看看每一行是否符合标准(也算剪枝吧)
+vector&lt;string&gt; eachrow(int row) &#123;    vector&lt;string&gt; result;    string h=string(n-3,&#x27;.&#x27;)+&quot;ABC&quot;;    do&#123; for(int i=0;i&lt;n;i++)&#123;        if(h[i]!=&#x27;.&#x27;)&#123;            if(h[i]==r[row]) result.push_back(h);            break;        &#125;    &#125;    &#125;while(next_permutation(h.begin(),h.end()));    return result;&#125;
+那么这样我们就能得到每一行的可能情况，每行40种之后就可以正常的DFS了
+个人AC代码链接
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>有理函数积分</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/</url>
+    <content><![CDATA[基本方法
+凑成能第一类换元积分的式子  例如$\frac{1}{…}$类的部分分式分解有理函数积分适用条件
+
+有理函数积分当被积函数是有理函数（两个多项式的商）时：$\int \frac{Q(x)}{P(x)}\,​dx$其中 $P(x)$ 和 $Q(x)$ 都是多项式。
+
+
+
+分母可因式分解
+
+
+
+部分分式分解是处理有理函数积分的系统方法，特别适用于：
+
+分母可明确因式分解
+没有更简单的特殊技巧
+需要精确解析表达式
+
+当分母 $Q(x)$ 可以分解为一次因式和不可约二次因式的乘积时：
+
+一次因式：$(x-a)$
+不可约二次因式：$(x^2+px+q)$，其中 $p^2-4q&lt;0$具体分解规则对于一次因式 $(x-a)^k$：
+
+对应部分为：
+\frac{A_1}{x-a}+\frac{A_2}{(x-a)^2}+···+\frac{A_k}{(x-a)^k}对于二次因式 $(x^2+px+q)^m$：\frac{B_1x+C_1}{x^2+px+q}+\frac{B_2x+C_2}{(x^2+px+q)^2}+···+\frac{B_mx+C_m}{(x^2+px+q)^k}但是，在这个部分有一种特殊情况，就是二次式:
+\int \frac{P(x)}{Q(x)^2}
+在这里，可以把函数看成$\frac{d}{dx}\frac{Ax+B}{Q(x)}+\frac{C}{Q(x)}$两种方法实际上是等价的，因为最后必然化成一个简单的倒数积分和简单的分数积分$\frac{1}{Q(x)}$。
+
+例子：
+计算$\int \frac{x^2+1}{(x^2+x+1)^2}\,dx$有两种方式，都能得到答案。1.用标准公式计算得到:\int \frac{x}{(x^2+x+1)^2}\,dx-\int \frac{1}{x^2+x+1}\,dx
+
+接着再分别计算前后的积分，前面得到的是一个分式加上一个含$\arctan x$的式子比较麻烦，不过对于这类题目，我们知道一定能得到第二种简单的方法的式子，所以经过计算得到:
+\frac{1}{3}\frac{d}{dx}\frac{x+2}{x^2+x+1}-\frac{4}{3}\int · \frac{1}{x^2+x+1}\,dx这种解法的好处是，得到前半段以后可以直接当作积分结果，不需要额外的处理。
+判断步骤第一步：检查是否为真分式
+如果 $\deg P(x) \geq \deg Q(x)$：先进行多项式除法（大除法）
+如果 $\deg P(x) &lt; \deg Q(x)$：直接进行部分分式分解就是说最高项次数小就能用这个方法第二步：因式分解分母将分母 $Q(x)$ 完全分解为：
+一次因式 $(x-a_i)^{k_i}$
+不可约二次因式 $(x^2+p_jx+q_j)^{m_j}$第三步：确定分解形式根据因式分解结果，写出部分分式的一般形式。在计算过程中，可以通过给x赋值来快速计算带定值
+
+具体例子分析例1：$\int \frac{x^3+1}{(x^2+1)^2} dx$
+分母：$(x^2+1)^2$（二次因式的平方）
+分解形式：$\frac{Ax+B}{x^2+1} + \frac{Cx+D}{(x^2+1)^2}$
+
+例2：$\int \frac{1}{x(x-1)^2} dx$
+分母：$x(x-1)^2$（一次因式及其平方）
+分解形式：$\frac{A}{x} + \frac{B}{x-1} + \frac{C}{(x-1)^2}$
+
+例3：$\int \frac{x^2+1}{x(x^2+4)} dx$
+分母：$x(x^2+4)$（一次因式 + 二次因式）
+分解形式：$\frac{A}{x} + \frac{Bx+C}{x^2+4}$
+
+例4：$\int \frac{x+1}{x^2+4x+6}\,dx$这个题目看起来和裂项十分相似，但是分母无法因式分解，所以这个方法是不对的。注意到这里上方的次数正好是分母求导结束后的次数，所以游客能采取分开计算的方法。这里首先先把上面的分析翻倍，（因为分母的导数是$2x+4$），接下来在加一个2，减一个2外面再配上$\frac{1}{2}$即可。所以式子变为:$\frac{1}{2} \int \frac{2x+4-2}{x^2+4x+6}\,dx$然后两个部分正好都是我们能计算的第一类换元积分，完成！
+
+$\int \frac{f’(x)}{f(x)} dx$：直接得到 $\ln|f(x)|$
+$\int \frac{1}{x^2+a^2} dx$：直接得到 $\frac{1}{a}\arctan\frac{x}{a}$
+
+个人技巧
+对于一般的式子，通常是去凑积分，先对其1次项，再分离常数项，这样就能直接得到一个ln积分和一个形如$\frac{p}{t^2+a^2}$的式子了，这个是很好积分的($\arctan x$)
+遇到三次式子，可能配凑一个$\pm 1$来计算
+遇到分母次数很高的，考虑倒代换
+其余的式子，直接展开就行了
+
+三角代换部分重要公式当取$\tan x=u$时
+\begin{cases}
+\sin x=\frac{u}{\sqrt{1+u^2}} \\
+\cos x=\sqrt{1+u^2}
+\end{cases}当取$\tan \frac{x}{2}=u$时
+\begin{cases}
+\sin x=\frac{2u}{1+u^2} \\
+\cos x=\frac{1-u^2}{1+u^2}
+\end{cases}然后不要忘记，第二类换元积分是需要乘上对应的导数的，这个导数是t关于x的函数，乘上的是含有t的导数之后像前面一样计算就行了。
+题型分类
+只含有一种三角函数的，用第一类换元积分，例如：$\int \frac{1}{\sin x^4}\,dx$
+上下均有且为一次式的，用上节课的方法代换，例如$\int \frac{\sin x}{\sin x+\cos x}\,dx$
+同名三角函数相加，和差化积，例如$\int \frac{1}{\sin x+\sin 3x}\,dx$
+正常幂(不含分母的)，按奇偶正常拆分
+分母含有高次项的，拆解1，例如$\int \frac{1}{\sin x\cos x^2}$主要是把$\cos x$化成$\tan x$来计算。例如：1\int \frac{dx}{a^2+\sin x^2+b^2+\cos x^2}=\int \frac{\frac{1}{\cos x^2}}{a^2\tan x^2+b^2}\,dx=\int \frac{1+\tan x^2}{a^2\tan x^2+b^2}\,dx根式的代换
+
+重要公式令t=\sqrt[n]{ax+b}令t=\sqrt[n]{\frac{ax+b}{cx+d}}令t=\sqrt[mn]{ax+b}看含有什么来决定怎么设t最后反解出x带入其余部分即可。
+重要例题根式代换类型求下面这个函数的积分
+\int \frac{dx}{\sqrt[n]{(x-a)^{n+1}(x-b)^{n-1}}}\,dx方法：先提取部分，构造类似上面2的一个式子，然后再考虑代换。
+\text{原式}=\int\frac{1}{(x-a)(x-b)\sqrt[n]{\frac{x-a}{x-b}}}\,dx不过接下来直接解出x再带回比较麻烦，所以考虑直接算出$\frac{dx}{(x-a)(x-b)}$这个部分
+t^n=\frac{a-b}{(x-b)^2}\frac{nt^n\,dt}{t}=\frac{a-b}{(x-b)^2}\,dx\frac{n\,dt}{t}=\frac{a-b}{(x-b)^2t^n}\,dx=\frac{a-b}{(x-a)(x-b)}\,dx所以得到原式变为：
+-\frac{n}{a-b}\sqrt[n]{\frac{x-b}{x-a}}重要例题偶数次幂分数类型方法是化为平方分之括号内函数的导数即：
+\int \frac{f'(x)}{f(x)^2+a}例如：
+\int \frac{1}{x^4+1}\,dx=\frac{1}{2}\int\frac{1+\frac{1}{x^2}-1}{x^2+\frac{1}{x^2}}=\frac{1}{2}(\int \frac{d x-\frac{1}{x}}{(x-\frac{1}{x})^2+2}+\int \frac{d x+\frac{1}{x}}{(x+\frac{1}{x})^2+2})$$$$=\frac{1}{2\sqrt{2}}\arctan \frac{x-\frac{1}{x}}{\sqrt{2}}-\frac{1}{4\sqrt{2}}\ln|\frac{x^2-\sqrt{2}x+1}{x^2+\sqrt{2}x+1}| 所以类似于$\frac{\text{二次}}{\text{四次}}$的式子，理论上都有可能用这种方式解决
+]]></content>
+      <tags>
+        <tag>数学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>分步积分笔记</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E5%88%86%E6%AD%A5%E7%A7%AF%E5%88%86/</url>
+    <content><![CDATA[核心公式\int u\,dv = uv - \int v\,du选择原则：”反对幂指三”优先级从高到低选择 $u$：
+
+反三角函数（$arcsin$,$arccos$, $arctan$等）
+对数函数（$\ln x$, $log x$等）
+幂函数（$x^n$, $x^2$, $\sqrt{x}$等）
+指数函数（$e^x$, $a^x$等）
+三角函数（$\sin x$, $\cos x$等）
+
+口诀解释：越靠前的类型越优先选为 $u$，越靠后的类型越优先放入 $dv$。
+
+经典类型与解法类型1：幂函数 × 三角函数$\int x^n\cos x\,dx$ 或 $\int x^n\sin x\,dx$
+
+将三角函数放入 $dv$（如 $\cos x\,dx = d(\sin x)$）
+通过 $n$ 次分部积分逐次降幂
+
+类型2：幂函数 × 指数函数$\int x^n e^{ax}\,dx$
+
+将指数函数放入 $dv$（如 $e^{ax}\,dx = \frac{1}{a}d(e^{ax})$）
+逐次降幂至 $x^0$
+
+类型3：幂函数 × 对数函数$\int x^n \ln x\,dx$
+
+将对数函数选为 $u$（$\ln x$ 求导得 $\frac{1}{x}$，可消去 $x$ 幂）
+幂函数放入 $dv$
+
+类型4：指数函数 × 三角函数$\int e^{ax}\sin(bx)\,dx$ 或 $\int e^{ax}\cos(bx)\,dx$
+
+任选其一放入 $dv$（通常选三角函数）
+两次分部积分后出现循环，解方程求得原积分
+
+
+高级技巧与注意事项技巧1：隐藏的 $dv$当被积函数为分式时，常将分母或其部分放入 $dv$：
+\int \frac{x\arcsin x}{\sqrt{1-x^2}}\,dx令 $u=\arcsin x$，$dv=\frac{x}{\sqrt{1-x^2}}dx$，则 $v=-\sqrt{1-x^2}$
+技巧2：凑微分调整对于 $\int \frac{x}{e^{2x}}\,dx$，可改写为 $\int x e^{-2x}\,dx$
+
+令 $u=x$，$dv=e^{-2x}dx$
+则 $du=dx$，$v=-\frac{1}{2}e^{-2x}$
+代入公式：$-\frac{1}{2}xe^{-2x} + \frac{1}{2}\int e^{-2x}dx$
+
+技巧3：多次分部积分\int x^2 e^x\,dx = x^2 e^x - 2\int x e^x\,dx需连续使用分部积分，直到幂函数降为常数
+技巧4：递推关系某些积分可建立递推公式：
+\int x^n e^x\,dx = x^n e^x - n\int x^{n-1} e^x\,dx技巧5：组合拆分对于 $\int e^x(\sin x + \cos x)\,dx$，可拆分为两个分部积分，但更简单的方法是观察导数关系：$d(e^x \sin x) = e^x(\sin x + \cos x)dx$
+
+常见易错点
+符号错误：公式中的减号易漏写
+$v$ 计算错误：求 $v$ 时积分常数可省略（因最后会抵消）
+选择不当：违反”反对幂指三”可能导致积分更复杂
+循环处理：$\int e^x \sin x\,dx$ 类问题，移项时注意系数
+
+
+典型例题例1：对数函数\int \ln x\,dx = x\ln x - \int x\cdot\frac{1}{x}dx = x\ln x - x + C例2：反三角函数\int \arcsin x\,dx = x\arcsin x - \int \frac{x}{\sqrt{1-x^2}}dx = x\arcsin x + \sqrt{1-x^2} + C例3：循环积分\int e^x \sin x\,dx
+第一次：$u=\sin x$，$dv=e^x dx$，得 $e^x \sin x - \int e^x \cos x\,dx$
+第二次：对 $\int e^x \cos x\,dx$ 再分部积分
+得方程：$I = e^x \sin x - e^x \cos x - I$
+解得：$I = \frac{e^x(\sin x - \cos x)}{2} + C$
+
+例4：含负指数\int \frac{\arctan e^x}{e^{2x}}\,dx = -\frac{1}{2}\int \arctan e^x\,d(e^{-2x})令 $u=\arctan e^x$，$dv=d(e^{-2x})$，需注意 $du=\frac{e^x}{1+e^{2x}}dx$
+
+特殊情形处理
+只有一类函数：如 $\int \ln x\,dx$，视为 $1\cdot\ln x\,dx$
+乘积含三个因子：先组合两个放入 $dv$，或换元简化
+分母复杂：考虑整体代换或分部积分后消去分母
+定积分：计算时先求原函数，注意上下限代入
+
+还有更重要的一点是不要被形式迷惑了双眼，$\frac{1}{\cos x^2}$是什么啊？不认识？这就不对了我认为，直接先表示回去就行了，这下认出来了（然后看到对$\sec x$求导时不要忘记公式，还在企图自己推导
+商的导数逆运算（反向商法则）在积分中，有时会遇到形如 $\frac{u’v - uv’}{v^2}$ 的被积函数，这正是商函数 $\left( \frac{u}{v} \right)’$ 的导数。因此，可以直接写出原函数 $\frac{u}{v} + C$。
+
+核心识别技巧
+分母为平方形式：通常为 $v^2$ 或可化为 $v^2$。
+分子为两项之差：且每项均为两个函数的乘积（即 $u’v$ 和 $uv’$）。
+找出 $u$ 和 $v$：从分母中猜测 $v$（通常为分母的“一部分”），再根据分子确定 $u$。
+
+
+一般步骤设被积函数为 $\frac{P(x)}{Q(x)}$：
+
+尝试将 $Q(x)$ 写成 $v^2$ 的形式（或类似）。
+观察 $P(x)$ 是否能表示为 $u’v - uv’$。
+若可以，则积分结果为 $\frac{u}{v} + C$。例题：\int\frac{xf'(x)-(1+x)f(x)}{x^2e^x}\,dx
+
+
+分母：$x^2 e^x = (x e^x)^2 \cdot e^{-x}$？实际上，直接考虑函数 $\frac{f(x)}{x e^x}$ 的导数。
+设 $v = x e^x$，则 $v’ = (1+x)e^x$。
+设 $u = f(x)$，则 $u’ = f’(x)$。
+计算 $\left( \frac{u}{v} \right)’ = \frac{u’v - uv’}{v^2} = \frac{f’(x) \cdot x e^x - f(x) \cdot (1+x)e^x}{(x e^x)^2} = \frac{x f’(x) - (1+x)f(x)}{x^2 e^x}$。
+因此，原积分 $= \frac{f(x)}{x e^x} + C$。
+
+常用构造
+对于 $\int \frac{f’(x)g(x) - f(x)g’(x)}{g(x)^2} dx$，结果为 $\frac{f(x)}{g(x)} + C$。
+对于 $\int \frac{f’(x)g(x) - f(x)g’(x)}{[g(x)]^n} dx$（$n \neq 2$），通常需要调整。
+
+]]></content>
+      <tags>
+        <tag>数学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>几何计算习题笔记</title>
+    <url>/ZestfulYK-blog/2025/12/11/%E5%87%A0%E4%BD%95%E8%AE%A1%E7%AE%97%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[凹凸多边形的判断重要知识：叉积几何意义：符号代表了叉积两个向量的转向： > 0 逆时针 &lt; 0 顺时针 = 0 共线
+基本原理对于连续三个点A、B、C：叉积 = (B.x - A.x)  (C.y - B.y) - (B.y - A.y)  (C.x - B.x)要是是向量的话是：a.x  b.y- a.y  b.x
+这个叉积实际上计算的是向量 AB 到向量 BC 的旋转方向。
+实现方法可视化解释考虑四边形$ABCD$，我们按顺序（如逆时针）检查每个顶点：
+如果所有顶点的叉积都保持同号（全部为正或全部为负），说明多边形所有顶点都朝同一个方向”拐弯”，这就是凸多边形。
+C(2,2) ────── D(0,2)│              ││              │B(2,0) ────── A(0,0)
+在顶点A处：
+
+向量DA = A - D = (0-0, 0-2) = (0, -2)
+向量AB = B - A = (2-0, 0-0) = (2, 0)
+DA × AB = 0 0 - (-2) 2 = 4 &gt; 0（逆时针）
+
+在顶点B处：
+
+向量AB = (2, 0)
+向量BC = C - B = (2-2, 2-0) = (0, 2)
+AB × BC = 2 2 - 0 0 = 4 &gt; 0（逆时针）
+
+凹四边形的反例对于凹四边形，某个顶点会出现相反的转向：
+     D(1,2)    /B(1,1) ← 凹点A(0,0)─-───────C(3,0)  
+在凹点B处，转向会与其他顶点相反。
+算法实现步骤
+计算各个叉积
+
+cp₁ = 叉积(向量AB, 向量BC)  // 在点B处cp₂ = 叉积(向量BC, 向量CD)  // 在点C处cp₃ = 叉积(向量CD, 向量DA)  // 在点D处cp₄ = 叉积(向量DA, 向量AB)  // 在点A处
+
+
+判断符号一致性：
+如果所有$cp_i \geq 0$，则为逆时针排列的凸四边形
+如果所有$cp_i\leq 0$，则为顺时针排列的凸四边形
+否则为凹四边形
+
+
+
+
+
+实例代码struct point&#123;double x,y;&#125;;double chaji(const point &amp;a,const point &amp;b,const point &amp;c&#123;  point v1,v2;//计算向量  v1.x=b.x-a.x; v1.y=b.y-a.y;  v2.x=c.x-b.x; v2.y=c.y-b.y;  return v1.x*v2.y-v1.y*v2.x;  //转换成向量以后，x和y交换着乘&#125;void solve()&#123;  point a,b,c,d;  cin&gt;&gt;a.x&gt;&gt;a.y;  cin&gt;&gt;b.x&gt;&gt;b.y;  cin&gt;&gt;c.x&gt;&gt;c.y;  cin&gt;&gt;d.x&gt;&gt;d.y;  double cj1=chaji(a,b,c);  double cj2=chaji(b,c,d);  double cj3=chaji(c,d,a);  double cj4=chaji(d,a,b);  if((cj1&gt;0&amp;&amp;cj2&gt;0&amp;&amp;cj3&gt;0&amp;&amp;cj4&gt;0)||(cj1&lt;0&amp;&amp;cj2&lt;0&amp;&amp;cj3&lt;0&amp;&amp;cj4&lt;0))&#123;    cout&lt;&lt;&quot;Yes&quot;&lt;&lt;endl;//要同号才行  &#125;  else cout&lt;&lt;&quot;No&quot;&lt;&lt;endl;&#125;signed main()&#123;    solve();    return 0;&#125;
+直线的计算写在前面的话傻逼C++的double的精度不高所以表示直线建议使用$Ax+By+C=0$
+然后就变简单了喵~
+计算公式\begin{cases}
+A=p2_y-p1_y \\
+B=p1_x-p2_x \\
+C=p2_x*p1_y-p1_x*p2_y
+\end{cases}之后不要忘记除以他们的最大公约数，用来去重，这点非常重要，因为可能产生倍数
+例题K-colinear Line
+这一题要求我们计算经过k个点的直线数量，这里最重要的是理解怎么消去除法。这题的做法还是蛮多样的，好友qinye_leaf的解法是：(x_1-x_0)(y-y_0)==(y_1-y_0)(x-x_0)=>\frac{x_1-x_0}{x-x_0}=\frac{y_1-y_0}{y-y_0}此外上面的做法也是可行的，总之消去除法，然后防止重复(这是一个好问题)
+圆的计算$\pi$的取值建议
+如果有了规定值，那么直接使用
+没有的话，处于精度考虑，可以使用$\arccos (1.0)$来代替、多边形的计算
+
+几何图形面积计算例一例题：P. Area of a Star需要我们计算多角形的面积这一题的话有两种做法，一种是直接分成$2*n$个小三角形，而每一个三角形的三个内角都是已知的，因此可以直接计算。另外一种做法是发现可以整体减空白，稍微复杂一点，但也可行。
+补充知识复习一下正弦定理：\frac{a}{\sin \alpha}=\frac{b}{\sin \beta}=\frac{c}{\sin \gamma}=2R因此这一题只知道三个角和一条边是可以直接计算的。
+例二例题：B. Mister B and Angle in Polygon需要我们在多边形上找到三个点，使得构成的角度和给定角度最接近。
+重要观察：在正n边形中，从一个顶点出发，连接所有其他不相邻的顶点（即除相邻两个顶点外的所有顶点），这些连线会将这个顶点的内角等分成$n−2$个相等的角，每个角的度数为 $\frac{180}{n}$。
+
+证明：把多边形放到一个圆里面，然后发现相同弦所对的角相等，所以原命题是成立的
+
+推论：那么在这个多边形上任取三个点构成的角也必然是$\frac{180}{n}$.
+
+证明：和刚才一样，只要证明每个条角所对的弦都能在同一个顶点上构造出来
+
+所以解出这题的步骤是：
+
+先看是否大于等于最大角，如果是，那么输出1 2 3
+否则计算中间值用$\frac{180}{n}$的倍数代替。
+
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>华中农业达大学迎新赛题解与反思</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E5%8D%8E%E4%B8%AD%E5%86%9C%E4%B8%9A%E8%BE%BE%E5%A4%A7%E5%AD%A6%E8%BF%8E%E6%96%B0%E8%B5%9B%E9%A2%98%E8%A7%A3%E4%B8%8E%E5%8F%8D%E6%80%9D/</url>
+    <content><![CDATA[M-终极考验
+这题的大致思路是对的，但是最后处理差分时，直接选择了min(i+x,n)，这个就不对了，因为我们要的不是二选1，而是只有在满足要求时才处理。所以把min改成if判断就行了，下次需要注意这个逻辑问题。
+H-对决
+这个题目是纯暴力的搜索题，那么只要一个一个判断就好了，但是此处注意循环范围是$\leq n-4$而不是$&lt;n-4$.最好自己先之上推导一下再提交
+B-爱的魔法
+这一题一开始的错误原因是没有注意到交换最接近的会导致得到的不是最大的数字，例如1999，交换以后是9199是不对的，所以要倒遍历。建议自己先多造几组数据再提交，包括一些边界情况等等。随机数也不错（较小范围能手推的）
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>定积分笔记</title>
+    <url>/ZestfulYK-blog/2025/12/10/%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[定义式\Sigma_{i=1}^nf(\xi_i)\Delta x_i几何意义曲线和x轴，直线$x=a$,$x=b$围成的面积
+用定义式写简单积分例题：\int_0^1x^2\,dx首先先把$[0,1]$分成n等份，每份是$\frac{1}{n}$然后按照定义式，取$xi=\frac{i}{n},\xi_i=\frac{i}{n}$所以：$$\int_0^1x^2\,dx=\Sigma{i=1}^nf(\xii)\Delta x_i=\Sigma{i=1}^n(\frac{i}{n})^2·\frac{1}{n}=\frac{1}{n^3}\Sigma_{i=1}^ni^2=\frac{1}{n^3}\frac{1}{6}(n+1)(2n+1)=\frac{n(n+1)(2n+1)}{6n^3}=\frac{1}{3}$$最后记得对n取一下极限就行了
+把极限改写成积分形式由于积分是可以转化为极限的，那么同样也可以反过来计算。
+例题：这里需要弄清改把什么看作是$\xi_i$,什么又看做是$\Delta x_i$不过通常是取相同的数
+
+1.\lim_{n\to \infty}\frac{1}{n}\Sigma_{i=1}^n\sqrt{1+\frac{i}{n}}然后会有一个非常重要的观察点，必然会有$\frac{i^a}{n^a}$和$\frac{a}{n}$出现，这就说明了你划分为n份的范围和每个区间的取值情况。
+
+所以对上面这个式子进行变形得到：\lim_{n\to \infty}\Sigma_{i=1}^n\frac{1}{n}\sqrt{1+\frac{i}{n}}所以每一份是$\frac{1}{n}$,每个区间的取值是$\frac{i}{n}$.答案为：\int_0^1\sqrt{1+x}但是就一定要这么理解吗？实际上，我们也可以把1-2的区间分成n份，那么每一份还是$\frac{1}{n}$,但是每份的取值变成了$1+\frac{i}{n}$。因此答案也可以是：\int_1^2\sqrt{x}
+定积分的性质：性质1\int_a^bf(x)\,dx=-\int_b^af(x)推论\int_a^af(x)=0解释
+代数角度$\Delta x_i=\frac{b-a}{n}$所以在上下反转时会变号
+几何角度：理解为有向的面积性质2
+
+\int_a^b\,dx=b-a解释
+相当于一个矩形的面积，宽是1，长是b-a。性质3 线性性
+
+此性质又称作不定积分的线性性即满足数乘和加减法数乘：
+\int_a^bkf(x)\,dx=k\int_a^bf(x)\,dx加减法：
+\int_a^bf(x)\pm g(x)\,dx=\int_a^bf(x)\,dx\pm\int_a^bg(x)\,dx实际上，这个性质可以转换为极限的线性性
+性质4 拆分定理\int_a^bf(x)\,dx=\int_a^cf(x)\,dx+\int_c^bf(x)\,dx实际上，这个公式就是把要计算的面积拆成多个部分当位置不一样的时候，也可以看成是减去一部分
+性质5 保号性不定积分的保号性如果有在$[a,b]$上$f(x)\geq0$那么
+\int_a^bf(x)\,dx\geq0其实这又是极限的保号性
+然后就有：如果$f(x)\geq g(x)$
+\int_a^bf(x)\,dx\geq\int_a^bg(x)\,dx性质6\int_a^bf(x)\,dx\leq ∫_a^b|f(x)|\,dx\,(a]]></content>
+      <tags>
+        <tag>数学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>前缀和笔记</title>
+    <url>/ZestfulYK-blog/2025/12/08/%E5%89%8D%E7%BC%80%E5%92%8C%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[前缀和定义
+前缀和（Prefix Sum）是一种重要的预处理技术，能在O(1)时间内查询区间和，在算法竞赛和面试中应用广泛。以下是前缀和的主要应用场景和变种：
+1. 基本前缀和
+计算$\Sigma_{i=1}^n a_i$的值，用来求区间和
+
+
+例如：// 一维前缀和vector&lt;int&gt; pre(n+1, 0);for (int i = 1; i &lt;= n; i++) &#123;    pre[i] = pre[i-1] + a[i];&#125;// 查询区间[l, r]的和int sum = pre[r] - pre[l-1];
+2. 二维前缀和用于计算矩阵的和$\Sigma{i=1}^n\Sigma{j=1}^na_{ij}$
+vector&lt;vector&lt;int&gt;&gt; pre(m+1, vector&lt;int&gt;(n+1, 0));for (int i = 1; i &lt;= m; i++) &#123;    for (int j = 1; j &lt;= n; j++) &#123;        pre[i][j] = a[i][j] + pre[i-1][j] + pre[i][j-1] - pre[i-1][j-1];    &#125;&#125;// 查询子矩阵(x1,y1)-(x2,y2)的和int sum = pre[x2][y2] - pre[x1-1][y2] - pre[x2][y1-1] + pre[x1-1][y1-1];
+前面两个的例题比较多，则行里就不举例了。
+
+3. 前缀和与哈希表结合这是最常用的变种，用于解决”区间和为k的区间个数”问题：
+int countSubarrays(vector&lt;int&gt;&amp; nums,int k) &#123;    unordered_map&lt;int,int&gt; mp; // 前缀和 -&gt; 出现次数    mp[0] = 1; // 空数组的前缀和为0    int sum=0,count=0;    // sum拿来求前缀和，count求和为k的次数    for(int num:nums)&#123;        sum+=num;        // sum - target = pre[j]  =&gt; pre[j] = sum - k        if(mp.find(sum-k)!=mp.end())            count+=mp[sum-k];        mp[sum]++;    &#125;    return count;&#125;
+上面的代码思路解释，首先，先计算前缀和的值，然后加到map里面，之后看有没有出现过sum-k这种前缀和，如果有，那么这一段的和就是k了，且有$mp[sum-k]$个，这样就计算出了答案
+例如：K-大师和他的领域这一题要我们找存在几个区间满足既含有k又满足k是这个区间的中位数。那么步骤：1.令小于k的为-1，大于k的为1，等于k的为02.计算前缀和，统计前缀和一样的区间，这样区间内的和为0，说明k是这个区间的中位数，再使用$\Sigma{i=1}^{map.size()}C{m_i}^2$计算总数就行了，这样得到可能的区间。3.但是还要保证区间内包含k，所以找到k位置，在两个k间的需要再用相同方法计算一次，4.最后减去即可
+就是说，要统计合法区间时，都可以把题目的要求变形一下，然后就可以使用这个思路了
+4. 前缀和与差分数组差分数组用于区间修改，单点查询：这一个没什么好说的，就是差分和前缀的互逆关系
+// 初始化差分数组vector&lt;int&gt; diff(n+2, 0);diff[1] = a[1];for (int i = 2; i &lt;= n; i++) &#123;    diff[i] = a[i] - a[i-1];&#125;// 区间[l, r]增加valvoid rangeAdd(int l, int r, int val) &#123;    diff[l] += val;    diff[r+1] -= val;&#125;// 恢复原数组for (int i = 1; i &lt;= n; i++) &#123;    a[i] = a[i-1] + diff[i];&#125;
+5. 前缀最大/最小值// 前缀最大值vector&lt;int&gt; preMax(n+1, INT_MIN);for (int i = 1; i &lt;= n; i++) &#123;    preMax[i] = max(preMax[i-1], a[i]);&#125;// 后缀最小值vector&lt;int&gt; sufMin(n+2, INT_MAX);for (int i = n; i &gt;= 1; i--) &#123;    sufMin[i] = min(sufMin[i+1], a[i]);&#125;
+6. 前缀异或和用于处理区间异或问题：
+vector&lt;int&gt; xorPre(n+1, 0);for (int i = 1; i &lt;= n; i++) &#123;    xorPre[i] = xorPre[i-1] ^ a[i];&#125;// 区间[l, r]的异或和int xorsum = xorPre[r] ^ xorPre[l-1];
+7.二维差分数组// 初始化二维差分vector&lt;vector&lt;int&gt;&gt; diff(m+2, vector&lt;int&gt;(n+2, 0));// 子矩阵(x1,y1)-(x2,y2)增加valvoid rangeAdd2D(int x1, int y1, int x2, int y2, int val) &#123;    diff[x1][y1] += val;    diff[x2+1][y1] -= val;    diff[x1][y2+1] -= val;    diff[x2+1][y2+1] += val;&#125;// 恢复原矩阵vector&lt;vector&lt;int&gt;&gt; res(m+1, vector&lt;int&gt;(n+1, 0));for (int i = 1; i &lt;= m; i++) &#123;    for (int j = 1; j &lt;= n; j++) &#123;        res[i][j] = res[i-1][j] + res[i][j-1] - res[i-1][j-1] + diff[i][j];    &#125;&#125;
+然后很重要的一点是，有时可能是假设前缀和数组，最后再反推原数组来进行构造。
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>压行技巧</title>
+    <url>/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/</url>
+    <content><![CDATA[如何给你的代码压行？如果不会压行，你的代码看起来会是这样的：
+int ml(vector&lt;int&gt; s, int n)&#123;    int m = s[0];    for (int i = 0; i &lt;= n; i++)    &#123;        if (s[i] &gt; m)            m = s[i];    &#125;    return m;&#125;
+整整用了9行！实际上其实根本不需用那么多行：int ml(vector&lt;int&gt; s,int n)&#123;    int m=s[0];    for(int i=0;i&lt;=n;i++)&#123;        if(s[i]&gt;m)m=s[i];    &#125;    return m;&#125;
+当然也可以更短：int ml(vector&lt;int&gt; s,int n)&#123;    int m=s[0];    for(int i=0;i&lt;=n;i++) if(s[i]&gt;m) m=s[i];    return m;&#125;那么问题来了，怎么在不影响代码运行的情况下合理的压行呢？
+判断类循环类的压行技巧判断类如果判断语句仅一行，可以考虑压行：
+if(a==1) sum++;else sum--;//或者这样if(a==1)    sum++;//可以通过缩进来方便区分
+两句的话，压行可以考虑用大括号包起来压行前提是你觉得看着没影响
+if(a==1) &#123;sum++;a=2;&#125;
+注意在大括号里的每一句都是要加上封号的，因为这一段代码实际上等价于：
+if(a==1)&#123;    sum++;    a=2;&#125;
+循环类压行也和判断的一样，可以这么压行：
+for(int i=1;i&lt;=n;i++) cout&lt;&lt;1&lt;&lt;endl;//或者这样：for(int i=1;i&lt;=n;i++)    cout&lt;&lt;1&lt;&lt;endl;
+如果是输出的话，其实可以这么写：
+for(int i=1;i&lt;=n;i++) cout&lt;&lt;i&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;
+因为C++cout&lt;&lt;endl;其实是在循环之外的，所以这么写是正确的
+头文件压行下面送给大家万能头文件：
+#include&lt;bits/stdc++.h&gt;
+其他技巧#define ll long long#define rep(1,n) for(int i=1;i&lt;=(n);i++)ll n;int main()&#123;    rep(1,n) cout&lt;&lt;&quot;*&quot;; cout&lt;&lt;endl;&#125;
+通过define来减少代码长度，增加可读性
+一些非常有用的C++自带函数sort(a,a+n);//a为数组，n为a的大小__gcd(x,y);//x，y的最大公约数x=1&lt;&lt;n;//2的n次方
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>广工月赛</title>
+    <url>/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/</url>
+    <content><![CDATA[ZestfulYK的战绩
+比赛难度中等，以基础题为主，拼尽全力战胜少量难题
+部分代码F
+分析很不错的博弈题目，使我的大脑旋转，最后打表做出来了
+
+题目链接
+
+代码:#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long longint main()&#123;    ll n,m;    cin&gt;&gt;n&gt;&gt;m;    if(n==0&amp;&amp;m==0) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==1&amp;m==0) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;    else if(n==2&amp;m==0) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==3&amp;m==0) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==0&amp;m==1) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;    else if(n==0&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==0&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;//    else if(n==1&amp;m==1) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==1&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==1&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;//    else if(n==2&amp;m==1) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==2&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==2&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;//    else if(n==3&amp;m==1) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==3&amp;m==2) cout&lt;&lt;&quot;Bob&quot;&lt;&lt;endl;    else if(n==3&amp;m==3) cout&lt;&lt;&quot;Alice&quot;&lt;&lt;endl;&#125;
+J
+分析这题目也不错，但其实看代码找规律就行了
+
+题目链接
+
+代码:
+#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long longint main()&#123;    ll n; cin&gt;&gt;n;    ll s=sqrt(n);    if(s*s!=n) s++;    ll last=n%s;    for(int i=last;i&gt;=1;i--) cout&lt;&lt;i&lt;&lt;&quot; &quot;;    for(int j=1;j&lt;=n/s;j++)&#123;        for(int i=last+j*s;i&gt;last+(j-1)*s;i--) cout&lt;&lt;i&lt;&lt;&quot; &quot;;    &#125;&#125;]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>容斥原理笔记</title>
+    <url>/ZestfulYK-blog/2025/12/09/%E5%AE%B9%E6%96%A5%E5%8E%9F%E7%90%86%E7%AC%94%E8%AE%B0-1/</url>
+    <content><![CDATA[容斥原理的定义以及计算方式
+容斥原理是十分有用的一种计算方法，通常用于子集统计中
+该原理通过交替加减不同层次交集的大小，确保每个元素在并集中只被计算一次。虽然描述中的“只被两个集合重复的”可能指恰好属于两个集合的元素，但容斥原理实际处理的是所有交集（包含属于更多集合的元素），并通过后续的加减进行修正。
+原理：整体减空白的思想，不过也有韦恩图的一点思想，当子集数量大于3时，就有些抽象了，这时我们就需要总结一下规律。基本公式
+
+|A_1\cup A_2\cup ··· \cup A_n|=\Sigma|A_i|-\Sigma|A_i\cap A_j|+\Sigma|A_i\cap A_j\cap A_k|+(-1)^{n+1}|A_1\cap A_2 \cap ···\cap A_n|
+先加上所有子集，再减去每两个子集的重叠部分，再加上每三个子集的重叠部分···最后再是所有子集的交集。重要观察：每一个求和前面的符号只和选择了几个集合有关，所以在写代码的时候就会变得简单了。代码实现
+
+以题目Count Good Numbers为例：题目要求我们统计因子里不含2,3,5,7的所有在区间$[l,r]$里的数字总量(翻译成人话)那么这不就是容斥原理吗？
+ll count_divisible(ll l, ll r, ll d) &#123;    ll first= (l%d==0) ? l : l+d-l%d;  // 第一个能被 d 整除的数    ll last=r-r%d;                         // 最后一个能被 d 整除的数    if (first&gt;last) return 0;                 // 如果没有这样的数    return (last-first)/d+1;&#125;void solve()&#123;    ll l,r;    cin&gt;&gt;l&gt;&gt;r;    int primes[]=&#123;2,3,5,7&#125;;               // 质数数组    ll ans=0;    // 枚举所有子集（包括空集），共 2^4 = 16 个    for(int mask=0;mask&lt;(1&lt;&lt;4);mask++) &#123;        ll d=1;        int cnt=0;                           // 子集中质数的个数        for(int i=0;i&lt;4;i++)&#123;            if(mask&amp;(1&lt;&lt;i))&#123;                d*=primes[i];                cnt++;            &#125;        &#125;        // 根据子集大小的奇偶性决定符号        int sign=(cnt%2==0)?1:-1;        ans+=sign*count_divisible(l,r,d);    &#125;    cout&lt;&lt;ans&lt;&lt;endl;&#125;
+
+主要思想：用二进制模拟是否要取得这一个集合，然后统计二进制中1出现的次数，即选择的集合数，来决定要加还是减。这样就大大减少了代码量，简单可维护性高。
+
+备注：整体减空白的思想可以看华农的K题来学习，这里就不再列举了
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>异或笔记</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E5%BC%82%E6%88%96%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[一、 异或的基本性质（基石）记住这四条，其他大多可以推导：
+
+归零律：a ⊕ a = 0
+恒等律：a ⊕ 0 = a
+自反性（交换律与结合律的推论）：a ⊕ b ⊕ a = b
+交换律与结合律：运算顺序和分组不影响结果。这使得前缀异或成为可能。
+
+二、 前缀异或：子数组问题的利器这是处理子数组异或和查询最核心的技巧，类似于前缀和。
+
+定义：设 pre[i] = a[1] ⊕ a[2] ⊕ ... ⊕ a[i]，并约定 pre[0] = 0。
+核心公式：a[l] ⊕ a[l+1] ⊕ ... ⊕ a[r] = pre[r] ⊕ pre[l-1]
+原理：pre[r] ⊕ pre[l-1] = (前缀到r) ⊕ (前缀到l-1)，根据结合律和归零律，相同的部分（前l-1项）抵消，剩下就是区间 [l, r] 的异或和。
+
+
+应用场景：
+快速求任意子数组异或和。
+将“子数组异或和为0”的条件转化为 pre[r] == pre[l-1]。这是解题的关键一步！
+问题转化为对前缀异或数组 pre 的分析，常结合哈希表（unordered_map）来统计次数、寻找配对。
+
+
+
+三、 位运算的独特性质（解题突破口）
+不进位加法/减法：异或在每一位上独立操作。a ⊕ b 在二进制下，每一位的规则是“相同为0，不同为1”。这暗示我们可以按位考虑问题。
+判断奇偶性（结合律的妙用）：
+多个数异或，结果的最低位 等于 所有数最低位的异或。
+而一个数二进制最低位为 1 代表奇数，为 0 代表偶数。
+推论：在一堆数中，异或结果的奇偶性 等于 所有数奇偶性的异或。这在一些博弈或奇偶分类问题中有用。
+
+
+与加法的关系：a ⊕ b &lt;= a + b。等号成立当且仅当 a 和 b 的二进制表示没有同时为1的位（即 a &amp; b == 0）。这个性质在涉及“最大异或和”与“和”的比较时常用。
+构造互补对：对于任意数 x，存在唯一的数 y，使得 x ⊕ y = (全1的二进制串)，这个 y 等于 ~x（在限定位数下）。在构造题中，常用 (1&lt;&lt;k)-1 - x 来得到与 x 在 k 位下每一位都相反的数。四、 经典题型与技巧
+寻找唯一出现奇数次的数：利用 a⊕a=0，将所有数异或，出现偶数次的会两两抵消，结果就是那个出现奇数次的数。
+寻找两个只出现一次的数（其他出现两次）：
+第一步：将所有数异或，得到 x = a ⊕ b（a, b 为所求）。
+第二步：找到 x 的任意一个为 1 的二进制位。这一位意味着 a 和 b 在这一位上不同。
+第三步：根据这一位将原数组分成两组，分别异或，得到的两个结果就是 a 和 b。
+
+
+最大/最小异或对问题：
+暴力：O(n^2) 对于大数据不行。
+优化（O(n*logC)）：使用01-Trie（字典树）。将数字按二进制从高位到低位插入Trie，查询时尽量“走相反位”可以得到最大异或值，“走相同位”可以得到最小异或值。这是必须掌握的高级数据结构。
+
+
+异或相关的构造题（如你刚才遇到的）：
+核心目标：控制前缀异或数组 pre 的值。
+常用手段：
+让 pre 数组的值是 0 到 n 的一个排列，然后微调（例如交换两个值）来满足特定区间异或为0的条件。
+利用性质：如果 pre[l-1] = pre[r]，则区间 [l, r] 异或为0。要保证其他区间不为0，就要保证其他任意 pre[i] 与 pre[j] 都不相等（除了我们特意制造的那一对相等）。
+注意题目对 a[i] 取值范围的限制（如 1 &lt;= a[i] &lt;= 1e9），这要求 pre[i] ⊕ pre[i-1] 的结果必须在这个范围内。通常用连续整数构造 pre 可以满足。
+
+
+
+
+
+五、 做题时的注意事项（避坑指南）
+注意数据范围和溢出：你刚才遇到的问题就是典型。当使用2的幂构造时，2^30 ≈ 1e9，所以区间长度不能超过30。必须时刻检查构造值是否在允许范围内。
+小心 0：异或中 0 是单位元，非常特殊。在构造时，如果允许元素为 0，可能会意外产生多个异或为0的子数组（例如单个元素为0）。题目常要求正整数来避免这种情况。
+前缀异或的初始化：务必定义 pre[0] = 0，这样才能正确表示从 a[1] 开始的子数组。
+调试方法：对于小数据，可以暴力计算所有子数组的异或和来验证你的构造是否正确。
+思维转化：遇到“所有子数组异或和不为0”这类强条件，要立刻想到它等价于“前缀异或数组 pre 中所有元素两两不同（且 pre[0]=0 也不与其他重复）”。这大大简化了问题。
+六、 推荐的巩固练习方向
+基础：LeetCode 136（只出现一次的数字）、LeetCode 268（缺失数字）。
+
+进阶：LeetCode 260（只出现一次的数字 III）、LeetCode 421（数组中两个数的最大异或值）（必做，练习01-Trie）。
+综合与构造：Codeforces 上的许多构造题（难度 1500-1800），比如你刚才做的这道题的原型。多观察题解中是如何利用前缀异或性质进行构造的。
+
+总结一下，异或问题的核心思路是：利用前缀异或转化区间问题，利用归零律和结合律进行抵消与配对，利用位独立性进行按位处理或使用Trie。多练习，你会对这种“魔力”运算越来越有感觉。
+因为异或可以逆运算，所以此处直接先算1-n的异或和再和现在的异或和异或一下就行了。这样就找到了那个没有出现过的数字。找出现奇数次的数字时，可以直接异或，因为只有一个数字满足这个要求，那么最后剩下的那个就是无法完成匹配的数字，就是答案了。找两个只出现一次的数字时，也是先异或得到$x=x_1\oplus x_2$，然后看不一样的那一位来分开数组。解释：就是看这一位是否是1，然后就和只出现一次的数那题一样了。出现两次的数，分组一定在一起，那么就相互异或抵消了。
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我这学期犯过的唐</title>
+    <url>/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/</url>
+    <content><![CDATA[不知道vector的size是size_t类型
+因为是size_t所以直接加减会出错，比如减成负数的时候。
+
+内层循环变量写错
+这个会导致外层循环少了几次
+
+sort里面的数据范围没开正确
+例如要对n* m的数据排序，却只写了n
+
+不看清读入顺序
+看清读入的是有序的还是乱序的，不要被样例蒙蔽了双眼
+
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ACM数字类题目</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E6%95%B0%E5%AD%97%E7%B1%BB%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[数字类题目
+定义：通常有乘除法，或者时分解质因数之类的
+
+重要观察
+$2^{30} &gt;= 10^9$所以一般不需要几个数就能乘到上界，除法的话同理，分解质因数实际上也算乘法。因此这类题目往往可以比较暴力的解决。因为只要枚举这几个位置即可。
+重要例题：
+1.题目传送门Strange Machine
+
+重要观察：$log_2(10^9)=30$,所以除去全是1的情况，每次除2最多30次循环就结束了，因此可以暴力解决。除了有1的情况，因为n最大为20，所以最多$20*30$每个数据。
+
+2.题目传送门Even Modulo Pair
+
+重要观察，要塞大量数据来导致超时的话是不可能的，因为在30个数内必然能找到。理由：首先如果只有偶数，那么一定有解。（因为严格递增）  当只有奇数时：  因为当$y&lt;2x$时，必然有$y \mod x \ = \ y-x \ = \text{偶数}$,因此要构造较大的数据的话，只能让$y \geq x 2$  要让$y \mod x \ !=  \text{偶数}$，那么最小只能构造$y=x*2$那么和上一题就一样了。
+
+3.题目传送门Add 0 or K
+
+题目理解，首先要求吧原数组每个元素加上K的若干倍，构成含有相同因子的数组。
+重要观察：加完以后，因为含有相同的因子，所以考虑把每个加完以后的数字拆分，得到一串质数，而前29个质数的乘积已经大于$10^9$了，所以直接可以算出最终的共同因子。接下来对最后结果化简$a_i+c_ik \equiv 0  (mod\ g)$,所以$c_i=(-a_i)inv_k$而k存在$mod \ g$下有逆元，需要g和k互质，所以可以简单完成。
+
+4.题目传送门C-区间乘_2025年广东工业大学新生赛（同步赛）
+
+希望我们计算一个区间的乘积，判断是否可能达到给定的输出。
+数据规模n和查询规模q都是$2*10^5$所以不能直接查询。
+重要观察：如果把1去掉算法就能变简单，而如果不是全为1的话，查询数据$x \leq 10^9$，所以当不是1的时候，只要30个2就能超过数据范围了，每个位置计算一下，可以直接提取计算可能出现的数字，故最多$30210^5$次计算，查询$q\log_2(x)$次就行了所以最终时间复杂度是$O(Tcountq\log_2(q))$dirt=（总提交次数-过题数量）/总提交次数
+
+然后注意，只有质因数时可以用，其他的如因子就不行出现奇偶判断的也不要用这个方法，用奇偶性分析特判
+GCD二级结论结论1lcm(a,b)*gcd(a,b)=ab结论2gcd(a,b) = gcd(a,|b-a|)结论3gcd(a,b,c)=1等价于存在ax+by+cz =1结论4gcd(a,b) = g * gcd(a >> k,b >> k)\,(g = 2 ^ k)结论5gcd(a^{n-1},a^{m-1})=a^{gcd(n,m)-1}结论6gcd(f_n,f_m)=f_{gcd(n,m)}斐波那契数列
+数论题目例题
+题目描述：求N个数，相乘等于M
+题目转化，因为相乘等于M，那么得到的每一个数必然都是由M的质因数转化而来的，那么考虑每一个质因数在排列中出现的位置，就得到实际上是求把m个球放到n个不同的盒子里的方案数，每一个质因数都要计算一次，相乘得到答案。那么怎么计算把m个球放到n个不同的盒子里的方案数呢？引用一下某大佬的解释：
+我们回头看看2(球同，盒不同，不允许空盒)。在2的条件下，我们可以给出另一个处理方案：如果我们给每个盒子都放上1个球，那么剩下的n-m个球放入m个盒子里，就不需要管是否有空盒了（因为已经事先给每个盒子都放了一个球）。如果用T(n-m, m)表示加粗部分的方案数量，那么2的答案 = 1（先每个盒子一个球，只有1种放法） * T(n-m, m)。那么显然，T(n-m, m)就是情况3，只不过是n-m个球入m个盒，而不是我们要求的n个球入m个盒。那么我们只需要把2情况里，球的总数量变成n+m个，在上述方案里，就会变成“如果我们给每个盒子都放上1个球，那么剩下的n + m - m = n个球放入m个盒子里，就不需要管是否有空盒了”因此，方案数量在数值上是等于2里，把n替换成n+m的：方案数量 = C(n + m - 1, m - 1)
+
+
+
+那么接下来我们计算阶乘和逆元就能解答了（（怎么这么麻烦，没招了）
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>时空间复杂度笔记</title>
+    <url>/ZestfulYK-blog/2025/12/09/%E6%97%B6%E7%A9%BA%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[2秒时间限制下的可执行操作数一般经验估算
+保守估计：C++在2秒内可执行约 $210^8-410^8$ 次基本操作（加减、比较、赋值等）
+实际表现：
+简单循环操作：约$110^8-210^8$
+复杂操作（除法、取模、函数调用）：约$0.510^8-110^8$
+浮点运算：约$0.310^8-0.510^8$不同复杂度对应的最大数据规模O(1)        -&gt; 几乎无限（&gt;10^9）O(logn)     -&gt; 几乎无限（&gt;10^9）O(n)        -&gt; 约 2×10^8O(nlogn)    -&gt; 约 2×10^7（2000万）O(n√n)      -&gt; 约 2×10^6（200万）O(n²)       -&gt; 约 2×10^4（2万）O(n³)       -&gt; 约 2×10^3（2000）O(2ⁿ)       -&gt; 约 n ≤ 25O(n!)       -&gt; 约 n ≤ 11
+
+
+
+
+实战参考表
+
+
+
+数据规模
+可接受的复杂度
+常见算法
+
+
+
+
+n ≤ 10
+任意（包括O(n!)）
+全排列、暴力搜索
+
+
+n ≤ 20
+O(2ⁿ)
+子集枚举、状态压缩DP
+
+
+n ≤ 100
+O(n³)
+Floyd、简单DP
+
+
+n ≤ 1000
+O(n²)
+二维DP、Dijkstra朴素版
+
+
+n ≤ 10^4
+O(n√n)
+数论分块
+
+
+n ≤ 10^5
+O(nlogn)
+线段树、树状数组、堆
+
+
+n ≤ 10^6
+O(n) 或 O(nlogn)
+前缀和、KMP、单调栈
+
+
+n ≤ 10^7
+O(n)
+筛法、线性DP
+
+
+n ≤ 10^8
+O(n)（必须常数小）
+位运算、简单遍历
+
+
+
+
+256MB内存限制下的数组大小不同数据类型可开数组大小
+
+
+
+数据类型
+字节大小
+最大元素数
+备注
+
+
+
+
+bool
+1字节
+约 2.68亿
+实际比赛中常设为 bool 数组
+
+
+char
+1字节
+约 2.68亿
+
+
+
+int
+4字节
+约 6700万
+常用
+
+
+long long
+8字节
+约 3300万
+
+
+
+double
+8字节
+约 3300万
+
+
+
+结构体（16字节）
+16字节
+约 1600万
+视具体结构而定
+
+
+
+
+// 安全范围（考虑程序其他部分占用）int arr1[10000000];     // 4000万字节 ≈ 38MB ✅int arr2[50000000];     // 2亿字节 ≈ 190MB ✅（接近极限）int matrix1[5000][5000]; // 1亿字节 ≈ 95MB ✅int matrix2[10000][10000]; // 4亿字节 ≈ 381MB ❌（超限）// 多个数组时需累加int arrA[30000000];  // 114MBint arrB[30000000];  // 114MB// 总计228MB ✅（但接近极限）// 危险情况vector&lt;vector&lt;int&gt;&gt; graph(100000);  // 每个vector开销// 虽可能未立即超限，但动态扩展时可能意外超限
+实用安全上限表
+
+
+
+数组类型
+推荐最大规模
+实际内存占用
+安全系数
+
+
+
+
+一维int数组
+≤ 5×10⁷
+≤ 200MB
+留有余地
+
+
+一维long long数组
+≤ 2.5×10⁷
+≤ 200MB
+
+
+
+二维int数组[n][m]
+n×m ≤ 3×10⁷
+≤ 120MB
+常用
+
+
+邻接表（图）
+边数 ≤ 2×10⁶
+变长，通常安全
+
+
+
+位集bitset
+≤ 2×10⁸位
+≤ 25MB
+非常节省
+
+
+
+
+
+快速判断方法时间判断口诀n=10⁵ → 想想O(nlogn)n=10⁶ → 必须O(n)或优化常数n≤5000 → O(n²)或许可行n≤20 → 可能是状压
+空间判断口诀int数组：百万级安全，千万级要小心二维数组：相乘别超千万结构体：注意对齐开销STL容器：额外开销约50%
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>程C笔记</title>
+    <url>/ZestfulYK-blog/2025/12/11/%E7%A8%8BC%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[1. 头文件和命名空间C++ 中的 string 类定义在头文件 string 中，通常使用 std 命名空间。
+s3=strcat(s1,s2);//加在后面int x=strcmp(s1,s2)//返回三种情况,见下面cout&lt;&lt;strlen(s1)&lt;&lt;endl;//输出的是长度，等同于s1.length()strcpy(s1+x1,s2+x2);//把前面的对应部分添加到前面去，完全覆盖之前的内容memcpy(a+x1,b+x2,sizeof(int)*8);//也是把后面的放到前面，只不过需要规定放入的内容sizeof(s1);//考虑后面的&#x27;\0&#x27;，比strlen大1.
+x=strcmp(s1,s2)= 
+\begin{cases}
+ -1  \ \ \ \ \ s1 \leq s2\\
+0\ \ \ \ s1=s2\\
+1\ \ \ \ s1 \geq s2
+\end{cases}memcpy例子：int a[8]=&#123;1,2,3,4,5,6,7,8&#125;;int b[10]=&#123;10,9,8,7,6,5,4,3,2,1&#125;;memcpy(b,a,sizeof(int)*8);for(int i=0;i&lt;10;i++)    cout&lt;&lt;b[i];输出：1234567821
+2.函数int maxGap(int* p, int n)//传入p[0]的地址，能改变在主函数里的值static int t;//静态局部变量，下次还是调用上次的值//例如：int cnm(int p,int q)&#123;	static int t=0;	t+=p+q;	return t;&#125;signed main()&#123;	cout&lt;&lt;cnm(1,2)&lt;&lt;cnm(2,3)&lt;&lt;endl;&#125;
+
+局部变量，全局变量，如果多个声明，那么优先使用内部的数据
+int a=5;int main()&#123;	int a=10,b=20;	for(int i=1;i&lt;=3;i++)&#123;		cout&lt;&lt;a++&lt;&lt;&quot; &quot;&lt;&lt;b&lt;&lt;endl;		&#123;			static a=0;			for(int j=1;j&lt;=5;j++)&#123;				a+=j;			&#125;			b+=a;		&#125;	&#125;&#125;
+
+要根据函数返回的类型来决定函数的类型
+
+要根据函数内的使用变量来决定函数使用的参数值//例如：char* fun(int c)&#123;//程C一般不用string，自己写都行	return &quot;yes&quot;;&#125;int* fun1(int c)&#123;	int a[]=&#123;1,2,3&#125;;	return a;&#125;
+C++变量初始化
+
+int a=10;bool b=1;//b=true;char c=&#x27;c&#x27;;int a[10]=&#123;1,2,3,4&#125;;int a[]=&#123;1,2,3,4&#125;;int a[3][3]=&#123;1,2,3,5,6&#125;;int a[3][3]=&#123;&#123;1,2&#125;,&#123;3,4&#125;&#125;;int solve(int a,int b=10)&#123;//有时可能定义在mian函数前面	return a+b;//有值用值，反之用默认值&#125;
+C++ 插入排序void insertSort(int arr[],int n)&#123;	for(int i=1;i&lt;n;i++)&#123;		int key=arr[i];		int j=i-1;		while(j&gt;=0&amp;&amp;key&lt;arr[j])&#123;//注意不是和相邻元素比较			arr[j+1]=arr[j];			j--;		&#125;		arr[j+1]=key;	&#125;&#125;
+C++斐波那契数列int climbStair(int n)&#123;	if(n&lt;=2) return n;	int prev2=1;	int prev1=2;//注意此处的定义是反过来的，上课被坑到了（	int current;	for(int i=3;i&lt;=n;i++)&#123;		current=prev1+prev2;		prev2=prev1;		prev1=current;	&#125;	return current;&#125;
+汉诺塔问题void digui(int n,char start,char temp,char target)&#123;	if(n==1)&#123;		printf(&quot;%d:%c--&gt;%c\n&quot;,n,start,target);//只有一个直接移动		return;	&#125;	digui(n-1,start,target,temp);//前n-1个到转移柱子上	printf(&quot;%d:%c--&gt;%c\n&quot;,n,start,target);//把第n个移动到目标柱子上	digui(n-1,temp,start,target);//前n-1个到目标柱子上&#125;
+最大公约数函数#defien ll long longll gcd(ll a,ll b)&#123;	if(b==0) return a;	//if(a%b==0) return b;	return gcd(b,a%b);&#125;//pow返回的是浮点型，注意类型的转换
+上机课J题算法原理
+这是$Stern–Brocot$ 树,用于生成全部有理数的一种函数OI wiki 链接：Stern–Brocot 树与 Farey 序列 - OI Wiki
+首先规定$\frac{0}{1}$是0,$\frac{1}{0}$是$\infty$，接下来每次在他们中间插入它们的中位分数，即$\frac{a+c}{b+d}$.
+其次也可以用三元组来计算这些有理分数，先设定\left(\frac{0}{1},\frac{1}{1},\frac{1}{0}\right) 为初始状态，然后每一个节点设\left(\frac{a}{b},\frac{p}{q},\frac{c}{d}\right)计算\left(\frac{a}{b},\frac{a+p}{b+q},\frac{c}{d}\right),\left(\frac{a}{b},\frac{p+c}{q+d},\frac{c}{d}\right)作为左右节点，有用的部分是计算得到的节点
+证明
+考虑矩阵A= \begin{pmatrix} b & d \\ a & c \end{pmatrix}
+
+根是单位阵
+左边的节点是乘上矩阵L = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}
+右边的节点是乘上R = \begin{pmatrix} 1 & 0 \\ 1 & 1 \end{pmatrix}
+当然，加入的节点还是原来的算法
+
+单调性的话自然成立，可以理解为糖水混合，不会比浓度高的浓，也不会比浓度低的淡然后为什么一定是互质即最简呢？
+
+
+根据裴蜀定理
+
+设 𝑎,𝑏 是不全为零的整数。那么，对于任意整数 𝑥,𝑦，都有 $gcd(𝑎,𝑏) ∣𝑎𝑥 +𝑏𝑦$ 成立；而且，存在整数 𝑥,𝑦，使得 $𝑎𝑥 +𝑏𝑦 =gcd(𝑎,𝑏)$ 成立。
+
+这里我们取x=y=1，那么就有新的分子分母也互质。
+]]></content>
+      <tags>
+        <tag>数学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>构造操作类题目</title>
+    <url>/ZestfulYK-blog/2025/12/16/%E6%9E%84%E9%80%A0%E6%93%8D%E4%BD%9C%E7%B1%BB%E9%A2%98%E7%9B%AE/</url>
+    <content><![CDATA[定义
+构造一些操作，使得数据满足操作要求，通常还会有次数限制
+
+方法此类题目现在遇到过三种做法：
+
+一种是直接操作，不关心部分值，直接对全局操作，使得再让全局满足要求的同时，使得部分也满足要求
+另一种是进行操作，最后只改变一个量，每次用多步做一步（和魔方有点像？）
+
+例题1.B. Siga ta Kymata
+
+题目描述：给你一个排列 $^{\text{∗}}$ 。从 $1$ 到 $n$ 的每个整数的排列 $p$ 。您还拥有一个大小为 $n$ 的二进制 $^{\text{†}}$ 字符串 $s$ ，其中 $s_i = \mathtt{0}$ 代表所有 $1 \le i \le n$ 。您最多可以执行以下操作 $5$ 次：选择任意两个整数 $l$ 和 $r$ ，使得 $1 \le l \le r \le n$ .然后，对于每一个 $i$ 使得 $l&lt; i&lt; q$ 和 $\min(p_l, p_r) &lt; p_i &lt; \max(p_l, p_r)$ 同时成立，你将把 $s_i$设为 $\mathtt{1}$ 。您还会得到一个大小为 $n$ 的二进制字符串 $x$ 。执行运算后，对于每一个 $1 \le i \le n$ 都必须成立：如果 $x_i = \mathtt{1}$ ，则 $s_i = \mathtt{1}$ 。注意，如果 $x_i = \mathtt{0}$ ，那么 $s_i$ 可以有任意值。找出最多5个运算序列，使上述条件得到满足，或者报告不可能做到这一点。请注意，您不必尽量减少操作次数。
+
+解法：|----------------|-------------------n------------|                |                   |           ||----------------|-------------------|——————————a[n]|                |                   |           |a[1]----------------------------------------------|                |                   |           ||                |                   |           ||----------------1--------------------------------
+
+一共画了5个框，也就是5次操作的范围
+这里实际上是把所有能改变的全改变了，然后也就满足了要求
+所以5次也是合理的，证明了做法的正确
+
+2.西安之泪 - 洛谷
+
+题目描述：给定一颗无根树,共有n个顶点。每个顶点 i 都具有一个点权$a_i$，初始所有点权都为0。你可以进行如下的操作最多不超过$3n$次：指定顶点的编号 r,u (1≤r,u≤n)，使得这棵树暂时以顶点 r 为根，随后对于顶点 u 的子树中的每一个顶点 v，将其点权修改为 av​⊕u。此处的 ⊕ 表示按位异或。
+
+这一题就是尝试操作每一个顶点，分步完成。让每个顶点的邻居给这个顶点发一次，那么最终剩下的节点就被⊕了出度数-1次。如果是偶数，不变；但是奇数时，为了保持不变，那么我们在自己给自己发一次就行了。
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机18讲题解</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E8%AE%A1%E7%AE%97%E6%9C%BA18%E8%AE%B2%E9%A2%98%E8%A7%A3/</url>
+    <content><![CDATA[小技巧
+在网页前面加上read有奇效例如：
+raed:https://www.reach-top.cn.com
+这个是阅读器模式，开启以后就能获取里面原先不让复制的内容了
+A题
+题目描述每个整数都应输出一个各位数字和，并独占一行。
+
+解题思路拿之前上课的程序自然是能解决的，直接一个循环算到底每一位的值是n%10，要取得下一位就n/=10再算就彳亍了但是注意到这节课的标题是函数，那么我们就编写一个递归程序来计算每一位的和边界条件：n&lt;=10递推式子：n %10+solve(n/10)
+参考代码
+ll solve(ll n)&#123;  if(n&lt;10) return n;  return n%10+solve(n/10);&#125;signed main()&#123;  ll T;  while(cin&gt;&gt;T)	cout&lt;&lt;solve(T)&lt;&lt;endl;  return 0;&#125;//此处#define ll long long
+B题
+题目描述给定若干个正整数，请你从这些整数中找到最小值和第二小的值，计算一下第二小的数值减去最小值的结果是不是素数，如果是则输出Yes，否则输出No”o。 
+
+解题思路直接写一个循环计算最小值和次小值，然后判断差是不是素数就行了计算最小值和次小值的思路，如果输入值x比最小值小，那么把次小值改成原先的最小值，再把最小值修改为输入值x，如果只是比次小值小，那么把次小值改成输入值x
+参考代码void isprime(int n)&#123;  if(n==1)&#123;    cout&lt;&lt;&quot;No\&quot;o&quot;&lt;&lt;endl;    return;  &#125;  for(int i=2;i&lt;=sqrt(n);i++)&#123;    if(n%i==0)&#123;      cout&lt;&lt;&quot;No\&quot;o&quot;&lt;&lt;endl;      return;    &#125;  &#125;  cout&lt;&lt;&quot;Yes&quot;&lt;&lt;endl;&#125;signed main()  ll minn1=1e18,minn2=1e18,x;  while(cin&gt;&gt;x)&#123;    if(x&lt;minn1)&#123;      minn2=minn1;      minn1=x;    &#125;    else if(x&lt;minn2)      minn2=x;  &#125;  isprime(minn2-minn1);  return 0;&#125;
+
+
+C题
+题目描述哥德巴赫猜想大家都知道一点吧。我们现在不是想证明这个结论，而是想在程序语言内部能够表示的数集中，任意取出一个偶数，来寻找两个素数，使得其和等于该偶数。  做好了这件实事，就能说明这个猜想是成立的。由于可以有不同的素数对来表示同一个偶数，所以专门要求所寻找的素数对是两个值最相近的。
+解题思路直接暴力求解从中间开始计算，设两个数分别是x，y，然后x—，y++，判断是否是合法的，如果合法那么输出，这样得到的第一组解必然是最小的一组解。判断是否是素数的代码可以用上一题的代码。
+参考代码bool isprime(ll n)&#123;  if(n==1) return false;  for(int i=2;i&lt;=sqrt(n);i++)&#123;    if(n%i==0)      return false;  &#125;  return true;&#125;signed main()&#123;  ll x;  while(cin&gt;&gt;x&amp;&amp;x)&#123;    ll a1=x/2,a2=x/2;    while(1)&#123;      if(isprime(a1)&amp;&amp;isprime(a2))&#123;        cout&lt;&lt;a1&lt;&lt;&#x27; &#x27;&lt;&lt;a2&lt;&lt;endl;        break;      &#125;      a1--; a2++;    &#125;  &#125;  return 0;&#125;
+
+
+D题
+题目描述求给定n个正整数的最大公约数
+解题思路计算每个数和现在得到的最大公约数的最大公约数首先先默认最大公约数为第一个正数，然后计算即可。计算最大公约数其实有两种方式，要是你用万能头的话，可以使用自带函数直接计算。这里采用的是标准的辗转相除法。
+参考代码ll gcd(ll n,ll m)&#123;  if(n%m==0) return m;  else return gcd(m,n%m);&#125;signed main()&#123;  ll n,x; cin&gt;&gt;n;  ll m=n,maxgcd;  while(cin&gt;&gt;x&amp;&amp;n)&#123;    if(x&lt;=0) continue;    if(n==m) maxgcd=x;    n--;    maxgcd=gcd(maxgcd,x);    //maxgcd=__gcd(x,maxgcd);这个是自带的函数，也是可以的  &#125;  cout&lt;&lt;maxgcd&lt;&lt;endl;&#125;
+
+
+E题
+题目描述找比x大的第一个回文数
+解题思路每次加1，直到找到回文数为止。判断回文数的话，直接先一位一位取出来，然后计算，一个正向遍历，一个反向遍历，结果一样就是回文。
+参考代码bool hws(ll x)&#123;  ll a[2000],id=1;  while(x)&#123;    a[id++]=x%10;    x/=10;  &#125;  for(int i=1;i&lt;id;i++)    if(a[i]!=a[id-i])      return false;  return true;&#125;signed main()&#123;  ll x;  while(cin&gt;&gt;x)&#123;    x++;    while(!hws(x++));    cout&lt;&lt;x-1&lt;&lt;endl;  &#125;&#125;
+这里因为要求要比x大，所以先x++，最后输出x-1的原因是循环里写的是x++最后会多1。
+
+F题
+题目描述如果一个数从左到右和从右到左读都一样，那么这个数就叫做“回文数”。如果一个数的十进制和二进制表示都是回文数，则把这个数叫做“双重回文数”。例如，十进制33是回文数，将其转化为二进制表示100001也是回文数，所以33是双重回文数。编写程序，查找1~1000的所有双重回文数。
+解题思路和上一题一样，只不过要多出力一个二进制的而已。
+参考代码bool hws(ll x)&#123;  ll a[2000],id=1;  ll y=x;  while(x)&#123;    a[id++]=x%10;    x/=10;  &#125;  for(int i=1;i&lt;id;i++)    if(a[i]!=a[id-i])      return false;    id=1;  while(y)&#123;    a[id++]=y%2;    y/=2;  &#125;  for(int i=1;i&lt;id;i++)    if(a[i]!=a[id-i])      return false;  return true;&#125;signed main()&#123;  for(int i=1;i&lt;=1000;i++)    if(hws(i)) cout&lt;&lt;i&lt;&lt;&quot;为双重回文数&quot;&lt;&lt;endl;&#125;
+
+
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>程C笔记2</title>
+    <url>/ZestfulYK-blog/2025/12/16/%E7%A8%8BC%E7%AC%94%E8%AE%B02/</url>
+    <content><![CDATA[递归函数的定义注意一下在命名函时，可以不写参数的名称，比如：void fun(int,int)
+结构体排序void mySwap(Data *p1,Data *p2)&#123;//交换函数    Data t=*p1;    *p1=*p2;    *p2=t;&#125;for(int i=0;i&lt;n-1;i++)&#123;    for(int j=0;j&lt;n-i-1;j++)&#123;       if(a[j].num&gt;a[j+1].num ||        (a[j].num==a[j+1].num &amp;&amp; a[j].value&gt;a[j+1].value))&#123;           mySwap(&amp;a[j],&amp;a[j+1]);        &#125;    &#125;&#125;
+
+传入时注意，要加上&amp;，传入地址，使得函数可以交换地址。
+
+数组的定义
+使用new和delete一起运算。
+
+基本方法// 创建一维动态数组数据类型* 指针名 = new 数据类型[元素个数];// 释放内存delete[] 指针名;
+一维数组示例// 方法1：创建基本类型的一维数组int n = 5;int* arr1 = new int[n];  // 创建包含5个整数的数组delete[] arr1;
+二维数组
+比一维数组多了一个*
+
+内存连续 // 分配连续内存int** arr = new int*[rows];  // 创建行指针数组arr[0] = new int[rows * cols];  // 分配所有元素的空间// 设置行指针for (int i = 1; i &lt; rows; i++) &#123;    arr[i] = arr[i-1] + cols;&#125;
+内存不连续// 创建二维数组int** arr = new int*[rows];  // 创建行指针数组for (int i = 0; i &lt; rows; i++) &#123;    arr[i] = new int[cols];  // 为每一行分配内存&#125;]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>过关考模拟考题解</title>
+    <url>/ZestfulYK-blog/2025/10/23/%E8%BF%87%E5%85%B3%E8%80%83%E6%A8%A1%E6%8B%9F%E8%80%83%E9%A2%98%E8%A7%A3/</url>
+    <content><![CDATA[过关考模拟考题解A签到题
+分析:
+
+要是这也不会那学习委员真没招了
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    cout&lt;&lt;&quot;Help others voluntarily but never let them know they owe you a favor.&quot;&lt;&lt;endl;&#125;
+B选择结构
+分析:
+
+按照要求逐个判断，然后取最小值就行了
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    double x,y,n,p,ans=200;    cin&gt;&gt;x&gt;&gt;y&gt;&gt;n&gt;&gt;p;    if(p&gt;=x) ans=min(ans,p-y);    ans=min(ans,p/10*n);    printf(&quot;%.2lf&quot;,ans);&#125;
+C循环
+分析:
+
+分三种情况，&lt;10的一定成立，两三四位数自己判断就行了
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    int n,cnt=0; cin&gt;&gt;n;    for(int i=1;i&lt;=n;i++)&#123;        if(i&lt;10) cnt++;        else if(i&lt;100)&#123;            if(i%10==i/10) cnt++;        &#125;        else if(i&lt;1000)&#123;            if(i%10==i/10%10&amp;&amp;i%10==i/100) cnt++;        &#125;        else if(i%10==i/10%10&amp;&amp;i%10==i/100%10&amp;&amp;i%10==i/1000) cnt++;    &#125;    cout&lt;&lt;cnt&lt;&lt;endl;&#125;
+
+打表的做法
+
+为什么没人想到这题能打表呢？总共也就28个数啊
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    int a[30]=&#123;1,2,3,4,5,6,7,8,9,11,    22,33,44,55,66,77,88,99,111,    222,333,444,555,666,777,888,999,1111,2222&#125;,n;    cin&gt;&gt;n;    for(int i=0;i&lt;=28;i++)&#123;        if(a[i]&gt;n) &#123;cout&lt;&lt;i&lt;&lt;endl;break;&#125;    &#125;&#125;
+D菱形
+分析:
+
+逐行输出，先上半部分，再是后半部分
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    int n; cin&gt;&gt;n;    for(int i=0;i&lt;=n/2;i++)&#123;        for(int j=1;j&lt;=n/2-i;j++) cout&lt;&lt;&quot;.&quot;;        cout&lt;&lt;&quot;#&quot;;        for(int j=1;j&lt;=i*2-1;j++) cout&lt;&lt;&quot;.&quot;;        if(i!=0) cout&lt;&lt;&quot;#&quot;;        for(int j=1;j&lt;=n/2-i;j++) cout&lt;&lt;&quot;.&quot;;        cout&lt;&lt;endl;    &#125;    for(int i=n/2-1;i&gt;=0;i--)&#123;        for(int j=1;j&lt;=n/2-i;j++) cout&lt;&lt;&quot;.&quot;;        cout&lt;&lt;&quot;#&quot;;        for(int j=1;j&lt;=i*2-1;j++) cout&lt;&lt;&quot;.&quot;;        if(i!=0) cout&lt;&lt;&quot;#&quot;;        for(int j=1;j&lt;=n/2-i;j++) cout&lt;&lt;&quot;.&quot;;        cout&lt;&lt;endl;    &#125;&#125;
+E金字塔
+分析:
+
+逐个循环相加就行了
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    int n,ans=0; cin&gt;&gt;n;    for(int i=1;i&lt;=n;i++) ans+=i*i;    cout&lt;&lt;ans&lt;&lt;endl;&#125;
+F假期阅读
+分析:
+
+最多k*t页，但不能超过n
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    int n,k,t; cin&gt;&gt;n&gt;&gt;k&gt;&gt;t;    cout&lt;&lt;min(n,k*t)&lt;&lt;endl;&#125;
+G值日
+分析:
+
+求最小公倍数
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    int n,m,i; cin&gt;&gt;n&gt;&gt;m;    for(i=n;i%m!=0;i+=n);    cout&lt;&lt;i&lt;&lt;endl;&#125;
+H数三角形
+分析:
+
+循环i 1..n，j 1..i即可，每次判断一下是否存在整数解
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    int n,cnt=0; cin&gt;&gt;n;    for(int i=1;i&lt;=n;i++)&#123;        for(int j=1;j&lt;=i;j++)&#123;            if(i*j%2==0) cnt++;        &#125;    &#125;    cout&lt;&lt;cnt&lt;&lt;endl;&#125;
+I幂数和
+分析:
+
+直接暴力枚举所有数，判断是否能拆就行了遍历每种可能的情况，计算和是否为这个数就行了至于代码中的&lt;&lt;是二进制内左移的意思，用来计算2的n次幂比如1&lt;&lt;1是10，变成了2，同理还有右移，自己学习
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    int l,r,cnt=0; cin&gt;&gt;l&gt;&gt;r;    for(int i=l;i&lt;=r;i++)&#123;        bool f=false;        for(int j=0;j&lt;=20;j++)&#123;            for(int k=0;k&lt;=20;k++)&#123;                if((1&lt;&lt;j)+(1&lt;&lt;k)==i) &#123;cnt++;f=true;break;&#125;            &#125;            if(f) break;        &#125;    &#125;    cout&lt;&lt;cnt&lt;&lt;endl;&#125;
+J质因数分解
+分析:
+
+第一空，先输出n，免得后面n的值变掉了第二空判断是否算一个因子，当然最后一个是需要特判的第三空，既然发现了因子，那么把n减小，变为n/i第四空，找的不对，i自增，寻找下一个位置第五空，输出最后一个质因数
+
+参考代码:
+
+#include&lt;bits/stdc++.h&gt;using namespace std;#define ll long longint main()&#123;    ll n,i=2; cin&gt;&gt;n;    cout&lt;&lt;n&lt;&lt;&quot;=&quot;;    for(i=2;i&lt;=n;)&#123;        if(n%i==0&amp;&amp;n/i!=1)&#123;            cout&lt;&lt;i&lt;&lt;&quot;*&quot;;            n/=i;        &#125;        else&#123;            i++;        &#125;    &#125;    cout&lt;&lt;i-1&lt;&lt;endl;&#125;]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+</search>
