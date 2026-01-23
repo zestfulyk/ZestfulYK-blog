@@ -187,7 +187,8 @@ double len(const Point& a) {
 
 ## 求$\vec a$在$\vec b$上的投影向量
 
-公式$$\frac{\vec a ·\vec b}{|\vec b|}$$
+公式 :
+$$\frac{\vec a ·\vec b}{|\vec b|}$$
 
 ```C++
 double proj_len(const Point& a, const Point& b) {
@@ -321,8 +322,10 @@ int point_line_side(const Point& a, const Point& b, const Point& c) {
 
 ### 和面积的关系
 
-因为叉乘的模长定义为了$$\vec a\times \vec b=|\vec a||\vec b|\sin<\vec a,\vec b>$$
-也就是$$2*\frac{1}{2}|\vec a||\vec b|\sin<\vec a,\vec b>$$
+因为叉乘的模长定义为了
+$$\vec a\times \vec b=|\vec a||\vec b|\sin<\vec a,\vec b>$$
+也就是
+$$2*\frac{1}{2}|\vec a||\vec b|\sin<\vec a,\vec b>$$
 那么就是这三个顶点构成的三角形面积的两倍，或者说，是向量构成的平行四边形的面积
 
 于是我们的三角形的计算公式就有了，下面给出对应的代码
@@ -345,9 +348,12 @@ double parallelogram_area(const Point& a, const Point& b, const Point& d) {
 
 ### 叉乘的运算规律
 
-加法的左分配律$$a\times(b+c)=a\times b+a\times c$$
-加法的右分配律$$(a+b)\times c=a\times c+b\times c$$
-标量乘法$$(\lambda a)\times b=\lambda(a\times b)=a\times(\lambda b)$$
+加法的左分配律
+$$a\times(b+c)=a\times b+a\times c$$
+加法的右分配律
+$$(a+b)\times c=a\times c+b\times c$$
+标量乘法
+$$(\lambda a)\times b=\lambda(a\times b)=a\times(\lambda b)$$
 
 ## 计算点到直线的距离
 
@@ -617,9 +623,11 @@ vector<Point> segment_circle_intersect(const Point& a, const Point& b, const Cir
 
 这个由于我们已经有了一个很好的工具，叉乘，那么我们划分一下面积再计算
 比较好理解的方法是，以$P_0$为每个三角形的顶点，依次计算，
-所以公式$$\frac{1}{2}\sum_{i=1}^n(P_i-P_0)\times(P_{i+1}-P_0)$$
-但是注意到我们的叉乘具有向量加法的左右分配律，所以展开上面这个式子$$\begin{split}
-&\frac{1}{2}\sum_{i=1}^nP_i\times P_{i+1}-P_i\times P_0-P_0\times P_{i+1}+P_0\times P_0\\
+所以公式
+$$\frac{1}{2}\sum_{i=1}^n(P_i-P_0)\times(P_{i+1}-P_0)$$
+但是注意到我们的叉乘具有向量加法的左右分配律，所以展开上面这个式子
+$$\begin{split}
+&\ \ \ \ \ \frac{1}{2}\sum_{i=1}^nP_i\times P_{i+1}-P_i\times P_0-P_0\times P_{i+1}+P_0\times P_0\\
 &=\frac{1}{2}\sum_{i=1}^nP_i\times P_{i+1}
 \end{split}$$
 首先$P_0\times P_0$一定是等于0的，其次，因为所有点都遍历了，那么$\sum_{i=1}^nP_i\times P_0=-\sum_{i=1}^nP_0\times P_{i+1}$相当于只是后移了一位，但是结果一样，所以直接遍历点的叉乘就可以计算了。

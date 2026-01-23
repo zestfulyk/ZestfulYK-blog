@@ -4,6 +4,12 @@ date: 2025-11-25 09:26:45
 tags: 算法
 mathjax: true
 ---
+# 说明
+
+感谢YuukiX和qinye_leaf大佬的指正,现已对部分内容进行了修改和补充
+
+本文最后修改时间: 2026/1/23/15:08
+
 # 模运算（Mod）性质总结
 
 ## 定义
@@ -23,10 +29,13 @@ $$x \mod y = x - y \left\lfloor \frac{x}{y} \right\rfloor, \quad y \neq 0$$
 模运算与基本四则运算类似（除法除外）：
 
 1. **加法规则**：$((a + b) \mod p = (a \mod p + b \mod p) \mod p)$
-2. **减法规则**：$((a - b) \mod p = (a \mod p - b \mod p) \mod p)$
+2. **减法规则**：$((a - b) \mod p = (a \mod p - b \mod p + mod) \mod p)$
 3. **乘法规则**：$((a \times b) \mod p = (a \mod p \times b \mod p) \mod p)$
 4. **幂运算规则**：$(a^b \mod p = ((a \mod p)^b) \mod p)$
-5. **求和规则**：由第1个公式可推导出 $(\left(\sum_{i=1}^{n} x_i\right) \mod p = \left(\sum_{i=1}^{n} (x_i \mod p)\right) \mod p)$
+5. **求和规则**：由第1个公式可推导出 
+$$(\left(\sum_{i=1}^{n} x_i\right) \mod p = \left(\sum_{i=1}^{n} (x_i \mod p)\right) \mod p)$$
+
+对减法运算的解释: 注意此处可能减去后得到负数,因此要先加上一个mod
 
 ## 运算律
 
@@ -160,7 +169,10 @@ void getInv(LL mod) {
 - 然后如果是一个等式的话，考虑两边同时取逆元
 - 例如：计算$n!$的逆元，得到递推式子
 $$(i+1)! \equiv i \,!*(i+1) \mod p$$
-所以：$$inv[(i+1)!]\equiv inv[i]*inv[i+1] \mod p$$
-又因为：$$inv[i+1]*(i+1)\equiv1\mod p$$
-所以把已知的$inv[i+1]$移到左边，得到：$$inv[(i+1)!]*(i+1)\equiv inv[i] \mod p$$
+所以：
+$$inv[(i+1)!]\equiv inv[i]*inv[i+1] \mod p$$
+又因为：
+$$inv[i+1]*(i+1)\equiv1\mod p$$
+所以把已知的$inv[i+1]$移到左边，得到：
+$$inv[(i+1)!]*(i+1)\equiv inv[i] \mod p$$
 这就是求阶乘逆元的递推式了
