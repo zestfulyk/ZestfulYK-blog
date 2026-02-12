@@ -29,7 +29,7 @@ $$x \mod y = x - y \left\lfloor \frac{x}{y} \right\rfloor, \quad y \neq 0$$
 模运算与基本四则运算类似（除法除外）：
 
 1. **加法规则**：$((a + b) \mod p = (a \mod p + b \mod p) \mod p)$
-2. **减法规则**：$((a - b) \mod p = (a \mod p - b \mod p + mod) \mod p)$
+2. **减法规则**：$((a - b) \mod p = (a \mod p - b \mod p + p) \mod p)$
 3. **乘法规则**：$((a \times b) \mod p = (a \mod p \times b \mod p) \mod p)$
 4. **幂运算规则**：$(a^b \mod p = ((a \mod p)^b) \mod p)$
 5. **求和规则**：由第1个公式可推导出 

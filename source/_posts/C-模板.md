@@ -36,25 +36,56 @@ tags: 算法
 using namespace std;
 #define ll long long
 #define int ll
+#define i128 __int128
 #define ld long double
 #define pb push_back
 #define fs first
 #define sd second
 #define all(a) a.begin(),a.end()
 #define rall(a) a.rbegin(),a.rend()
+#define debug(a) cout<<a<<" ";
 #define endl '\n'
 mt19937 rnd(time(nullptr));
-void rad(ll h[],ll maxn,ll minn,ll n){
-  default_random_engine e(time(0));
-  uniform_int_distribution<int> u(minn,maxn);
-  for(int i=1;i<=n;i++){
-    h[i]=u(e);
-  }
-}
-const ll inf = 1e9 + 1;
-const ll mod = 998244353;
-const ld pi = atan2(0, -1);
-const ld eps = 1e-6;
+ll lowerbit(ll x){return x&(-x);}
+ll binary_min_palce(ll x){return(__builtin_ctz(x));}//返回二进制最后有几个0
+ll gcd(ll a,ll b){return b==0?a:gcd(b,a%b);}
+void rad(ll h[],ll maxn,ll minn,ll n){default_random_engine e(time(0));
+uniform_int_distribution<int> u(minn,maxn);for(int i=1;i<=n;i++)h[i]=u(e);}
+template<typename T>void fast_erase(vector<T>& container,typename std::vector<T>::size_type index){
+if(index>=container.size()) return;if(index!=container.size()-1)
+container[index]=move(container.back());container.pop_back();}
+inline void read128(__int128&x){x=0;__int128 f=1;char ch=getchar();
+while(ch<'0'||ch>'9'){if(ch=='-')f=-1;ch=getchar();}
+while(ch>='0'&&ch<='9'){x=x*10+ch-'0';ch =getchar();}}
+void print128(__int128 x){if(x<0){putchar('-');x=-x;}
+if(x>9)print128(x/10);putchar(x%10+'0');}
+const ll inf=1e9+1;
+const ll mod=998244353;
+const ld pi=atan2(0,-1);
+const ld eps=1e-6;
+```
+# 水印
+
+```C++
+/*0.注意vector的size是size_t不能直接减去一个数，要类型转换
+1.深呼吸，不要紧张，慢慢读题，读明白题，题目往往比你想的简单。
+2.暴力枚举:枚举什么，是否可以使用一些技巧加快枚举速度（预处理、前缀和、数据结构、数论分块）。
+3.贪心:需要排序或使用数据结构（pq）吗，这么贪心一定最优吗。
+4.二分：满足单调性吗，怎么二分，如何确定二分函数返回值是什么。
+5.位运算：按位贪心，还是与位运算本身的性质有关。
+6.数学题：和最大公因数、质因子、取模是否有关。
+7.dp：怎么设计状态，状态转移方程是什么，初态是什么，使用循环还是记搜转移。
+8.搜索：dfs 还是 bfs ，搜索的时候状态是什么，需要记忆化吗。
+9.树上问题：是树形dp、树上贪心、或者是在树上搜索。
+10.图论：依靠什么样的关系建图，是求环统计结果还是最短路。
+11.组合数学：有几种值，每种值如何被组成，容斥关系是什么。
+12.交互题：log(n)次如何二分，2*n 次如何通过 n 次求出一些值，再根据剩余次数求答案。
+13.如果以上几种都不是，多半是有一个 point 你没有注意到，记住正难则反.
+  _____  _____   ____    _____   _____   _   _   _      __   __  _  __
+ |__  / | ____| / ___|  |_   _| |  ___| | | | | | |     \ \ / / | |/ /
+   / /  |  _|   \___ \    | |   | |_    | | | | | |      \ V /  | ' /
+  / /_  | |___   ___) |   | |   |  _|   | |_| | | |___    | |   | . \   |
+ /____| |_____| |____/    |_|   |_|      \___/  |_____|   |_|   |_|\_\  |*/
 ```
 
 # INT128
