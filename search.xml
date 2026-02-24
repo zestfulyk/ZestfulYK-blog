@@ -37,29 +37,23 @@ Sample Input 1 11 6Sample Output 12Sample Input 240 124 136 1312 13Sample Output
       </tags>
   </entry>
   <entry>
-    <title>ACM训练</title>
-    <url>/ZestfulYK-blog/2025/12/07/ACM%E8%AE%AD%E7%BB%83%E9%A2%98%E7%9B%AE%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[简单题
-对于简单题目，最好还是仔细一点，或者使用最暴力的解法，而不是投机取巧，或者构造高级方法，通常样例数据都是片面的，常常会有坑。
-
-sleeping through classes
-比如这一题，数据没有包含i+k中间有1的情况，直接i+=k导致错误。
-中等题目
-中等题目就需要强观察力和trick技巧了
-
-Niko’s Tactical Cards
-这一道题目是动态规划的变种，虽然要求每一步最优，但是可能发生最小值突然转变成最大值的情况，因此，计算最小值也是必要的。只要计算这两个值就行了。
-Kanade’s Perfect Multiples
-这题希望我们构造一个满足要求的B，这个就有点类似于筛法求素数了，实际上两者的代码几乎是一样的，但是在做的时候要注意区分原始数据和v数组，一个一个遍历就行了，找不到就可以直接退出，因为不然当前确定的最小值就无法被覆盖了。
-Merging the Sets
-你想选择其中的一些集合（可能一个都不选，也可能全部都选），使得 1 和 m 之间的每个整数都包含在个所选集合中的至少一个中。思维误区，不用一边读入一边判断，因为数据保证$l\leq 2*10^5$所以先读入再判断就行了，此外，要方法合法需要这个集合不存在也合法，那么只要用桶来看看去掉会不会变0就行了。原先想到的覆盖才合法的思路不对的原因是前后都有可能覆盖。
-Abraham’s Great Escape
-要求构造一个方阵，每个位置一个箭头，满足有k个格子能沿箭头出去。其实只要管最后一行，前面k个填U，后面的填D，最后一行填$RRR……RL$就行了比如：19 4UUUUDDRRL这样在最后一行产生循环，前面的不管。原来的做法是两个两个组合，产生循环，虽然也能做，但是不方便。
-Cake Assignment
-这个题目的重要观察点是，当最后一步确定后，上一步的操作一定是确定的，于是我们就可以倒推
-XOR Array
-这题的要求是构造一个数组，满足仅在l到r上的异或和为0，其他位置全非0，异或有一个特点，和前缀和一样，可以构建前缀异或和，因为$x\oplus y \oplus x==x$此外非常容易陷入的一个点是，可能会想到之间填入1-n来构造，但是实际上，这么异或会产生很多的0，所以这个方法是不行的。（比如1，2，3）因此，这里我们的操作是构造最终异或的结果，写一个前缀异或数组，最后再反推原数组就行了。详细信息可以见异或的笔记部分
-]]></content>
+    <title>格雷码及其应用</title>
+    <url>/ZestfulYK-blog/2025/02/12/(%E6%A0%BC%E9%9B%B7%E7%A0%81)%E6%9E%84%E9%80%A0%E5%BA%8F%E5%88%97,%E7%9B%B8%E9%82%BB%E5%85%83%E7%B4%A0%E5%BC%82%E6%88%96%E5%92%8C%E6%9C%80%E5%B0%8F/</url>
+    <content><![CDATA[题目输入n,构造长度为$2^n-1$的序列,使得下面在这个式子的值最小
+\sum_{i=1}^{2^n-1}a_{i-1} \oplus a_i方法:每组相邻元素最好二进制中只有一位不一样
+打表结果:
+n=1  0 1n=2  0 1 3 2n=3  0 1 3 2 6 7 5 4     1 0 2 3 7 6 4 5
+所以暴力或者按结论使用格雷码
+#include &lt;iostream&gt;using namespace std;int main() &#123;    int n;    cin &gt;&gt; n;    int m = 1 &lt;&lt; n;    for (int i = 0; i &lt; m; ++i) &#123;        cout &lt;&lt; (i ^ (i &gt;&gt; 1));        if (i &lt; m - 1) cout &lt;&lt; &#x27; &#x27;;    &#125;    cout &lt;&lt; endl;    return 0;&#125;
+ll n; cin&gt;&gt;n;  set&lt;ll&gt; s;  s.insert(0);  cout&lt;&lt;&quot;0 &quot;;  ll last=0;  for(int i=1;i&lt;=(1ll&lt;&lt;n)-1;i++)&#123;    for(int j=0;j&lt;=18;j++)&#123;      ll next;      if((last&gt;&gt;j)%2==0)&#123;        next=last+(1ll&lt;&lt;j);      &#125;      else&#123;        next=last-(1ll&lt;&lt;j);      &#125;      if(s.find(next)==s.end())&#123;        cout&lt;&lt;next&lt;&lt;&quot; &quot;;        s.insert(next);        last=next;        break;      &#125;    &#125;  &#125;  cout&lt;&lt;endl;]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Abel公式</title>
+    <url>/ZestfulYK-blog/2025/02/12/Abel%E5%85%AC%E5%BC%8F/</url>
+    <content><![CDATA[公式S=\sum_{i=1}^{m}a_ib_i=a_mB_m-\sum_{i-1}^{m-1}(a_{i+1}-a_i)B_i]]></content>
       <tags>
         <tag>算法</tag>
       </tags>
@@ -269,6 +263,97 @@ E=\frac{s_1}{s_1-s_2}\times(B-A)+A=\frac{B*s_1-A*s_2}{s_1-s_2}// 计算两直线
       </tags>
   </entry>
   <entry>
+    <title>ACM训练</title>
+    <url>/ZestfulYK-blog/2025/12/07/ACM%E8%AE%AD%E7%BB%83%E9%A2%98%E7%9B%AE%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[简单题
+对于简单题目，最好还是仔细一点，或者使用最暴力的解法，而不是投机取巧，或者构造高级方法，通常样例数据都是片面的，常常会有坑。
+
+sleeping through classes
+比如这一题，数据没有包含i+k中间有1的情况，直接i+=k导致错误。
+中等题目
+中等题目就需要强观察力和trick技巧了
+
+Niko’s Tactical Cards
+这一道题目是动态规划的变种，虽然要求每一步最优，但是可能发生最小值突然转变成最大值的情况，因此，计算最小值也是必要的。只要计算这两个值就行了。
+Kanade’s Perfect Multiples
+这题希望我们构造一个满足要求的B，这个就有点类似于筛法求素数了，实际上两者的代码几乎是一样的，但是在做的时候要注意区分原始数据和v数组，一个一个遍历就行了，找不到就可以直接退出，因为不然当前确定的最小值就无法被覆盖了。
+Merging the Sets
+你想选择其中的一些集合（可能一个都不选，也可能全部都选），使得 1 和 m 之间的每个整数都包含在个所选集合中的至少一个中。思维误区，不用一边读入一边判断，因为数据保证$l\leq 2*10^5$所以先读入再判断就行了，此外，要方法合法需要这个集合不存在也合法，那么只要用桶来看看去掉会不会变0就行了。原先想到的覆盖才合法的思路不对的原因是前后都有可能覆盖。
+Abraham’s Great Escape
+要求构造一个方阵，每个位置一个箭头，满足有k个格子能沿箭头出去。其实只要管最后一行，前面k个填U，后面的填D，最后一行填$RRR……RL$就行了比如：19 4UUUUDDRRL这样在最后一行产生循环，前面的不管。原来的做法是两个两个组合，产生循环，虽然也能做，但是不方便。
+Cake Assignment
+这个题目的重要观察点是，当最后一步确定后，上一步的操作一定是确定的，于是我们就可以倒推
+XOR Array
+这题的要求是构造一个数组，满足仅在l到r上的异或和为0，其他位置全非0，异或有一个特点，和前缀和一样，可以构建前缀异或和，因为$x\oplus y \oplus x==x$此外非常容易陷入的一个点是，可能会想到之间填入1-n来构造，但是实际上，这么异或会产生很多的0，所以这个方法是不行的。（比如1，2，3）因此，这里我们的操作是构造最终异或的结果，写一个前缀异或数组，最后再反推原数组就行了。详细信息可以见异或的笔记部分
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DP(01)最长不下降子序列及其变种</title>
+    <url>/ZestfulYK-blog/2025/02/12/DP(01)%E6%9C%80%E9%95%BF%E4%B8%8D%E4%B8%8B%E9%99%8D%E5%AD%90%E5%BA%8F%E5%88%97%E5%8F%8A%E5%85%B6%E5%8F%98%E7%A7%8D/</url>
+    <content><![CDATA[变种一就是01串,方法在下面,懒得解释了,自己看注释吧题目:问最少能把01串划成几个0101…类型的字符串//关键点,类似最长不下降子序列的题目,但是由于是01串,只要管有几个0结尾和1结尾的串就好了ll c0=0,c1=0;for(int i=0;i&lt;t.length();i++)&#123;   if(t[i]==&#x27;1&#x27;)&#123;     if(c0) c0--;//接到0结尾的后面     c1++;//多了一个以1结尾的串   &#125;   else&#123;     if(c1) c1--;//接到1结尾的后面     c0++;//多了一个以0结尾的串   &#125; &#125; return c0+c1;
+变种二是有有限个结尾的dp
+例如牛客周赛题目:把字符串变成相邻字母的ASCALL码之差都一样,求最小操作次数
+因为只有26个字母,所以可以直接滚动数组+dp,然后设dp[i][j]表示以第i位结尾改成char(&#39;a&#39;+j)的最少修改次数,或者也可以设成改为char(&#39;a&#39;+j)后最长的连续长度
+最后结论就是模拟26种d(实则只用13种),然后公式中每次只要上面的两个状态就行
+dp[i][j]=max(dp[i-1][(j-d+26)%26],dp[i-1][(j+d+26)%26])+(s[i]==char(&#x27;a&#x27;+j)?0:1);//设修改次数dp[i][j]=max(dp[i-1][(j-d+26)%26],dp[i-1][(j+d+26)%26])+(s[i]==char(&#x27;a&#x27;+j)?1:0);//设合法长度
+又例如div3C:C. Dice Roll Sequence
+这题是把一串1-6的数字串改成任意相邻两个数字都和不为7
+方法也是如上,要么设修改次数要么设合法长度,我写的还是修改次数
+for(int now=1;now&lt;=6;now++)&#123;  for(int last=1;last&lt;=6;last++)&#123;    if(now!=last&amp;&amp;now+last!=7)&#123;      if(now==a[i]) now_dp[now]=min(now_dp[now],dp[last]);      else now_dp[now]=min(now_dp[now],dp[last]+1);    &#125;  &#125;&#125;
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>C++模板</title>
+    <url>/ZestfulYK-blog/2026/01/23/C-%E6%A8%A1%E6%9D%BF/</url>
+    <content><![CDATA[说明这些是我平时攒下来的模板,现在送给大家!
+火车头#include &lt;algorithm&gt;#include &lt;bitset&gt;#include &lt;cmath&gt;#include &lt;cstdio&gt;#include &lt;cstdlib&gt;#include &lt;cstring&gt;#include &lt;ctime&gt;#include &lt;deque&gt;#include &lt;map&gt;#include &lt;iostream&gt;#include &lt;queue&gt;#include &lt;set&gt;#include &lt;stack&gt;#include &lt;vector&gt;#include &lt;array&gt;#include &lt;unordered_map&gt;#include &lt;numeric&gt;#include &lt;functional&gt;#include &lt;iomanip&gt;#include &lt;chrono&gt;#include &lt;random&gt;#include &lt;ctime&gt;using namespace std;#define ll long long#define int ll#define i128 __int128#define ld long double#define pb push_back#define fs first#define sd second#define all(a) a.begin(),a.end()#define rall(a) a.rbegin(),a.rend()#define debug(a) cout&lt;&lt;a&lt;&lt;&quot; &quot;;#define endl &#x27;\n&#x27;mt19937 rnd(time(nullptr));ll lowerbit(ll x)&#123;return x&amp;(-x);&#125;ll binary_min_palce(ll x)&#123;return(__builtin_ctz(x));&#125;//返回二进制最后有几个0ll gcd(ll a,ll b)&#123;return b==0?a:gcd(b,a%b);&#125;void rad(ll h[],ll maxn,ll minn,ll n)&#123;default_random_engine e(time(0));uniform_int_distribution&lt;int&gt; u(minn,maxn);for(int i=1;i&lt;=n;i++)h[i]=u(e);&#125;template&lt;typename T&gt;void fast_erase(vector&lt;T&gt;&amp; container,typename std::vector&lt;T&gt;::size_type index)&#123;if(index&gt;=container.size()) return;if(index!=container.size()-1)container[index]=move(container.back());container.pop_back();&#125;inline void read128(__int128&amp;x)&#123;x=0;__int128 f=1;char ch=getchar();while(ch&lt;&#x27;0&#x27;||ch&gt;&#x27;9&#x27;)&#123;if(ch==&#x27;-&#x27;)f=-1;ch=getchar();&#125;while(ch&gt;=&#x27;0&#x27;&amp;&amp;ch&lt;=&#x27;9&#x27;)&#123;x=x*10+ch-&#x27;0&#x27;;ch =getchar();&#125;&#125;void print128(__int128 x)&#123;if(x&lt;0)&#123;putchar(&#x27;-&#x27;);x=-x;&#125;if(x&gt;9)print128(x/10);putchar(x%10+&#x27;0&#x27;);&#125;const ll inf=1e9+1;const ll mod=998244353;const ld pi=atan2(0,-1);const ld eps=1e-6;
+水印/*0.注意vector的size是size_t不能直接减去一个数，要类型转换1.深呼吸，不要紧张，慢慢读题，读明白题，题目往往比你想的简单。2.暴力枚举:枚举什么，是否可以使用一些技巧加快枚举速度（预处理、前缀和、数据结构、数论分块）。3.贪心:需要排序或使用数据结构（pq）吗，这么贪心一定最优吗。4.二分：满足单调性吗，怎么二分，如何确定二分函数返回值是什么。5.位运算：按位贪心，还是与位运算本身的性质有关。6.数学题：和最大公因数、质因子、取模是否有关。7.dp：怎么设计状态，状态转移方程是什么，初态是什么，使用循环还是记搜转移。8.搜索：dfs 还是 bfs ，搜索的时候状态是什么，需要记忆化吗。9.树上问题：是树形dp、树上贪心、或者是在树上搜索。10.图论：依靠什么样的关系建图，是求环统计结果还是最短路。11.组合数学：有几种值，每种值如何被组成，容斥关系是什么。12.交互题：log(n)次如何二分，2*n 次如何通过 n 次求出一些值，再根据剩余次数求答案。13.如果以上几种都不是，多半是有一个 point 你没有注意到，记住正难则反.  _____  _____   ____    _____   _____   _   _   _      __   __  _  __ |__  / | ____| / ___|  |_   _| |  ___| | | | | | |     \ \ / / | |/ /   / /  |  _|   \___ \    | |   | |_    | | | | | |      \ V /  | &#x27; /  / /_  | |___   ___) |   | |   |  _|   | |_| | | |___    | |   | . \   | /____| |_____| |____/    |_|   |_|      \___/  |_____|   |_|   |_|\_\  |*/
+INT128// 字符串转 __int128inline void read128(__int128 &amp;x)&#123;    x=0;    __int128 f=1;    char ch = getchar();    while (ch &lt; &#x27;0&#x27; || ch &gt; &#x27;9&#x27;) &#123;        if (ch == &#x27;-&#x27;) f = -1;        ch = getchar();    &#125;    while (ch &gt;= &#x27;0&#x27; &amp;&amp; ch &lt;= &#x27;9&#x27;) &#123;        x = x * 10 + ch - &#x27;0&#x27;;        ch = getchar();    &#125;&#125;// __int128 转字符串（输出用）void print128(__int128 x) &#123;    if (x &lt; 0) &#123;        putchar(&#x27;-&#x27;);        x = -x;    &#125;    if (x &gt; 9) print128(x / 10);    putchar(x % 10 + &#x27;0&#x27;);&#125;int main() &#123;    // 读取 __int128    __int128 a; read128(a);    __int128 b; read128(b);    // 运算（和普通整数一样）    __int128 sum = a + b;    __int128 product = a * b;    // 输出    cout &lt;&lt; &quot;Sum: &quot;;    print128(sum);    cout &lt;&lt; &quot;Product: &quot;;    print128(product);    return 0;&#125;
+01背包val_baseconst ll INF=1e9;ll w[110],v[110],sum=0,n,f[100010],ans=0,W;int main()&#123;    cin&gt;&gt;n&gt;&gt;W;    for(int i=1;i&lt;=n;i++)&#123;        cin&gt;&gt;w[i]&gt;&gt;v[i];        sum+=v[i];    &#125;    fill(f,f+100005,INF);    f[0]=0;    for(int i=1;i&lt;=n;i++)        for(int j=sum;j&gt;=v[i];j--)            if(f[j-v[i]]!=INF)                f[j]=min(f[j],f[j-v[i]]+w[i]);    for(int j=sum;j&gt;=0;j--)        if(f[j]&lt;=W)&#123;            ans=j;            break;        &#125;    cout&lt;&lt;ans&lt;&lt;endl;&#125;
+01背包ll N,W,w[200010],v[200010],ans[200010];int main()&#123;    cin&gt;&gt;N&gt;&gt;W;    for(int i=1;i&lt;=N;i++)        cin&gt;&gt;w[i]&gt;&gt;v[i];    for(int i=1;i&lt;=N;i++)&#123;        for(int l=W;l&gt;=w[i];l--)&#123;            ans[l]=max(ans[l-w[i]]+v[i],ans[l]);        &#125;    &#125;    cout&lt;&lt;ans[W]&lt;&lt;endl;&#125;/*仔细观察代码可以发现：对于当前处理的物品 𝑖i 和当前状态 𝑓𝑖,𝑗f_&#123;i,j&#125;，在 𝑗 ⩾𝑤𝑖j\geqslant w_&#123;i&#125; 时，𝑓𝑖,𝑗f_&#123;i,j&#125; 是会被 𝑓𝑖,𝑗−𝑤𝑖f_&#123;i,j-w_&#123;i&#125;&#125; 所影响的。这就相当于物品 𝑖i 可以多次被放入背包，与题意不符。（事实上，这正是完全背包问题的解法）*/
+01bfsconst int INF = 0x3f3f3f3f;const int MAXN = 1e5+1;vector&lt;pair&lt;int, int&gt;&gt; graph[MAXN];int main()&#123;    int n, m, source;    deque&lt;int&gt; dq;    vector&lt;int&gt; dist(n, INF);    dist[source] = 0;    dq.push_front(source);    while (!dq.empty()) &#123;        int u = dq.front(); dq.pop_front();        for (auto [v, w] : graph[u]) &#123;            if (w == 0 &amp;&amp; dist[v] &gt; dist[u]) &#123;                dist[v] = dist[u];                dq.push_front(v);  // 边权0，加入前端            &#125; else if (w == 1 &amp;&amp; dist[v] &gt; dist[u] + 1) &#123;                dist[v] = dist[u] + 1;                dq.push_back(v);   // 边权1，加入后端            &#125;        &#125;    &#125;&#125;
+单调队列int h=0,t=-1,q[1000010],n,a[1000010];int main()&#123;    ll n,m; cin&gt;&gt;n&gt;&gt;m;    for(int i=1;i&lt;=n;i++) cin&gt;&gt;a[i];    for(int i=1;i&lt;=n;i++)&#123;        if(h&lt;=t &amp;&amp; q[h]&lt;i-m+1) h++;        while(h&lt;=t &amp;&amp; a[i]&lt;=a[q[t]]) t--;        q[++t]=i;        if(i&gt;m-1) printf(&quot;%d &quot;,a[q[h]]);    &#125;    cout&lt;&lt;endl;&#125;/*对只除去开头元素来保证不过期的解释：新的大元素会淘汰所有旧元素，清空后新元素下标最大，确保不会漏掉过期检查队列下标的**单调递增**保证了过期检测的简单性使用方式：可以用于配合求区间最值，如区间和，加上前缀和，减掉最小位置就行了*/
+单调栈stack&lt;ll&gt; s;ll N,ans[3000010],a[3000010];int main()&#123;    cin&gt;&gt;N;    for(int i=1;i&lt;=N;i++)&#123;        cin&gt;&gt;a[i];        while(!s.empty()&amp;&amp;a[i]&gt;a[s.top()])&#123;            ans[s.top()]=i;            s.pop();        &#125;        s.push(i);    &#125;    for(int i=1;i&lt;=N;i++) cout&lt;&lt;ans[i]&lt;&lt;&quot; &quot;;&#125;
+多重背包ll f[200010],n,V,q[200010],g[200010];int main()&#123;    cin&gt;&gt;n&gt;&gt;V;    for(int i=1;i&lt;=n;i++)&#123;        memcpy(g,f,sizeof(f));        ll v,w,s; cin&gt;&gt;w&gt;&gt;v&gt;&gt;s;  //vol worth shu        for(int j=0;j&lt;v;j++)&#123;            ll h=0,t=-1;            for(int k=j;k&lt;=V;k+=v)&#123;                if(h&lt;=t &amp;&amp; q[h]&lt;k-s*v) h++;//处理过期元素                if(h&lt;=t) f[k]=max(g[k],g[q[h]]+(k-q[h])/v*w);//使用头部最大值                while(h&lt;=t &amp;&amp; g[k]&gt;=g[q[t]]+(k-q[t])/v*w) t--; //尾部值加上可能的价值还没现在这个大，那么就出队                q[++t]=k;            &#125;        &#125;    &#125;    cout&lt;&lt;f[V]&lt;&lt;endl;&#125;/*因为更新时是分为余数相同的v-1类的因为当余数为j时，只会访问相同余数的情况，而且是有一定范围的(窗口)每一类都可以单独用单调队列来优化，这样每次都可以取到最大值从而优化代码的复杂度，不然相当于每种情况都在寻找最小值，不优*/
+二维背包ll f[2010][2010],V,M,n;int main()&#123;    cin&gt;&gt;n&gt;&gt;V&gt;&gt;M;    for(int i=1;i&lt;=n;i++)&#123;        ll v,m,w; cin&gt;&gt;w&gt;&gt;v&gt;&gt;m;        for(int j=V;j&gt;=v;j--)            for(int k=M;k&gt;=m;k--)                f[j][k]=max(f[j-v][k-m]+w,f[j][k]);    &#125;    cout&lt;&lt;f[V][M]&lt;&lt;endl;&#125;/*w为价值v为体积(第一维)w为重量(第二维)*/
+分组背包ll f[200010],n,V,v[200010],w[200010]; //vol worthint main()&#123;    cin&gt;&gt;n&gt;&gt;V;    for(int i=1;i&lt;=n;i++)&#123;        ll s;cin&gt;&gt;s;        for(int j=1;j&lt;=s;j++) cin&gt;&gt;v[j]&gt;&gt;w[j];        for(int j=V;j&gt;=1;j--)&#123;            for(int k=1;k&lt;=s;k++)&#123;                if(j&gt;=v[k])                    f[j]=max(f[j],f[j-v[k]]+w[k]);            &#125;        &#125;    &#125;    cout&lt;&lt;f[V]&lt;&lt;endl;&#125;/*和01背包同理，需要从后往前计算保证每种物品只被计算一遍*/
+高斯约旦消元法const double eps=1e-8;double a[110][110];void solve()&#123;  ll n; cin&gt;&gt;n;  for(int i=1;i&lt;=n;i++)&#123;    for(int j=1;j&lt;=n+1;j++)&#123;      cin&gt;&gt;a[i][j];    &#125;  &#125;  for(int i=1;i&lt;=n;i++)&#123;    ll r=i;    for(int k=i;k&lt;=n;k++)&#123;      if(fabs(a[k][i])&gt;eps)&#123;// 找到非0行,换到最前面        r=k;        break;      &#125;    &#125;    if(r!=i)      swap(a[i],a[r]);    if(fabs(a[i][i])&lt;eps)&#123;//double不能直接和0比较，所以和一个非常小的数比较      cout&lt;&lt;&quot;No Solution&quot;&lt;&lt;endl;//如果为0了，那么必然是没有唯一解的      return;    &#125;    for(int k=1;k&lt;=n;k++)&#123;//把这一列除了a[i][i]全变为0      if(k==i) continue;      double t=a[k][i]/a[i][i];//计算倍数      for(int j=i;j&lt;=n+1;j++)&#123;//减去对应的数        a[k][j]-=t*a[i][j];      &#125;    &#125;  &#125;  for(int i=1;i&lt;=n;i++)&#123;    cout&lt;&lt;fixed&lt;&lt;setprecision(2)&lt;&lt;a[i][n+1]/a[i][i]&lt;&lt;endl;  &#125;&#125;
+快速幂long long quickpow(ll a, ll b, ll m)&#123;    ll sum=1;    while(b&gt;0)&#123;        if(b&amp;1)            sum=sum*a%m;        a=a*a%m;        b&gt;&gt;=1;    &#125;    return sum;&#125;
+区间dpll n,a[410],ans[410][410],sum[410];int main()&#123;    cin&gt;&gt;n;    memset(ans,0x3f,sizeof(ans));    for(int i=1;i&lt;=n;i++)&#123;        cin&gt;&gt;a[i];        sum[i]=sum[i-1]+a[i];        ans[i][i]=0;    &#125;    for(int l=2;l&lt;=n;l++)&#123;        for(int i=1;i+l-1&lt;=n;i++)&#123;            ll j=i+l-1;            for(int k=i;k&lt;j;k++)&#123;                ans[i][j]=min(ans[i][k]+ans[k+1][j]+sum[j]-sum[i-1],ans[i][j]);            &#125;        &#125;    &#125;    cout&lt;&lt;ans[1][n]&lt;&lt;endl;&#125;/*首先，每个区间自己合并的代价是0，之后枚举长度，枚举起点，计算每个区间的值，记得加上区间的总值，即合并后所需的代价。*/
+拓扑排序const ll MAXN=200010;ll n, m;vector&lt;ll&gt; G[MAXN];ll in[MAXN];  // 存储每个结点的入度bool toposort() &#123;    vector&lt;ll&gt; L;    queue&lt;ll&gt; S;    for (int i = 1; i &lt;= n; i++)        if (in[i] == 0) S.push(i);    while (!S.empty()) &#123;        int u = S.front();        S.pop();        L.push_back(u);        for (auto v : G[u]) &#123;            if (--in[v] == 0) &#123;                S.push(v);            &#125;        &#125;    &#125;    if (L.size() == n) &#123;        for (auto i : L) cout &lt;&lt; i &lt;&lt; &#x27; &#x27;;        return true;    &#125;    return false;&#125;
+依赖背包ll n,v[65],w[65],f[65][32010],V;vector&lt;ll&gt; a[65];void dfs(ll now)&#123;    for(int i=v[now];i&lt;=V;i++)        f[now][i]=v[now];    for(auto &amp;s:a[now])&#123;        dfs(s);        for(int j=V;j&gt;=v[now];j--)            for(int k=v[s];k+v[now]&lt;=j;k++)                f[now][j]=max(f[now][j],f[now][j-k]+f[s][k]);    &#125;&#125;int main()&#123;    cin&gt;&gt;V&gt;&gt;n;    for(int i=1;i&lt;=n;i++)&#123;        ll f; cin&gt;&gt;v[i]&gt;&gt;w[i]&gt;&gt;f;        a[f].push_back(i);    &#125;    dfs(0);    cout&lt;&lt;f[0][V]&lt;&lt;endl;&#125;/*循环时，从根往上计算，外层遍历体积，内层为决策，看选择子树体积为k时是否合理来判断要不要选择。f[i][j]表示选择i时体积为j的最大值*/
+字典树const ll INF=1e18,N=1e5+10;char s[N];int ch[N][26],cnt[N],idx=0;void insert(char *s)&#123;    int p=0;    for(int i=0;s[i];i++)&#123;        int j=s[i]-&#x27;a&#x27;;        if(!ch[p][j]) ch[p][j]=++idx;        p=ch[p][j];    &#125;    cnt[p]++;&#125;int query(char *s)&#123;    int p=0;    for(int i=0;s[i];i++)&#123;        int j=s[i]-&#x27;a&#x27;;        if(!ch[p][j]) return 0;        p=ch[p][j];    &#125;    return cnt[p];&#125;
+最大区间和ll a[200010];int main()&#123;    ll n; cin&gt;&gt;n;    for(int i=1;i&lt;=n;i++)        cin&gt;&gt;a[i];    ll max_ending_here=a[1];    ll max_so_far=a[1];    for(int i=2;i&lt;=n;i++)&#123;        max_ending_here=max(a[i],max_ending_here+a[i]);        max_so_far=max(max_so_far,max_ending_here);    &#125;    cout&lt;&lt;max_so_far&lt;&lt;endl;    ll sum=0;    for(int i=1;i&lt;=n;i++)&#123;        sum=sum+a[i];        max_so_far=max(max_so_far,sum);        if(sum&lt;0) sum=0;    &#125;&#125;
+dijkstralong long N;const long long INF=1e18;vector&lt;pair&lt;LL,LL&gt;&gt; g[10010];int main()&#123;    priority_queue&lt;pair&lt;LL, LL&gt;, vector&lt;pair&lt;LL, LL&gt;&gt;, greater&lt;pair&lt;LL, LL&gt;&gt;&gt; pq;vector&lt;bool&gt; vis(N+1, false);    vector&lt;LL&gt; dis(N+1, INF);    dis[1] = 0;    pq.push(&#123;0, 1&#125;);    while(!pq.empty()) &#123;        auto [d, u] = pq.top(); pq.pop();        if(vis[u]) continue;        vis[u] = true;        for(auto [v, w] : g[u]) &#123;            if(!vis[v] &amp;&amp; dis[v] &gt; dis[u] + w) &#123;                dis[v] = dis[u] + w;                pq.push(&#123;dis[v], v&#125;);            &#125;        &#125;    &#125;&#125;
+交互题int main()&#123;    int T; cin&gt;&gt;T;    while(T--)&#123;        ll n,y; cin&gt;&gt;n;        ll sum=n*(n+1)/2;        cout&lt;&lt;&quot;2 1 &quot;&lt;&lt;n&lt;&lt;endl;        cout.flush();        cin&gt;&gt;y;        ll len=y-sum,l=1,r=n;        while(l&lt;=r)&#123;            ll mid=(l+r)&gt;&gt;1;            cout&lt;&lt;&quot;1 1 &quot;&lt;&lt;mid&lt;&lt;endl;            cout.flush();            ll last; cin&gt;&gt;last;            cout&lt;&lt;&quot;2 1 &quot;&lt;&lt;mid&lt;&lt;endl;            cout.flush();            ll now; cin&gt;&gt;now;            ll f=now-last;            if(f==0) l=mid+1;            else r=mid-1;        &#125;        cout&lt;&lt;&quot;! &quot;&lt;&lt;l&lt;&lt;&quot; &quot;&lt;&lt;l+len-1&lt;&lt;endl;        cout.flush();    &#125;&#125;
+KMPint main()&#123;    string t,p; cin&gt;&gt;t&gt;&gt;p;    vector&lt;ll&gt; ans,pi(p.length());    for(int i=1;i&lt;p.length();i++)&#123;        ll j=pi[i-1];        while(j&gt;0&amp;&amp;p[j]!=p[i]) j=pi[j-1];        if(p[i]==p[j]) j++;        pi[i]=j;    &#125;//上面是next函数，对pattern数据处理，方便查找长度    for(int i=0,j=0;i&lt;t.length();i++)&#123;        while(j&gt;0&amp;&amp;t[i]!=p[j])j=pi[j-1];        if(p[j]==t[i])j++;        if(j==p.length())&#123;            ans.push_back(i-p.length()+1);            j=pi[j-1];        &#125;    &#125;//计算可能的位置    for(auto &amp;i:ans) cout&lt;&lt;i+1&lt;&lt;endl;    for(int i=0;i&lt;p.length();i++) cout&lt;&lt;pi[i]&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;&#125;/*关键点，比较时j会向前跳，pi[j]记录的依旧是长度可以用计算前缀的函数来理解最后记得要向前跳一位，因为不然下一次会直接认为是正确答案而且跳不回去了，所以要j=pi[j-1]*/
+LCSll f[3010][3010],p[3010][3010];string s,t;int main()&#123;    cin&gt;&gt;s&gt;&gt;t;    ll m=s.length(),n=t.length();    for(int i=1;i&lt;=m;i++)&#123;        for(int j=1;j&lt;=n;j++)&#123;            if(s[i-1]==t[j-1])&#123;                f[i][j]=f[i-1][j-1]+1;                p[i][j]=1;            &#125;            else if(f[i][j-1]&gt;f[i-1][j])&#123;                f[i][j]=f[i][j-1];                p[i][j]=2;            &#125;            else&#123;                f[i][j]=f[i-1][j];                p[i][j]=3;            &#125;        &#125;    &#125;    ll i,j,k; char ch[3010];    i=m,j=n,k=f[m][n];    while(i&gt;0&amp;&amp;j&gt;0)&#123;        if(p[i][j]==1)&#123;            ch[k--]=s[i-1];            i--; j--;        &#125;        else if(p[i][j]==2) j--;        else i--;    &#125;    for(int i=1;i&lt;=f[m][n];i++)        cout&lt;&lt;ch[i]; cout&lt;&lt;endl;&#125;
+Mabacherconst ll INF=1e18;ll p[22000010],mid=0,r=0,ans=1;int main()&#123;    ios::sync_with_stdio(false);    cin.tie(0);    string x; vector&lt;char&gt; s;    s.push_back(&#x27;~&#x27;);s.push_back(&#x27;#&#x27;);    cin&gt;&gt;x; ll len=x.length()*2+1;    for(int i=0;i&lt;x.length();i++)&#123;s.push_back(x[i]);        s.push_back(&#x27;#&#x27;);&#125;    s.push_back(&#x27;!&#x27;);    for(int i=2;i&lt;len-1;i++)&#123;        if(i&lt;=r) p[i]=min(p[mid*2-i],r-i+1);        else p[i]=1;        while(s[i-p[i]]==s[i+p[i]]) p[i]++;        if(i+p[i]-1&gt;r)&#123;r=p[i]+i-1;mid=i;&#125;        ans=max(p[i],ans);    &#125;    cout&lt;&lt;ans-1&lt;&lt;endl;&#125;/*加入几个字符使得每一段都是奇数，然后记录的是半径，所以值为r-1然后如果在已知最右范围之内，那么就先默认为对称值，之后再扩张更新初始化时记得使用vector，因为用字符串的相加是需要O(n)时间复杂度*/
+SPFAconst long long INF=1e18;vector&lt;pair&lt;LL,LL&gt;&gt; g[10010];int main()&#123;    queue&lt;LL&gt; q;    vector&lt;bool&gt; inQueue(N+1, false);    vector&lt;LL&gt; dis(N+1, INF);    dis[1] = 0;    q.push(1);    inQueue[1] = true;    while(!q.empty()) &#123;        LL u = q.front(); q.pop();        inQueue[u] = false;        for(auto [v, w] : g[u]) &#123;            if(dis[v] &gt; dis[u] + w) &#123;                dis[v] = dis[u] + w;                if(!inQueue[v]) &#123;                    q.push(v);                    inQueue[v] = true;                &#125;            &#125;        &#125;    &#125;&#125;
+String Hashtypedef unsigned long long ULL;const ll P=131;unordered_set&lt;ll&gt; a;ULL p[2200],h[2200];ll init(string s)&#123;    p[0]=1,h[0]=0;    for(int i=1;i&lt;=s.length();i++)&#123;        p[i]=p[i-1]*P;        h[i]=h[i-1]*P+s[i-1];    &#125;    return h[s.length()];&#125;ll gethash(ll l,ll r)&#123;    return h[r]-h[l-1]*p[r-l+1];&#125;ll sbstr(ll l1,ll r1,ll l2,ll r2)&#123;    return gethash(l1,r1)==gethash(l2,r2);&#125;
+String prefixll pi[300010];int main()&#123;    string s; cin&gt;&gt;s;    for(int i=1;i&lt;s.length();i++)&#123;        ll j=pi[i-1];        while(j&gt;0&amp;&amp;s[j]!=s[i]) j=pi[j-1];//跳到子问题的最大值位置，即i-1那一段所能求得的前缀最大那一段        if(s[i]==s[j]) j++;        pi[i]=j;    &#125;    for(int i=0;i&lt;s.length();i++)cout&lt;&lt;pi[i]&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;&#125;/*比如字符串为acaca...acacc           01234      ^               ^      |               |      i               jj此时为4，判断下面这个等式，不成立，那么长度只能是p[j-1]的最大值(p[j]是要比较的值，所以最大前缀值实际上是j-1)，这样就得到了第二小的值如果合法，那么s[p[i]]==s[i+1]因为长度为x的话，而是string从0开始的，所以如果相等则符合要求，找到了一个位置可以+1*/
+substrint main() &#123;    std::string str = &quot;Short&quot;;    // 安全使用：检查位置是否有效    size_t pos = 10;    if (pos &lt; str.length()) &#123;        std::string sub = str.substr(pos);        std::cout &lt;&lt; sub &lt;&lt; std::endl;    &#125; else &#123;        std::cout &lt;&lt; &quot;位置超出字符串范围！&quot; &lt;&lt; std::endl;    &#125;    // 如果长度超过字符串剩余部分，会自动调整    std::string safe_sub = str.substr(2, 100); // 只会提取 &quot;ort&quot;    std::cout &lt;&lt; safe_sub &lt;&lt; std::endl;    std::string filename = &quot;document.pdf&quot;;    // 找到最后一个点的位置    size_t dotPos = filename.find_last_of(&#x27;.&#x27;);    if (dotPos != std::string::npos) &#123;        std::string extension = filename.substr(dotPos + 1);        std::cout &lt;&lt; &quot;文件扩展名: &quot; &lt;&lt; extension &lt;&lt; std::endl; // 输出 &quot;pdf&quot;    &#125;    std::string str = &quot;Hello, World!&quot;;    // 提取前 5 个字符    std::string sub3 = str.substr(0, 5);    std::cout &lt;&lt; sub3 &lt;&lt; std::endl; // 输出 &quot;Hello&quot;    return 0;&#125;
+树状数组ll c[200010],n;//树状数组的常见写法int lowbit(int x)&#123;return x&amp;-x;&#125;int getsum(int x)&#123;  // a[1]..a[x]的和    int ans=0;    while(x&gt;0)&#123;        ans=ans+c[x];        x=x-lowbit(x);    &#125;    return ans;&#125;void add(int x,int k)&#123; // idx,val    while(x&lt;=n)&#123;  // 不能越界        c[x]=c[x]+k;        x=x+lowbit(x);    &#125;&#125;
+树状数组前缀和ll t1[1000005],t2[1000005],n;ll lowbit(int x) &#123;return x&amp;(-x);&#125;void build(ll k,ll v)&#123;    ll v1=v*k;    while(k&lt;n)&#123;        t1[k]+=v;t2[k]+=v1;        k+=lowbit(k);    &#125;&#125;ll getsum(ll *t1,int k)&#123;    ll sum=0;    while(k&gt;0)&#123;        sum+=t1[k];        k-=lowbit(k);    &#125;    return sum;&#125;void add(ll k,ll v)&#123;    build(k,v);&#125;void change(ll l,ll r,ll v)&#123;    add(l,v);add(r+1ll,-v);&#125;ll getsum1(ll l,ll r)&#123;    return (r+1ll)*getsum(t1,r)+l*getsum(t1,l-1ll)-getsum(t2,r)-getsum(t2,l-1ll);&#125;
+Z函数int main()&#123;    string t; cin&gt;&gt;t;    vector&lt;ll&gt; zt(t.length());    zt[0]=t.length();    for(ll i=1,l=0,r=0;i&lt;t.length();i++)&#123;        if(i&lt;=r)zt[i]=min(zt[i-l],r-i+1);        while(t[zt[i]]==t[i+zt[i]]&amp;&amp;i+zt[i]&lt;t.length()) zt[i]++;        if(i+zt[i]-1&gt;r) l=i,r=zt[i]+i-1;    &#125;    for(auto &amp;i:zt) cout&lt;&lt;i&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;&#125;/*zt记录的是字符串中，每一个位置作为起点能和开头匹配上的最长长度方法和马拉车算法类似，规定一个盒子，在盒子内的使用之前的数据，但是注意可能会超出边界，因此要加上一个判断。之后更新答案，这里没有判断在盒子外的才扩张是因为：如果可以发生扩张，那么说明现在这个边界不是最优的，因此如果在盒子内不会进入while因此这个算法和manacher一样是O(n),除此之外这个算法就和之前的前缀算法没有太大区别了*/
+并查集const int N = 2e5+5;int fa[N];int n, m;int find(int x)&#123;    if(fa[x] == x) return x;    else return fa[x] = find(fa[x]); // 比起朴素代码只改了这里&#125;int main()&#123;    cin &gt;&gt; n &gt;&gt; m;    for(int i = 1; i &lt;= n; ++i) fa[i] = i; // 初始化    for(int i = 1; i &lt;= m; ++i)&#123;        int op, x, y;        cin &gt;&gt; op &gt;&gt; x &gt;&gt; y;        if(op == 1)&#123; // 合并操作            x = find(x), y = find(y); // 查询各自的代表元素            if(x == y) continue; // 如果已经在同一个集合，跳过            fa[x] = y; // 这里的合并顺序可以任意        &#125;        else&#123; // 查询操作的一种变形            x = find(x), y = find(y); // 查询各自的代表元素            if(x == y) cout &lt;&lt; &quot;Y&quot; &lt;&lt; endl; // 是否在同一个集合            else cout &lt;&lt; &quot;N&quot; &lt;&lt; endl;        &#125;    &#125;    return 0;&#125;
+最小生成树int fa[1010];  // 定义父亲int n, m, k;struct edge &#123;  int u, v, w;&#125;;int l;edge g[10010];void add(int u, int v, int w) &#123;  l++;  g[l].u = u;  g[l].v = v;  g[l].w = w;&#125;// 标准并查集int findroot(int x) &#123; return fa[x] == x ? x : fa[x] = findroot(fa[x]); &#125;void Merge(int x, int y) &#123;  x = findroot(x);  y = findroot(y);  fa[x] = y;&#125;bool cmp(edge A, edge B) &#123; return A.w &lt; B.w; &#125;// Kruskal 算法void kruskal() &#123;  int tot = 0;  // 存已选了的边数  int ans = 0;  // 存总的代价  for (int i = 1; i &lt;= m; i++) &#123;    int xr = findroot(g[i].u), yr = findroot(g[i].v);    if (xr != yr) &#123;        // 如果父亲不一样      Merge(xr, yr);       // 合并      tot++;               // 边数增加      ans += g[i].w;       // 代价增加      if (tot == n - k) &#123;  // 检查选的边数是否满足 k 个棉花糖        cout &lt;&lt; ans &lt;&lt; &#x27;\n&#x27;;        return;      &#125;    &#125;  &#125;  cout &lt;&lt; &quot;No Answer\n&quot;;  // 无法连成&#125;int main() &#123;  cin &gt;&gt; n &gt;&gt; m &gt;&gt; k;  if (n == k) &#123;  // 特判边界情况    cout &lt;&lt; &quot;0\n&quot;;    return 0;  &#125;  for (int i = 1; i &lt;= n; i++) &#123;  // 初始化    fa[i] = i;  &#125;  for (int i = 1; i &lt;= m; i++) &#123;    int u, v, w;    cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;    add(u, v, w);  // 添加边  &#125;  sort(g + 1, g + m + 1, cmp);  // 先按边权排序  kruskal();  return 0;&#125;
+欧拉筛vector&lt;int&gt; pri;bool not_prime[N];void pre(int n) &#123;  for (int i = 2; i &lt;= n; ++i) &#123;    if (!not_prime[i]) &#123;      pri.push_back(i);    &#125;    for (int pri_j : pri) &#123;      if (i * pri_j &gt; n) break;      not_prime[i * pri_j] = true;      if (i % pri_j == 0) &#123;        // i % pri_j == 0        // 换言之，i 之前被 pri_j 筛过了        // 由于 pri 里面质数是从小到大的，所以 i 乘上其他的质数的结果一定会被        // pri_j 的倍数筛掉，就不需要在这里先筛一次，所以这里直接 break        // 掉就好了        break;      &#125;    &#125;  &#125;&#125;
+离散化// std::vector&lt;int&gt; arr;std::vector&lt;int&gt; tmp(arr);  // tmp 是 arr 的一个副本std::sort(tmp.begin(), tmp.end());tmp.erase(std::unique(tmp.begin(), tmp.end()), tmp.end());for (int i = 0; i &lt; n; ++i)  arr[i] = std::lower_bound(tmp.begin(), tmp.end(), arr[i]) - tmp.begin();
+线段树void build(int s, int t, int p) &#123;  // 对 [s,t] 区间建立线段树,当前根的编号为 p  if (s == t) &#123;    d[p] = a[s];    return;  &#125;  int m = s + ((t - s) &gt;&gt; 1);  // 移位运算符的优先级小于加减法，所以加上括号  // 如果写成 (s + t) &gt;&gt; 1 可能会超出 int 范围  build(s, m, p * 2), build(m + 1, t, p * 2 + 1);  // 递归对左右区间建树  d[p] = d[p * 2] + d[(p * 2) + 1];&#125;int getsum(int l, int r, int s, int t, int p) &#123;  // [l, r] 为查询区间, [s, t] 为当前节点包含的区间, p 为当前节点的编号  if (l &lt;= s &amp;&amp; t &lt;= r)    return d[p];  // 当前区间为询问区间的子集时直接返回当前区间的和  int m = s + ((t - s) &gt;&gt; 1), sum = 0;  if (l &lt;= m) sum += getsum(l, r, s, m, p * 2);  // 如果左儿子代表的区间 [s, m] 与询问区间有交集, 则递归查询左儿子  if (r &gt; m) sum += getsum(l, r, m + 1, t, p * 2 + 1);  // 如果右儿子代表的区间 [m + 1, t] 与询问区间有交集, 则递归查询右儿子  return sum;&#125;
+懒标记修改法// [l, r] 为修改区间, c 为被修改的元素的变化量, [s, t] 为当前节点包含的区间, p// 为当前节点的编号void update(int l, int r, int c, int s, int t, int p) &#123;  // 当前区间为修改区间的子集时直接修改当前节点的值,然后打标记,结束修改  if (l &lt;= s &amp;&amp; t &lt;= r) &#123;    d[p] += (t - s + 1) * c, b[p] += c;    return;  &#125;  int m = s + ((t - s) &gt;&gt; 1);  if (b[p] &amp;&amp; s != t) &#123;    // 如果当前节点的懒标记非空,则更新当前节点两个子节点的值和懒标记值    d[p * 2] += b[p] * (m - s + 1), d[p * 2 + 1] += b[p] * (t - m);    b[p * 2] += b[p], b[p * 2 + 1] += b[p];  // 将标记下传给子节点    b[p] = 0;                                // 清空当前节点的标记  &#125;  if (l &lt;= m) update(l, r, c, s, m, p * 2);  if (r &gt; m) update(l, r, c, m + 1, t, p * 2 + 1);  d[p] = d[p * 2] + d[p * 2 + 1];&#125;  int getsum(int l, int r, int s, int t, int p) &#123;  // [l, r] 为查询区间, [s, t] 为当前节点包含的区间, p 为当前节点的编号  if (l &lt;= s &amp;&amp; t &lt;= r) return d[p];  // 当前区间为询问区间的子集时直接返回当前区间的和  int m = s + ((t - s) &gt;&gt; 1);  if (b[p]) &#123;    // 如果当前节点的懒标记非空,则更新当前节点两个子节点的值和懒标记值    d[p * 2] += b[p] * (m - s + 1), d[p * 2 + 1] += b[p] * (t - m);    b[p * 2] += b[p], b[p * 2 + 1] += b[p];  // 将标记下传给子节点    b[p] = 0;                                // 清空当前节点的标记  &#125;  int sum = 0;  if (l &lt;= m) sum = getsum(l, r, s, m, p * 2);  if (r &gt; m) sum += getsum(l, r, m + 1, t, p * 2 + 1);  return sum;&#125;
+直接修改为特定值void update(int l, int r, int c, int s, int t, int p) &#123;  if (l &lt;= s &amp;&amp; t &lt;= r) &#123;    d[p] = (t - s + 1) * c, b[p] = c, v[p] = 1;    return;  &#125;  int m = s + ((t - s) &gt;&gt; 1);  // 额外数组储存是否修改值  if (v[p]) &#123;    d[p * 2] = b[p] * (m - s + 1), d[p * 2 + 1] = b[p] * (t - m);    b[p * 2] = b[p * 2 + 1] = b[p];    v[p * 2] = v[p * 2 + 1] = 1;    v[p] = 0;  &#125;  if (l &lt;= m) update(l, r, c, s, m, p * 2);  if (r &gt; m) update(l, r, c, m + 1, t, p * 2 + 1);  d[p] = d[p * 2] + d[p * 2 + 1];&#125;int getsum(int l, int r, int s, int t, int p) &#123;  if (l &lt;= s &amp;&amp; t &lt;= r) return d[p];  int m = s + ((t - s) &gt;&gt; 1);  if (v[p]) &#123;    d[p * 2] = b[p] * (m - s + 1), d[p * 2 + 1] = b[p] * (t - m);    b[p * 2] = b[p * 2 + 1] = b[p];    v[p * 2] = v[p * 2 + 1] = 1;    v[p] = 0;  &#125;  int sum = 0;  if (l &lt;= m) sum = getsum(l, r, s, m, p * 2);  if (r &gt; m) sum += getsum(l, r, m + 1, t, p * 2 + 1);  return sum;&#125;]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>DP习题笔记</title>
     <url>/ZestfulYK-blog/2025/12/16/DP%E4%B9%A0%E9%A2%98%E7%AC%94%E8%AE%B01(%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%9A%84%E5%BC%95%E5%85%A5)/</url>
     <content><![CDATA[循环的遍历
@@ -312,6 +397,22 @@ DP的一般思路
 看一下每一次有几种转移方式，把可能的变化列一下，看看是否有规律
 在这一讲还是不用区分特殊类型的DP的
 
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DP习题笔记-二进制拆分</title>
+    <url>/ZestfulYK-blog/2025/02/24/DP%E4%B9%A0%E9%A2%98%E7%AC%94%E8%AE%B0-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%8B%86%E5%88%86/</url>
+    <content><![CDATA[题目描述给定一个非负整数 $n(0\leq n \leq 10^7)$，求有多少个长为 30 的非负整数序列 a ,满足 $\sum_{i=0}^{29}2^i*a_i=n$由于答案可能很大，请将结果对 998244353 取模后再输出。
+解法看到题目，第一反应就是一个完全背包的动态规划题目，所以直接打表解决，不过发现超时了，那么怎么办呢？
+输出前30个数得到如下结果：1 2 2 4 4 6 6 10 10 14 14 20 20 26 26 36 36 46 46 60 60 74 74 94 94 114 114 140 140 166观察得到，每两个数是一样的，如果去重的话得到：
+1 2 4 6 10 14 20 26 36 46 60
+每一次的差正好都在前面出现过且这个差的位置刚好是n/2，那么可以得到递推式子：$$\begin{cases}dp[i]=dp[i-1]\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \text{i为奇数}\dp[i]=dp[i-1]+dp[i/2]\ \ \ \ \ \ \text{i为偶数}\end{cases}
+$$但是为什么这个递推式子是正确的呢？
+实际上可以这么理解：
+当n为奇数时，实际上就是在偶数的基础上加上了1，所以方法数和偶数时一样的当n为偶数时，分两种情况：含有至少一个1的方法和不含有1的方法含有一个1的方法是必然都是奇数的情况转移而来的，因为要在奇数的基础上加上一个1，不含1的情况实际上就是把方案里的数全部乘以2，因此要看n/2的答案。
 ]]></content>
       <tags>
         <tag>算法</tag>
@@ -368,92 +469,111 @@ E(XY)=E(X)E(Y)
       </tags>
   </entry>
   <entry>
-    <title>C++模板</title>
-    <url>/ZestfulYK-blog/2026/01/23/C-%E6%A8%A1%E6%9D%BF/</url>
-    <content><![CDATA[说明这些是我平时攒下来的模板,现在送给大家!
-火车头#include &lt;algorithm&gt;#include &lt;bitset&gt;#include &lt;cmath&gt;#include &lt;cstdio&gt;#include &lt;cstdlib&gt;#include &lt;cstring&gt;#include &lt;ctime&gt;#include &lt;deque&gt;#include &lt;map&gt;#include &lt;iostream&gt;#include &lt;queue&gt;#include &lt;set&gt;#include &lt;stack&gt;#include &lt;vector&gt;#include &lt;array&gt;#include &lt;unordered_map&gt;#include &lt;numeric&gt;#include &lt;functional&gt;#include &lt;iomanip&gt;#include &lt;chrono&gt;#include &lt;random&gt;#include &lt;ctime&gt;using namespace std;#define ll long long#define int ll#define ld long double#define pb push_back#define fs first#define sd second#define all(a) a.begin(),a.end()#define rall(a) a.rbegin(),a.rend()#define endl &#x27;\n&#x27;mt19937 rnd(time(nullptr));void rad(ll h[],ll maxn,ll minn,ll n)&#123;  default_random_engine e(time(0));  uniform_int_distribution&lt;int&gt; u(minn,maxn);  for(int i=1;i&lt;=n;i++)&#123;    h[i]=u(e);  &#125;&#125;const ll inf = 1e9 + 1;const ll mod = 998244353;const ld pi = atan2(0, -1);const ld eps = 1e-6;
-INT128// 字符串转 __int128inline void read128(__int128 &amp;x)&#123;    x=0;    __int128 f=1;    char ch = getchar();    while (ch &lt; &#x27;0&#x27; || ch &gt; &#x27;9&#x27;) &#123;        if (ch == &#x27;-&#x27;) f = -1;        ch = getchar();    &#125;    while (ch &gt;= &#x27;0&#x27; &amp;&amp; ch &lt;= &#x27;9&#x27;) &#123;        x = x * 10 + ch - &#x27;0&#x27;;        ch = getchar();    &#125;&#125;// __int128 转字符串（输出用）void print128(__int128 x) &#123;    if (x &lt; 0) &#123;        putchar(&#x27;-&#x27;);        x = -x;    &#125;    if (x &gt; 9) print128(x / 10);    putchar(x % 10 + &#x27;0&#x27;);&#125;int main() &#123;    // 读取 __int128    __int128 a; read128(a);    __int128 b; read128(b);    // 运算（和普通整数一样）    __int128 sum = a + b;    __int128 product = a * b;    // 输出    cout &lt;&lt; &quot;Sum: &quot;;    print128(sum);    cout &lt;&lt; &quot;Product: &quot;;    print128(product);    return 0;&#125;
-01背包val_baseconst ll INF=1e9;ll w[110],v[110],sum=0,n,f[100010],ans=0,W;int main()&#123;    cin&gt;&gt;n&gt;&gt;W;    for(int i=1;i&lt;=n;i++)&#123;        cin&gt;&gt;w[i]&gt;&gt;v[i];        sum+=v[i];    &#125;    fill(f,f+100005,INF);    f[0]=0;    for(int i=1;i&lt;=n;i++)        for(int j=sum;j&gt;=v[i];j--)            if(f[j-v[i]]!=INF)                f[j]=min(f[j],f[j-v[i]]+w[i]);    for(int j=sum;j&gt;=0;j--)        if(f[j]&lt;=W)&#123;            ans=j;            break;        &#125;    cout&lt;&lt;ans&lt;&lt;endl;&#125;
-01背包ll N,W,w[200010],v[200010],ans[200010];int main()&#123;    cin&gt;&gt;N&gt;&gt;W;    for(int i=1;i&lt;=N;i++)        cin&gt;&gt;w[i]&gt;&gt;v[i];    for(int i=1;i&lt;=N;i++)&#123;        for(int l=W;l&gt;=w[i];l--)&#123;            ans[l]=max(ans[l-w[i]]+v[i],ans[l]);        &#125;    &#125;    cout&lt;&lt;ans[W]&lt;&lt;endl;&#125;/*仔细观察代码可以发现：对于当前处理的物品 𝑖i 和当前状态 𝑓𝑖,𝑗f_&#123;i,j&#125;，在 𝑗 ⩾𝑤𝑖j\geqslant w_&#123;i&#125; 时，𝑓𝑖,𝑗f_&#123;i,j&#125; 是会被 𝑓𝑖,𝑗−𝑤𝑖f_&#123;i,j-w_&#123;i&#125;&#125; 所影响的。这就相当于物品 𝑖i 可以多次被放入背包，与题意不符。（事实上，这正是完全背包问题的解法）*/
-01bfsconst int INF = 0x3f3f3f3f;const int MAXN = 1e5+1;vector&lt;pair&lt;int, int&gt;&gt; graph[MAXN];int main()&#123;    int n, m, source;    deque&lt;int&gt; dq;    vector&lt;int&gt; dist(n, INF);    dist[source] = 0;    dq.push_front(source);    while (!dq.empty()) &#123;        int u = dq.front(); dq.pop_front();        for (auto [v, w] : graph[u]) &#123;            if (w == 0 &amp;&amp; dist[v] &gt; dist[u]) &#123;                dist[v] = dist[u];                dq.push_front(v);  // 边权0，加入前端            &#125; else if (w == 1 &amp;&amp; dist[v] &gt; dist[u] + 1) &#123;                dist[v] = dist[u] + 1;                dq.push_back(v);   // 边权1，加入后端            &#125;        &#125;    &#125;&#125;
-单调队列int h=0,t=-1,q[1000010],n,a[1000010];int main()&#123;    ll n,m; cin&gt;&gt;n&gt;&gt;m;    for(int i=1;i&lt;=n;i++) cin&gt;&gt;a[i];    for(int i=1;i&lt;=n;i++)&#123;        if(h&lt;=t &amp;&amp; q[h]&lt;i-m+1) h++;        while(h&lt;=t &amp;&amp; a[i]&lt;=a[q[t]]) t--;        q[++t]=i;        if(i&gt;m-1) printf(&quot;%d &quot;,a[q[h]]);    &#125;    cout&lt;&lt;endl;&#125;/*对只除去开头元素来保证不过期的解释：新的大元素会淘汰所有旧元素，清空后新元素下标最大，确保不会漏掉过期检查队列下标的**单调递增**保证了过期检测的简单性使用方式：可以用于配合求区间最值，如区间和，加上前缀和，减掉最小位置就行了*/
-单调栈stack&lt;ll&gt; s;ll N,ans[3000010],a[3000010];int main()&#123;    cin&gt;&gt;N;    for(int i=1;i&lt;=N;i++)&#123;        cin&gt;&gt;a[i];        while(!s.empty()&amp;&amp;a[i]&gt;a[s.top()])&#123;            ans[s.top()]=i;            s.pop();        &#125;        s.push(i);    &#125;    for(int i=1;i&lt;=N;i++) cout&lt;&lt;ans[i]&lt;&lt;&quot; &quot;;&#125;
-多重背包ll f[200010],n,V,q[200010],g[200010];int main()&#123;    cin&gt;&gt;n&gt;&gt;V;    for(int i=1;i&lt;=n;i++)&#123;        memcpy(g,f,sizeof(f));        ll v,w,s; cin&gt;&gt;w&gt;&gt;v&gt;&gt;s;  //vol worth shu        for(int j=0;j&lt;v;j++)&#123;            ll h=0,t=-1;            for(int k=j;k&lt;=V;k+=v)&#123;                if(h&lt;=t &amp;&amp; q[h]&lt;k-s*v) h++;//处理过期元素                if(h&lt;=t) f[k]=max(g[k],g[q[h]]+(k-q[h])/v*w);//使用头部最大值                while(h&lt;=t &amp;&amp; g[k]&gt;=g[q[t]]+(k-q[t])/v*w) t--; //尾部值加上可能的价值还没现在这个大，那么就出队                q[++t]=k;            &#125;        &#125;    &#125;    cout&lt;&lt;f[V]&lt;&lt;endl;&#125;/*因为更新时是分为余数相同的v-1类的因为当余数为j时，只会访问相同余数的情况，而且是有一定范围的(窗口)每一类都可以单独用单调队列来优化，这样每次都可以取到最大值从而优化代码的复杂度，不然相当于每种情况都在寻找最小值，不优*/
-二维背包ll f[2010][2010],V,M,n;int main()&#123;    cin&gt;&gt;n&gt;&gt;V&gt;&gt;M;    for(int i=1;i&lt;=n;i++)&#123;        ll v,m,w; cin&gt;&gt;w&gt;&gt;v&gt;&gt;m;        for(int j=V;j&gt;=v;j--)            for(int k=M;k&gt;=m;k--)                f[j][k]=max(f[j-v][k-m]+w,f[j][k]);    &#125;    cout&lt;&lt;f[V][M]&lt;&lt;endl;&#125;/*w为价值v为体积(第一维)w为重量(第二维)*/
-分组背包ll f[200010],n,V,v[200010],w[200010]; //vol worthint main()&#123;    cin&gt;&gt;n&gt;&gt;V;    for(int i=1;i&lt;=n;i++)&#123;        ll s;cin&gt;&gt;s;        for(int j=1;j&lt;=s;j++) cin&gt;&gt;v[j]&gt;&gt;w[j];        for(int j=V;j&gt;=1;j--)&#123;            for(int k=1;k&lt;=s;k++)&#123;                if(j&gt;=v[k])                    f[j]=max(f[j],f[j-v[k]]+w[k]);            &#125;        &#125;    &#125;    cout&lt;&lt;f[V]&lt;&lt;endl;&#125;/*和01背包同理，需要从后往前计算保证每种物品只被计算一遍*/
-高斯约旦消元法const double eps=1e-8;double a[110][110];void solve()&#123;  ll n; cin&gt;&gt;n;  for(int i=1;i&lt;=n;i++)&#123;    for(int j=1;j&lt;=n+1;j++)&#123;      cin&gt;&gt;a[i][j];    &#125;  &#125;  for(int i=1;i&lt;=n;i++)&#123;    ll r=i;    for(int k=i;k&lt;=n;k++)&#123;      if(fabs(a[k][i])&gt;eps)&#123;// 找到非0行,换到最前面        r=k;        break;      &#125;    &#125;    if(r!=i)      swap(a[i],a[r]);    if(fabs(a[i][i])&lt;eps)&#123;//double不能直接和0比较，所以和一个非常小的数比较      cout&lt;&lt;&quot;No Solution&quot;&lt;&lt;endl;//如果为0了，那么必然是没有唯一解的      return;    &#125;    for(int k=1;k&lt;=n;k++)&#123;//把这一列除了a[i][i]全变为0      if(k==i) continue;      double t=a[k][i]/a[i][i];//计算倍数      for(int j=i;j&lt;=n+1;j++)&#123;//减去对应的数        a[k][j]-=t*a[i][j];      &#125;    &#125;  &#125;  for(int i=1;i&lt;=n;i++)&#123;    cout&lt;&lt;fixed&lt;&lt;setprecision(2)&lt;&lt;a[i][n+1]/a[i][i]&lt;&lt;endl;  &#125;&#125;
-快速幂long long quickpow(ll a, ll b, ll m)&#123;    ll sum=1;    while(b&gt;0)&#123;        if(b&amp;1)            sum=sum*a%m;        a=a*a%m;        b&gt;&gt;=1;    &#125;    return sum;&#125;
-区间dpll n,a[410],ans[410][410],sum[410];int main()&#123;    cin&gt;&gt;n;    memset(ans,0x3f,sizeof(ans));    for(int i=1;i&lt;=n;i++)&#123;        cin&gt;&gt;a[i];        sum[i]=sum[i-1]+a[i];        ans[i][i]=0;    &#125;    for(int l=2;l&lt;=n;l++)&#123;        for(int i=1;i+l-1&lt;=n;i++)&#123;            ll j=i+l-1;            for(int k=i;k&lt;j;k++)&#123;                ans[i][j]=min(ans[i][k]+ans[k+1][j]+sum[j]-sum[i-1],ans[i][j]);            &#125;        &#125;    &#125;    cout&lt;&lt;ans[1][n]&lt;&lt;endl;&#125;/*首先，每个区间自己合并的代价是0，之后枚举长度，枚举起点，计算每个区间的值，记得加上区间的总值，即合并后所需的代价。*/
-拓扑排序const ll MAXN=200010;ll n, m;vector&lt;ll&gt; G[MAXN];ll in[MAXN];  // 存储每个结点的入度bool toposort() &#123;    vector&lt;ll&gt; L;    queue&lt;ll&gt; S;    for (int i = 1; i &lt;= n; i++)        if (in[i] == 0) S.push(i);    while (!S.empty()) &#123;        int u = S.front();        S.pop();        L.push_back(u);        for (auto v : G[u]) &#123;            if (--in[v] == 0) &#123;                S.push(v);            &#125;        &#125;    &#125;    if (L.size() == n) &#123;        for (auto i : L) cout &lt;&lt; i &lt;&lt; &#x27; &#x27;;        return true;    &#125;    return false;&#125;
-依赖背包ll n,v[65],w[65],f[65][32010],V;vector&lt;ll&gt; a[65];void dfs(ll now)&#123;    for(int i=v[now];i&lt;=V;i++)        f[now][i]=v[now];    for(auto &amp;s:a[now])&#123;        dfs(s);        for(int j=V;j&gt;=v[now];j--)            for(int k=v[s];k+v[now]&lt;=j;k++)                f[now][j]=max(f[now][j],f[now][j-k]+f[s][k]);    &#125;&#125;int main()&#123;    cin&gt;&gt;V&gt;&gt;n;    for(int i=1;i&lt;=n;i++)&#123;        ll f; cin&gt;&gt;v[i]&gt;&gt;w[i]&gt;&gt;f;        a[f].push_back(i);    &#125;    dfs(0);    cout&lt;&lt;f[0][V]&lt;&lt;endl;&#125;/*循环时，从根往上计算，外层遍历体积，内层为决策，看选择子树体积为k时是否合理来判断要不要选择。f[i][j]表示选择i时体积为j的最大值*/
-字典树const ll INF=1e18,N=1e5+10;char s[N];int ch[N][26],cnt[N],idx=0;void insert(char *s)&#123;    int p=0;    for(int i=0;s[i];i++)&#123;        int j=s[i]-&#x27;a&#x27;;        if(!ch[p][j]) ch[p][j]=++idx;        p=ch[p][j];    &#125;    cnt[p]++;&#125;int query(char *s)&#123;    int p=0;    for(int i=0;s[i];i++)&#123;        int j=s[i]-&#x27;a&#x27;;        if(!ch[p][j]) return 0;        p=ch[p][j];    &#125;    return cnt[p];&#125;
-最大区间和ll a[200010];int main()&#123;    ll n; cin&gt;&gt;n;    for(int i=1;i&lt;=n;i++)        cin&gt;&gt;a[i];    ll max_ending_here=a[1];    ll max_so_far=a[1];    for(int i=2;i&lt;=n;i++)&#123;        max_ending_here=max(a[i],max_ending_here+a[i]);        max_so_far=max(max_so_far,max_ending_here);    &#125;    cout&lt;&lt;max_so_far&lt;&lt;endl;    ll sum=0;    for(int i=1;i&lt;=n;i++)&#123;        sum=sum+a[i];        max_so_far=max(max_so_far,sum);        if(sum&lt;0) sum=0;    &#125;&#125;
-dijkstralong long N;const long long INF=1e18;vector&lt;pair&lt;LL,LL&gt;&gt; g[10010];int main()&#123;    priority_queue&lt;pair&lt;LL, LL&gt;, vector&lt;pair&lt;LL, LL&gt;&gt;, greater&lt;pair&lt;LL, LL&gt;&gt;&gt; pq;vector&lt;bool&gt; vis(N+1, false);    vector&lt;LL&gt; dis(N+1, INF);    dis[1] = 0;    pq.push(&#123;0, 1&#125;);    while(!pq.empty()) &#123;        auto [d, u] = pq.top(); pq.pop();        if(vis[u]) continue;        vis[u] = true;        for(auto [v, w] : g[u]) &#123;            if(!vis[v] &amp;&amp; dis[v] &gt; dis[u] + w) &#123;                dis[v] = dis[u] + w;                pq.push(&#123;dis[v], v&#125;);            &#125;        &#125;    &#125;&#125;
-交互题int main()&#123;    int T; cin&gt;&gt;T;    while(T--)&#123;        ll n,y; cin&gt;&gt;n;        ll sum=n*(n+1)/2;        cout&lt;&lt;&quot;2 1 &quot;&lt;&lt;n&lt;&lt;endl;        cout.flush();        cin&gt;&gt;y;        ll len=y-sum,l=1,r=n;        while(l&lt;=r)&#123;            ll mid=(l+r)&gt;&gt;1;            cout&lt;&lt;&quot;1 1 &quot;&lt;&lt;mid&lt;&lt;endl;            cout.flush();            ll last; cin&gt;&gt;last;            cout&lt;&lt;&quot;2 1 &quot;&lt;&lt;mid&lt;&lt;endl;            cout.flush();            ll now; cin&gt;&gt;now;            ll f=now-last;            if(f==0) l=mid+1;            else r=mid-1;        &#125;        cout&lt;&lt;&quot;! &quot;&lt;&lt;l&lt;&lt;&quot; &quot;&lt;&lt;l+len-1&lt;&lt;endl;        cout.flush();    &#125;&#125;
-KMPint main()&#123;    string t,p; cin&gt;&gt;t&gt;&gt;p;    vector&lt;ll&gt; ans,pi(p.length());    for(int i=1;i&lt;p.length();i++)&#123;        ll j=pi[i-1];        while(j&gt;0&amp;&amp;p[j]!=p[i]) j=pi[j-1];        if(p[i]==p[j]) j++;        pi[i]=j;    &#125;//上面是next函数，对pattern数据处理，方便查找长度    for(int i=0,j=0;i&lt;t.length();i++)&#123;        while(j&gt;0&amp;&amp;t[i]!=p[j])j=pi[j-1];        if(p[j]==t[i])j++;        if(j==p.length())&#123;            ans.push_back(i-p.length()+1);            j=pi[j-1];        &#125;    &#125;//计算可能的位置    for(auto &amp;i:ans) cout&lt;&lt;i+1&lt;&lt;endl;    for(int i=0;i&lt;p.length();i++) cout&lt;&lt;pi[i]&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;&#125;/*关键点，比较时j会向前跳，pi[j]记录的依旧是长度可以用计算前缀的函数来理解最后记得要向前跳一位，因为不然下一次会直接认为是正确答案而且跳不回去了，所以要j=pi[j-1]*/
-LCSll f[3010][3010],p[3010][3010];string s,t;int main()&#123;    cin&gt;&gt;s&gt;&gt;t;    ll m=s.length(),n=t.length();    for(int i=1;i&lt;=m;i++)&#123;        for(int j=1;j&lt;=n;j++)&#123;            if(s[i-1]==t[j-1])&#123;                f[i][j]=f[i-1][j-1]+1;                p[i][j]=1;            &#125;            else if(f[i][j-1]&gt;f[i-1][j])&#123;                f[i][j]=f[i][j-1];                p[i][j]=2;            &#125;            else&#123;                f[i][j]=f[i-1][j];                p[i][j]=3;            &#125;        &#125;    &#125;    ll i,j,k; char ch[3010];    i=m,j=n,k=f[m][n];    while(i&gt;0&amp;&amp;j&gt;0)&#123;        if(p[i][j]==1)&#123;            ch[k--]=s[i-1];            i--; j--;        &#125;        else if(p[i][j]==2) j--;        else i--;    &#125;    for(int i=1;i&lt;=f[m][n];i++)        cout&lt;&lt;ch[i]; cout&lt;&lt;endl;&#125;
-Mabacherconst ll INF=1e18;ll p[22000010],mid=0,r=0,ans=1;int main()&#123;    ios::sync_with_stdio(false);    cin.tie(0);    string x; vector&lt;char&gt; s;    s.push_back(&#x27;~&#x27;);s.push_back(&#x27;#&#x27;);    cin&gt;&gt;x; ll len=x.length()*2+1;    for(int i=0;i&lt;x.length();i++)&#123;s.push_back(x[i]);        s.push_back(&#x27;#&#x27;);&#125;    s.push_back(&#x27;!&#x27;);    for(int i=2;i&lt;len-1;i++)&#123;        if(i&lt;=r) p[i]=min(p[mid*2-i],r-i+1);        else p[i]=1;        while(s[i-p[i]]==s[i+p[i]]) p[i]++;        if(i+p[i]-1&gt;r)&#123;r=p[i]+i-1;mid=i;&#125;        ans=max(p[i],ans);    &#125;    cout&lt;&lt;ans-1&lt;&lt;endl;&#125;/*加入几个字符使得每一段都是奇数，然后记录的是半径，所以值为r-1然后如果在已知最右范围之内，那么就先默认为对称值，之后再扩张更新初始化时记得使用vector，因为用字符串的相加是需要O(n)时间复杂度*/
-SPFAconst long long INF=1e18;vector&lt;pair&lt;LL,LL&gt;&gt; g[10010];int main()&#123;    queue&lt;LL&gt; q;    vector&lt;bool&gt; inQueue(N+1, false);    vector&lt;LL&gt; dis(N+1, INF);    dis[1] = 0;    q.push(1);    inQueue[1] = true;    while(!q.empty()) &#123;        LL u = q.front(); q.pop();        inQueue[u] = false;        for(auto [v, w] : g[u]) &#123;            if(dis[v] &gt; dis[u] + w) &#123;                dis[v] = dis[u] + w;                if(!inQueue[v]) &#123;                    q.push(v);                    inQueue[v] = true;                &#125;            &#125;        &#125;    &#125;&#125;
-String Hashtypedef unsigned long long ULL;const ll P=131;unordered_set&lt;ll&gt; a;ULL p[2200],h[2200];ll init(string s)&#123;    p[0]=1,h[0]=0;    for(int i=1;i&lt;=s.length();i++)&#123;        p[i]=p[i-1]*P;        h[i]=h[i-1]*P+s[i-1];    &#125;    return h[s.length()];&#125;ll gethash(ll l,ll r)&#123;    return h[r]-h[l-1]*p[r-l+1];&#125;ll sbstr(ll l1,ll r1,ll l2,ll r2)&#123;    return gethash(l1,r1)==gethash(l2,r2);&#125;
-String prefixll pi[300010];int main()&#123;    string s; cin&gt;&gt;s;    for(int i=1;i&lt;s.length();i++)&#123;        ll j=pi[i-1];        while(j&gt;0&amp;&amp;s[j]!=s[i]) j=pi[j-1];//跳到子问题的最大值位置，即i-1那一段所能求得的前缀最大那一段        if(s[i]==s[j]) j++;        pi[i]=j;    &#125;    for(int i=0;i&lt;s.length();i++)cout&lt;&lt;pi[i]&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;&#125;/*比如字符串为acaca...acacc           01234      ^               ^      |               |      i               jj此时为4，判断下面这个等式，不成立，那么长度只能是p[j-1]的最大值(p[j]是要比较的值，所以最大前缀值实际上是j-1)，这样就得到了第二小的值如果合法，那么s[p[i]]==s[i+1]因为长度为x的话，而是string从0开始的，所以如果相等则符合要求，找到了一个位置可以+1*/
-substrint main() &#123;    std::string str = &quot;Short&quot;;    // 安全使用：检查位置是否有效    size_t pos = 10;    if (pos &lt; str.length()) &#123;        std::string sub = str.substr(pos);        std::cout &lt;&lt; sub &lt;&lt; std::endl;    &#125; else &#123;        std::cout &lt;&lt; &quot;位置超出字符串范围！&quot; &lt;&lt; std::endl;    &#125;    // 如果长度超过字符串剩余部分，会自动调整    std::string safe_sub = str.substr(2, 100); // 只会提取 &quot;ort&quot;    std::cout &lt;&lt; safe_sub &lt;&lt; std::endl;    std::string filename = &quot;document.pdf&quot;;    // 找到最后一个点的位置    size_t dotPos = filename.find_last_of(&#x27;.&#x27;);    if (dotPos != std::string::npos) &#123;        std::string extension = filename.substr(dotPos + 1);        std::cout &lt;&lt; &quot;文件扩展名: &quot; &lt;&lt; extension &lt;&lt; std::endl; // 输出 &quot;pdf&quot;    &#125;    std::string str = &quot;Hello, World!&quot;;    // 提取前 5 个字符    std::string sub3 = str.substr(0, 5);    std::cout &lt;&lt; sub3 &lt;&lt; std::endl; // 输出 &quot;Hello&quot;    return 0;&#125;
-树状数组ll c[200010],n;//树状数组的常见写法int lowbit(int x)&#123;return x&amp;-x;&#125;int getsum(int x)&#123;  // a[1]..a[x]的和    int ans=0;    while(x&gt;0)&#123;        ans=ans+c[x];        x=x-lowbit(x);    &#125;    return ans;&#125;void add(int x,int k)&#123; // idx,val    while(x&lt;=n)&#123;  // 不能越界        c[x]=c[x]+k;        x=x+lowbit(x);    &#125;&#125;
-树状数组前缀和ll t1[1000005],t2[1000005],n;ll lowbit(int x) &#123;return x&amp;(-x);&#125;void build(ll k,ll v)&#123;    ll v1=v*k;    while(k&lt;n)&#123;        t1[k]+=v;t2[k]+=v1;        k+=lowbit(k);    &#125;&#125;ll getsum(ll *t1,int k)&#123;    ll sum=0;    while(k&gt;0)&#123;        sum+=t1[k];        k-=lowbit(k);    &#125;    return sum;&#125;void add(ll k,ll v)&#123;    build(k,v);&#125;void change(ll l,ll r,ll v)&#123;    add(l,v);add(r+1ll,-v);&#125;ll getsum1(ll l,ll r)&#123;    return (r+1ll)*getsum(t1,r)+l*getsum(t1,l-1ll)-getsum(t2,r)-getsum(t2,l-1ll);&#125;
-Z函数int main()&#123;    string t; cin&gt;&gt;t;    vector&lt;ll&gt; zt(t.length());    zt[0]=t.length();    for(ll i=1,l=0,r=0;i&lt;t.length();i++)&#123;        if(i&lt;=r)zt[i]=min(zt[i-l],r-i+1);        while(t[zt[i]]==t[i+zt[i]]&amp;&amp;i+zt[i]&lt;t.length()) zt[i]++;        if(i+zt[i]-1&gt;r) l=i,r=zt[i]+i-1;    &#125;    for(auto &amp;i:zt) cout&lt;&lt;i&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;&#125;/*zt记录的是字符串中，每一个位置作为起点能和开头匹配上的最长长度方法和马拉车算法类似，规定一个盒子，在盒子内的使用之前的数据，但是注意可能会超出边界，因此要加上一个判断。之后更新答案，这里没有判断在盒子外的才扩张是因为：如果可以发生扩张，那么说明现在这个边界不是最优的，因此如果在盒子内不会进入while因此这个算法和manacher一样是O(n),除此之外这个算法就和之前的前缀算法没有太大区别了*/
-并查集const int N = 2e5+5;int fa[N];int n, m;int find(int x)&#123;    if(fa[x] == x) return x;    else return fa[x] = find(fa[x]); // 比起朴素代码只改了这里&#125;int main()&#123;    cin &gt;&gt; n &gt;&gt; m;    for(int i = 1; i &lt;= n; ++i) fa[i] = i; // 初始化    for(int i = 1; i &lt;= m; ++i)&#123;        int op, x, y;        cin &gt;&gt; op &gt;&gt; x &gt;&gt; y;        if(op == 1)&#123; // 合并操作            x = find(x), y = find(y); // 查询各自的代表元素            if(x == y) continue; // 如果已经在同一个集合，跳过            fa[x] = y; // 这里的合并顺序可以任意        &#125;        else&#123; // 查询操作的一种变形            x = find(x), y = find(y); // 查询各自的代表元素            if(x == y) cout &lt;&lt; &quot;Y&quot; &lt;&lt; endl; // 是否在同一个集合            else cout &lt;&lt; &quot;N&quot; &lt;&lt; endl;        &#125;    &#125;    return 0;&#125;
-最小生成树int fa[1010];  // 定义父亲int n, m, k;struct edge &#123;  int u, v, w;&#125;;int l;edge g[10010];void add(int u, int v, int w) &#123;  l++;  g[l].u = u;  g[l].v = v;  g[l].w = w;&#125;// 标准并查集int findroot(int x) &#123; return fa[x] == x ? x : fa[x] = findroot(fa[x]); &#125;void Merge(int x, int y) &#123;  x = findroot(x);  y = findroot(y);  fa[x] = y;&#125;bool cmp(edge A, edge B) &#123; return A.w &lt; B.w; &#125;// Kruskal 算法void kruskal() &#123;  int tot = 0;  // 存已选了的边数  int ans = 0;  // 存总的代价  for (int i = 1; i &lt;= m; i++) &#123;    int xr = findroot(g[i].u), yr = findroot(g[i].v);    if (xr != yr) &#123;        // 如果父亲不一样      Merge(xr, yr);       // 合并      tot++;               // 边数增加      ans += g[i].w;       // 代价增加      if (tot == n - k) &#123;  // 检查选的边数是否满足 k 个棉花糖        cout &lt;&lt; ans &lt;&lt; &#x27;\n&#x27;;        return;      &#125;    &#125;  &#125;  cout &lt;&lt; &quot;No Answer\n&quot;;  // 无法连成&#125;int main() &#123;  cin &gt;&gt; n &gt;&gt; m &gt;&gt; k;  if (n == k) &#123;  // 特判边界情况    cout &lt;&lt; &quot;0\n&quot;;    return 0;  &#125;  for (int i = 1; i &lt;= n; i++) &#123;  // 初始化    fa[i] = i;  &#125;  for (int i = 1; i &lt;= m; i++) &#123;    int u, v, w;    cin &gt;&gt; u &gt;&gt; v &gt;&gt; w;    add(u, v, w);  // 添加边  &#125;  sort(g + 1, g + m + 1, cmp);  // 先按边权排序  kruskal();  return 0;&#125;
-欧拉筛vector&lt;int&gt; pri;bool not_prime[N];void pre(int n) &#123;  for (int i = 2; i &lt;= n; ++i) &#123;    if (!not_prime[i]) &#123;      pri.push_back(i);    &#125;    for (int pri_j : pri) &#123;      if (i * pri_j &gt; n) break;      not_prime[i * pri_j] = true;      if (i % pri_j == 0) &#123;        // i % pri_j == 0        // 换言之，i 之前被 pri_j 筛过了        // 由于 pri 里面质数是从小到大的，所以 i 乘上其他的质数的结果一定会被        // pri_j 的倍数筛掉，就不需要在这里先筛一次，所以这里直接 break        // 掉就好了        break;      &#125;    &#125;  &#125;&#125;
-离散化// std::vector&lt;int&gt; arr;std::vector&lt;int&gt; tmp(arr);  // tmp 是 arr 的一个副本std::sort(tmp.begin(), tmp.end());tmp.erase(std::unique(tmp.begin(), tmp.end()), tmp.end());for (int i = 0; i &lt; n; ++i)  arr[i] = std::lower_bound(tmp.begin(), tmp.end(), arr[i]) - tmp.begin();
-线段树void build(int s, int t, int p) &#123;  // 对 [s,t] 区间建立线段树,当前根的编号为 p  if (s == t) &#123;    d[p] = a[s];    return;  &#125;  int m = s + ((t - s) &gt;&gt; 1);  // 移位运算符的优先级小于加减法，所以加上括号  // 如果写成 (s + t) &gt;&gt; 1 可能会超出 int 范围  build(s, m, p * 2), build(m + 1, t, p * 2 + 1);  // 递归对左右区间建树  d[p] = d[p * 2] + d[(p * 2) + 1];&#125;int getsum(int l, int r, int s, int t, int p) &#123;  // [l, r] 为查询区间, [s, t] 为当前节点包含的区间, p 为当前节点的编号  if (l &lt;= s &amp;&amp; t &lt;= r)    return d[p];  // 当前区间为询问区间的子集时直接返回当前区间的和  int m = s + ((t - s) &gt;&gt; 1), sum = 0;  if (l &lt;= m) sum += getsum(l, r, s, m, p * 2);  // 如果左儿子代表的区间 [s, m] 与询问区间有交集, 则递归查询左儿子  if (r &gt; m) sum += getsum(l, r, m + 1, t, p * 2 + 1);  // 如果右儿子代表的区间 [m + 1, t] 与询问区间有交集, 则递归查询右儿子  return sum;&#125;
-懒标记修改法// [l, r] 为修改区间, c 为被修改的元素的变化量, [s, t] 为当前节点包含的区间, p// 为当前节点的编号void update(int l, int r, int c, int s, int t, int p) &#123;  // 当前区间为修改区间的子集时直接修改当前节点的值,然后打标记,结束修改  if (l &lt;= s &amp;&amp; t &lt;= r) &#123;    d[p] += (t - s + 1) * c, b[p] += c;    return;  &#125;  int m = s + ((t - s) &gt;&gt; 1);  if (b[p] &amp;&amp; s != t) &#123;    // 如果当前节点的懒标记非空,则更新当前节点两个子节点的值和懒标记值    d[p * 2] += b[p] * (m - s + 1), d[p * 2 + 1] += b[p] * (t - m);    b[p * 2] += b[p], b[p * 2 + 1] += b[p];  // 将标记下传给子节点    b[p] = 0;                                // 清空当前节点的标记  &#125;  if (l &lt;= m) update(l, r, c, s, m, p * 2);  if (r &gt; m) update(l, r, c, m + 1, t, p * 2 + 1);  d[p] = d[p * 2] + d[p * 2 + 1];&#125;  int getsum(int l, int r, int s, int t, int p) &#123;  // [l, r] 为查询区间, [s, t] 为当前节点包含的区间, p 为当前节点的编号  if (l &lt;= s &amp;&amp; t &lt;= r) return d[p];  // 当前区间为询问区间的子集时直接返回当前区间的和  int m = s + ((t - s) &gt;&gt; 1);  if (b[p]) &#123;    // 如果当前节点的懒标记非空,则更新当前节点两个子节点的值和懒标记值    d[p * 2] += b[p] * (m - s + 1), d[p * 2 + 1] += b[p] * (t - m);    b[p * 2] += b[p], b[p * 2 + 1] += b[p];  // 将标记下传给子节点    b[p] = 0;                                // 清空当前节点的标记  &#125;  int sum = 0;  if (l &lt;= m) sum = getsum(l, r, s, m, p * 2);  if (r &gt; m) sum += getsum(l, r, m + 1, t, p * 2 + 1);  return sum;&#125;
-直接修改为特定值void update(int l, int r, int c, int s, int t, int p) &#123;  if (l &lt;= s &amp;&amp; t &lt;= r) &#123;    d[p] = (t - s + 1) * c, b[p] = c, v[p] = 1;    return;  &#125;  int m = s + ((t - s) &gt;&gt; 1);  // 额外数组储存是否修改值  if (v[p]) &#123;    d[p * 2] = b[p] * (m - s + 1), d[p * 2 + 1] = b[p] * (t - m);    b[p * 2] = b[p * 2 + 1] = b[p];    v[p * 2] = v[p * 2 + 1] = 1;    v[p] = 0;  &#125;  if (l &lt;= m) update(l, r, c, s, m, p * 2);  if (r &gt; m) update(l, r, c, m + 1, t, p * 2 + 1);  d[p] = d[p * 2] + d[p * 2 + 1];&#125;int getsum(int l, int r, int s, int t, int p) &#123;  if (l &lt;= s &amp;&amp; t &lt;= r) return d[p];  int m = s + ((t - s) &gt;&gt; 1);  if (v[p]) &#123;    d[p * 2] = b[p] * (m - s + 1), d[p * 2 + 1] = b[p] * (t - m);    b[p * 2] = b[p * 2 + 1] = b[p];    v[p * 2] = v[p * 2 + 1] = 1;    v[p] = 0;  &#125;  int sum = 0;  if (l &lt;= m) sum = getsum(l, r, s, m, p * 2);  if (r &gt; m) sum += getsum(l, r, m + 1, t, p * 2 + 1);  return sum;&#125;]]></content>
+    <title>DP变种,n过大找规律题</title>
+    <url>/ZestfulYK-blog/2025/02/12/DP%E5%8F%98%E7%A7%8D,n%E8%BF%87%E5%A4%A7%E6%89%BE%E8%A7%84%E5%BE%8B%E9%A2%98/</url>
+    <content><![CDATA[
+题目:要用qcjjkkt,和td构造字符串,每出现一个qcjjkkt获得a快乐度,每个td获得b快乐度即只有三种物品,体积为2,7,8,价值为a,b,a+b,数量无限,n上限为$10^9$,求最大价值
+
+方法:完全背包
+
+
+但是发现貌似超时,此时发现若n为56倍数很好解决,所以先提取完整的56,剩下部分单独计算.
+然后发现qcjjkkt和td可以连接,要是前面56的循环选的是qcjjkkt最后如果剩下1位置,可以填入d,所以得加上特判,太麻烦了,所以改为计算最后112个就行
+AC代码:
+void solve()&#123;  ll n,a,b; cin&gt;&gt;n&gt;&gt;a&gt;&gt;b;  vector&lt;ll&gt; dp(120,0);  ll ans=0;  if(n&gt;112)&#123;    ans=(n/56-1)*max(&#123;28*b,8*a,7*(a+b)&#125;);    n-=(n/56-1)*56;  &#125;  for(int i=2;i&lt;=n;i++) dp[i]=max(dp[i-2]+b,dp[i]);  for(int i=7;i&lt;=n;i++) dp[i]=max(dp[i-7]+a,dp[i]);  for(int i=8;i&lt;=n;i++) dp[i]=max(dp[i-8]+b+a,dp[i]);  cout&lt;&lt;ans+dp[n]&lt;&lt;endl;&#125;]]></content>
       <tags>
         <tag>算法</tag>
       </tags>
   </entry>
   <entry>
-    <title>第一类换元积分</title>
-    <url>/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[重要公式基本积分公式：不要忘记加C!!!
-$\xi \ \delta \ \alpha \ \beta \ \pi \  \theta \ \in \ \notin$$\Delta$
-$\int k \, dx = kx + C$$\int x^n \, dx = \frac{x^{n+1}}{n+1} + C \quad (n \neq -1)$$\int \frac{1}{x} \, dx = \ln|x| + C$
-
-指数函数：$\int e^x \, dx = e^x + C$$\int a^x \, dx = \frac{a^x}{\ln a} + C$
-
-三角函数：$\int \sin x \, dx = -\cos x + C$$\int \cos x \, dx = \sin x + C$$\int \tan x \, dx = -\ln|\cos x| + C$$\int \cot x \, dx = \ln|\sin x| + C$$\int \sec^2 x \, dx = \tan x + C$$\int \csc^2 x \, dx = -\cot x + C$$\int \sec x \tan x \, dx = \sec x + C$$\int \csc x \cot x \, dx = -\csc x + C$$\int secx\,dx= ln|secx+tanx|+C$$\int cscx\,dx= ln|cscx-cotx|+C$
-
-
-
-反三角函数：$\int \frac{1}{\sqrt{1-x^2}} \, dx = \arcsin x + C$$\int \frac{1}{1+x^2} \, dx = \arctan x + C$
-
-双曲函数：$\int \sinh x \, dx = \cosh x + C$$\int \cosh x \, dx = \sinh x + C$
-
-特殊积分：$\int \frac{1}{x^2+a^2} \, dx = \frac{1}{a}\arctan\frac{x}{a} + C$$\int \frac{1}{\sqrt{a^2-x^2}} \, dx = \arcsin\frac{x}{a} + C$$\int \frac{1}{x^2-a^2} \, dx = \frac{1}{2a}\ln\left|\frac{x-a}{x+a}\right| + C$
-
-和差化积公式：$\sin A + \sin B = 2 \sin\left(\frac{A+B}{2}\right) \cos\left(\frac{A-B}{2}\right)$$\sin A - \sin B = 2 \cos\left(\frac{A+B}{2}\right) \sin\left(\frac{A-B}{2}\right)$$\cos A + \cos B = 2 \cos\left(\frac{A+B}{2}\right) \cos\left(\frac{A-B}{2}\right)$$\cos A - \cos B = -2 \sin\left(\frac{A+B}{2}\right) \sin\left(\frac{A-B}{2}\right)$
-
-积化和差公式：$\sin A \cos B = \frac{1}{2}[\sin(A+B) + \sin(A-B)]$$\cos A \sin B = \frac{1}{2}[\sin(A+B) - \sin(A-B)]$$\cos A \cos B = \frac{1}{2}[\cos(A+B) + \cos(A-B)]$$\sin A \sin B = -\frac{1}{2}[\cos(A+B) - \cos(A-B)]$
-
-
-对部分公式的推导：$\int \tan x \, dx = -\ln|\cos x| + C$$\int \tan x \, dx = \int \frac{sinx}{cosx} \,dx = - \int \frac{dcosx}{sinx} \, = -ln|cosx|+ C$
-
-对于 $\int cotx$ 同理
-小技巧：
-$sinx^m cosx^n$之类的，奇数的话拆一个进去积分，偶数的话用倍角或半角公式
-
-在对$\int tanx\,dx$或者$\int secx\,dx$等方法一样，可以类比
-
-奇数如$\int sin^3 \, dx$或者$\int sin^3cosx\,dx$等比如$\int sinx^3\,dx=-\int sinx^2\,dcosx=-\int(1-cos^2x)\,dcosx$$=-cosx+\frac{1}{3}cosx^3+C$
-偶数如$\int cosx^4\,dx$等比如$\int cosx^4\,dx=\int(\frac{1+cos2x}{2})^2\,dx=\frac{1}{4}\int1+cos2x^2+2cos2x\,dx$$=\frac{1}{4}(x+\frac{1}{2}\int cos2x^2\,d2x+\int cos2x\,d2x)+C$$=\frac{1}{4}(x+sin2x+\frac{1}{2}\int \frac{1+cos4x}{2}\,d2x)+C$$=\frac{1}{4}(x+sin2x+\frac{1}{8} \int(1+cos4x)\,d4x)+C$$=\frac{1}{4}(x+sin2x+\frac{1}{8}(4x+sin4x))+C$$=\frac{3}{8}x+\frac{1}{4}sin2x+\frac{1}{32}sin4x+C$
-
-对于$\frac{…+…}{…}$类的可能是把上面的式子拆成两个分别计算例如：$\int \frac{1+x}{\sqrt{2-3x^2}}\,dx$$=\int \frac{1}{\sqrt{2-3x^2}}\,dx+\int \frac{x}{\sqrt{2-3x^2}}\,dx$
-
-要熟记各种三角函数的导数和公式以及转换关系：$secx^2-1=tanx^2$$cscx^2-1=cotx^2$
-arctan(\frac{1}{x})=\begin{cases}
-arccot(x)\ \ \ \ \ \ \ \ \ x>0\\
-arccot(x)-\pi  \ \ x]]></content>
+    <title>拓展欧几里得算法</title>
+    <url>/ZestfulYK-blog/2025/02/24/ex_gcd%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[拓展欧几里得算法用于在计算gcd的同时计算形如
+ax+by=gcd(a,b)方程的答案
+怎么计算呢?
+首先考虑一个类似的方程:
+bx_2+(a\ mod\ b)y_2=gcd(b,a\ mod\ b)要是能得到这个方程的解,上面那个也行因为
+a-\lfloor \frac{a}{b}\rfloor*b=a\ mod\ b所以
+bx_2+(a-\lfloor \frac{a}{b}\rfloor*b)y_2=b*(x_2-\lfloor \frac{a}{b}\rfloor y_2)+ay_2因为
+gcd(a,b)==gcd(b,a\ mod\ b)两个系数相同的方程有相同的解,那么解对应相等
+\begin{cases}x_1=y_2
+\\ y_1=x_2-\lfloor \frac{a}{b}\rfloor y_2
+\end{cases}接下来只要一直往下递归计算就能得到答案了
+边界条件是b=0的时候,在C++内默认gcd(a,0)=a,所以最后一步的方程为
+ax+0*y=a因此一般返回值是1,0
+最后就能得到一组特解和gcd(a,b)了
+代码:
+i128 exgcd(i128 a,i128 b,i128 &amp;x,i128 &amp;y)&#123;//也可以当正常的gcd函数使用,相当于同时计算了一下方程的解  if(b==0)&#123;//最后递归到b=0时,得到ax=a,所以返回1,0    x=1;y=0;    return a;  &#125;  i128 d=exgcd(b,a%b,x,y);  i128 t=x;x=y;y=t-(a/b)*y;  return d;&#125;i128 ceil_div(i128 p,i128 q)&#123;  if(p&gt;=0) return (p+q-1)/q;//-1的目的是,万一刚好是整数倍,ceil不变  else return p/q;//负数去掉小数相当于向上取整&#125;i128 floor_div(i128 p,i128 q)&#123;  if(p&gt;=0) return p/q;//向下取整的逻辑恰好相反  else return (p+q-1)/q;&#125;
+那么怎么得到通解呢?
+实际上特解变化一下就行,考虑x增大的情况,为了保持不变,y得减小所以这个步长实际上就是b和a,反过来就行,因为这样才能保持等式的成立但是既然我们算出了gcd(a,b),那么再除一下化简
+这样就得到了特解
+注意:只有等号右边的常数为gcd(a,b)的倍数时,方程才有解,因为不然上面的方法就失效了,哪来的解
+]]></content>
       <tags>
-        <tag>数学</tag>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DSU模板</title>
+    <url>/ZestfulYK-blog/2025/02/24/DSU/</url>
+    <content><![CDATA[DSU是并查集的缩写
+总共有三种操作
+初始化,查找根节点和连接
+代码如下:
+struct dsu&#123;//dsu std  vector&lt;ll&gt; fa,sz;  dsu(ll n):fa(n+1),sz(n+1,1)&#123;    for(int i=1;i&lt;=n;++i)&#123;      fa[i]=i;    &#125;  &#125;  ll find(ll x)&#123;return fa[x]==x?x:fa[x]=find(fa[x]);&#125;  void uni(ll x,ll y)&#123;    if(sz[x]&lt;sz[y]) swap(x,y);    fa[y]=x;    sz[x]+=sz[y];  &#125;&#125;;
+使用方法如下:
+dsu dsu1(n);ll fu=dsu1.find(u),fv=dsu2.find(v);if(fu!=fv) uni(fv,fu);
+加了一个sz数组来计算每片区域的大小,这样就能防止图退化成一条链
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>markdown使用教程</title>
+    <url>/ZestfulYK-blog/2025/10/20/markdown%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[标题的使用# 一级标题## 二级标题### 三级标题
+字体粗体 斜体 删除线 行内代码
+小标题的使用
+无序列表项
+另一个项目
+
+
+有序列表
+第二项
+
+链接，图片[链接文字](https://example.com)![图片描述](https://example.com/image.jpg)
+引用块&gt; 这是一个引用块&gt; 可以多行使用
+
+这是一个引用块可以多行使用
+
+表格| 姓名 | 年龄 | 城市 ||------|------|------|| 张三 | 25   | 北京 || 李四 | 30   | 上海 |
+
+
+
+
+姓名
+年龄
+城市
+
+
+
+
+张三
+25
+北京
+
+
+李四
+30
+上海
+
+
+
+
+]]></content>
+      <tags>
+        <tag>技术</tag>
       </tags>
   </entry>
   <entry>
@@ -471,7 +591,7 @@ x \mod y = x - y \left\lfloor \frac{x}{y} \right\rfloor, \quad y \neq 0模运算
 基本运算规则模运算与基本四则运算类似（除法除外）：
 
 加法规则：$((a + b) \mod p = (a \mod p + b \mod p) \mod p)$
-减法规则：$((a - b) \mod p = (a \mod p - b \mod p + mod) \mod p)$
+减法规则：$((a - b) \mod p = (a \mod p - b \mod p + p) \mod p)$
 乘法规则：$((a \times b) \mod p = (a \mod p \times b \mod p) \mod p)$
 幂运算规则：$(a^b \mod p = ((a \mod p)^b) \mod p)$
 求和规则：由第1个公式可推导出 (\left(\sum_{i=1}^{n} x_i\right) \mod p = \left(\sum_{i=1}^{n} (x_i \mod p)\right) \mod p)
@@ -523,149 +643,6 @@ LL inv[mod+5]; void getInv(LL mod) &#123; 	inv[1]=1; 	for(int i=2;i&lt;mod;i++) 
 ]]></content>
       <tags>
         <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>有理函数积分</title>
-    <url>/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/</url>
-    <content><![CDATA[基本方法
-凑成能第一类换元积分的式子  例如$\frac{1}{…}$类的部分分式分解有理函数积分适用条件
-
-有理函数积分当被积函数是有理函数（两个多项式的商）时：$\int \frac{Q(x)}{P(x)}\,​dx$其中 $P(x)$ 和 $Q(x)$ 都是多项式。
-
-
-
-分母可因式分解
-
-
-
-部分分式分解是处理有理函数积分的系统方法，特别适用于：
-
-分母可明确因式分解
-没有更简单的特殊技巧
-需要精确解析表达式
-
-当分母 $Q(x)$ 可以分解为一次因式和不可约二次因式的乘积时：
-
-一次因式：$(x-a)$
-不可约二次因式：$(x^2+px+q)$，其中 $p^2-4q&lt;0$具体分解规则对于一次因式 $(x-a)^k$：
-
-对应部分为：
-\frac{A_1}{x-a}+\frac{A_2}{(x-a)^2}+···+\frac{A_k}{(x-a)^k}对于二次因式 $(x^2+px+q)^m$：\frac{B_1x+C_1}{x^2+px+q}+\frac{B_2x+C_2}{(x^2+px+q)^2}+···+\frac{B_mx+C_m}{(x^2+px+q)^k}但是，在这个部分有一种特殊情况，就是二次式:
-\int \frac{P(x)}{Q(x)^2}
-在这里，可以把函数看成$\frac{d}{dx}\frac{Ax+B}{Q(x)}+\frac{C}{Q(x)}$两种方法实际上是等价的，因为最后必然化成一个简单的倒数积分和简单的分数积分$\frac{1}{Q(x)}$。
-
-例子：
-计算$\int \frac{x^2+1}{(x^2+x+1)^2}\,dx$有两种方式，都能得到答案。1.用标准公式计算得到:\int \frac{x}{(x^2+x+1)^2}\,dx-\int \frac{1}{x^2+x+1}\,dx
-
-接着再分别计算前后的积分，前面得到的是一个分式加上一个含$\arctan x$的式子比较麻烦，不过对于这类题目，我们知道一定能得到第二种简单的方法的式子，所以经过计算得到:
-\frac{1}{3}\frac{d}{dx}\frac{x+2}{x^2+x+1}-\frac{4}{3}\int · \frac{1}{x^2+x+1}\,dx这种解法的好处是，得到前半段以后可以直接当作积分结果，不需要额外的处理。
-判断步骤第一步：检查是否为真分式
-如果 $\deg P(x) \geq \deg Q(x)$：先进行多项式除法（大除法）
-如果 $\deg P(x) &lt; \deg Q(x)$：直接进行部分分式分解就是说最高项次数小就能用这个方法第二步：因式分解分母将分母 $Q(x)$ 完全分解为：
-一次因式 $(x-a_i)^{k_i}$
-不可约二次因式 $(x^2+p_jx+q_j)^{m_j}$第三步：确定分解形式根据因式分解结果，写出部分分式的一般形式。在计算过程中，可以通过给x赋值来快速计算带定值
-
-具体例子分析例1：$\int \frac{x^3+1}{(x^2+1)^2} dx$
-分母：$(x^2+1)^2$（二次因式的平方）
-分解形式：$\frac{Ax+B}{x^2+1} + \frac{Cx+D}{(x^2+1)^2}$
-
-例2：$\int \frac{1}{x(x-1)^2} dx$
-分母：$x(x-1)^2$（一次因式及其平方）
-分解形式：$\frac{A}{x} + \frac{B}{x-1} + \frac{C}{(x-1)^2}$
-
-例3：$\int \frac{x^2+1}{x(x^2+4)} dx$
-分母：$x(x^2+4)$（一次因式 + 二次因式）
-分解形式：$\frac{A}{x} + \frac{Bx+C}{x^2+4}$
-
-例4：$\int \frac{x+1}{x^2+4x+6}\,dx$这个题目看起来和裂项十分相似，但是分母无法因式分解，所以这个方法是不对的。注意到这里上方的次数正好是分母求导结束后的次数，所以游客能采取分开计算的方法。这里首先先把上面的分析翻倍，（因为分母的导数是$2x+4$），接下来在加一个2，减一个2外面再配上$\frac{1}{2}$即可。所以式子变为:$\frac{1}{2} \int \frac{2x+4-2}{x^2+4x+6}\,dx$然后两个部分正好都是我们能计算的第一类换元积分，完成！
-
-$\int \frac{f’(x)}{f(x)} dx$：直接得到 $\ln|f(x)|$
-$\int \frac{1}{x^2+a^2} dx$：直接得到 $\frac{1}{a}\arctan\frac{x}{a}$
-
-个人技巧
-对于一般的式子，通常是去凑积分，先对其1次项，再分离常数项，这样就能直接得到一个ln积分和一个形如$\frac{p}{t^2+a^2}$的式子了，这个是很好积分的($\arctan x$)
-遇到三次式子，可能配凑一个$\pm 1$来计算
-遇到分母次数很高的，考虑倒代换
-其余的式子，直接展开就行了
-
-三角代换部分重要公式当取$\tan x=u$时
-\begin{cases}
-\sin x=\frac{u}{\sqrt{1+u^2}} \\
-\cos x=\sqrt{1+u^2}
-\end{cases}当取$\tan \frac{x}{2}=u$时
-\begin{cases}
-\sin x=\frac{2u}{1+u^2} \\
-\cos x=\frac{1-u^2}{1+u^2}
-\end{cases}然后不要忘记，第二类换元积分是需要乘上对应的导数的，这个导数是t关于x的函数，乘上的是含有t的导数之后像前面一样计算就行了。
-题型分类
-只含有一种三角函数的，用第一类换元积分，例如：$\int \frac{1}{\sin x^4}\,dx$
-上下均有且为一次式的，用上节课的方法代换，例如$\int \frac{\sin x}{\sin x+\cos x}\,dx$
-同名三角函数相加，和差化积，例如$\int \frac{1}{\sin x+\sin 3x}\,dx$
-正常幂(不含分母的)，按奇偶正常拆分
-分母含有高次项的，拆解1，例如$\int \frac{1}{\sin x\cos x^2}$主要是把$\cos x$化成$\tan x$来计算。例如：1\int \frac{dx}{a^2+\sin x^2+b^2+\cos x^2}=\int \frac{\frac{1}{\cos x^2}}{a^2\tan x^2+b^2}\,dx=\int \frac{1+\tan x^2}{a^2\tan x^2+b^2}\,dx根式的代换
-
-重要公式令
-t=\sqrt[n]{ax+b}令
-t=\sqrt[n]{\frac{ax+b}{cx+d}}令
-t=\sqrt[mn]{ax+b}看含有什么来决定怎么设t最后反解出x带入其余部分即可。
-重要例题根式代换类型求下面这个函数的积分
-\int \frac{dx}{\sqrt[n]{(x-a)^{n+1}(x-b)^{n-1}}}\,dx方法：先提取部分，构造类似上面2的一个式子，然后再考虑代换。
-\text{原式}=\int\frac{1}{(x-a)(x-b)\sqrt[n]{\frac{x-a}{x-b}}}\,dx不过接下来直接解出x再带回比较麻烦，所以考虑直接算出$\frac{dx}{(x-a)(x-b)}$这个部分
-t^n=\frac{a-b}{(x-b)^2}\frac{nt^n\,dt}{t}=\frac{a-b}{(x-b)^2}\,dx\frac{n\,dt}{t}=\frac{a-b}{(x-b)^2t^n}\,dx=\frac{a-b}{(x-a)(x-b)}\,dx所以得到原式变为：
--\frac{n}{a-b}\sqrt[n]{\frac{x-b}{x-a}}重要例题偶数次幂分数类型方法是化为平方分之括号内函数的导数即：
-\int \frac{f'(x)}{f(x)^2+a}例如：
-\int \frac{1}{x^4+1}\,dx=\frac{1}{2}\int\frac{1+\frac{1}{x^2}-1}{x^2+\frac{1}{x^2}}=\frac{1}{2}(\int \frac{d x-\frac{1}{x}}{(x-\frac{1}{x})^2+2}+\int \frac{d x+\frac{1}{x}}{(x+\frac{1}{x})^2+2})=\frac{1}{2\sqrt{2}}\arctan \frac{x-\frac{1}{x}}{\sqrt{2}}-\frac{1}{4\sqrt{2}}\ln|\frac{x^2-\sqrt{2}x+1}{x^2+\sqrt{2}x+1}| 所以类似于$\frac{\text{二次}}{\text{四次}}$的式子，理论上都有可能用这种方式解决
-]]></content>
-      <tags>
-        <tag>数学</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>markdown使用教程</title>
-    <url>/ZestfulYK-blog/2025/10/20/markdown%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[标题的使用# 一级标题## 二级标题### 三级标题
-字体粗体 斜体 删除线 行内代码
-小标题的使用
-无序列表项
-另一个项目
-
-
-有序列表
-第二项
-
-链接，图片[链接文字](https://example.com)![图片描述](https://example.com/image.jpg)
-引用块&gt; 这是一个引用块&gt; 可以多行使用
-
-这是一个引用块可以多行使用
-
-表格| 姓名 | 年龄 | 城市 ||------|------|------|| 张三 | 25   | 北京 || 李四 | 30   | 上海 |
-
-
-
-
-姓名
-年龄
-城市
-
-
-
-
-张三
-25
-北京
-
-
-李四
-30
-上海
-
-
-
-
-]]></content>
-      <tags>
-        <tag>技术</tag>
       </tags>
   </entry>
   <entry>
@@ -807,31 +784,158 @@ $f(x)$ 为有理函数或三角函数，且分子或分母具有导数的特征�
       </tags>
   </entry>
   <entry>
-    <title>全排列函数的应用</title>
-    <url>/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/</url>
-    <content><![CDATA[全排列函数什么是全排列？简单来说就是排列组合的所有情况，并按照字典顺序输出例如：123全排列的结果为
-123132213231312321
-而实际上全排列需要在代码中用复杂的深度搜索来写这实在是太复杂了！！！于是我就发现了全排列函数这个东西^__^现在我们就来学习一下这个高级函数————next_permutation
-全排列函数#include &lt;iostream&gt;  #include &lt;algorithm&gt;  using namespace std;  int main()  &#123;      int num[3]=&#123;1,2,3&#125;;      do      &#123;          cout&lt;&lt;num[0]&lt;&lt;&quot; &quot;&lt;&lt;num[1]&lt;&lt;&quot; &quot;&lt;&lt;num[2]&lt;&lt;endl;    &#125;while(next_permutation(num,num+3));      return 0;  &#125;
+    <title>第一类换元积分</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[重要公式基本积分公式：不要忘记加C!!!
+$\xi \ \delta \ \alpha \ \beta \ \pi \  \theta \ \in \ \notin$$\Delta$
+$\int k \, dx = kx + C$$\int x^n \, dx = \frac{x^{n+1}}{n+1} + C \quad (n \neq -1)$$\int \frac{1}{x} \, dx = \ln|x| + C$
 
-全排列函数详细定义对于next_permutation函数，其函数原型为：
-include   bool next_permutation(iterator start,iterator end)
+指数函数：$\int e^x \, dx = e^x + C$$\int a^x \, dx = \frac{a^x}{\ln a} + C$
+
+三角函数：$\int \sin x \, dx = -\cos x + C$$\int \cos x \, dx = \sin x + C$$\int \tan x \, dx = -\ln|\cos x| + C$$\int \cot x \, dx = \ln|\sin x| + C$$\int \sec^2 x \, dx = \tan x + C$$\int \csc^2 x \, dx = -\cot x + C$$\int \sec x \tan x \, dx = \sec x + C$$\int \csc x \cot x \, dx = -\csc x + C$$\int secx\,dx= ln|secx+tanx|+C$$\int cscx\,dx= ln|cscx-cotx|+C$
 
 
-当当前序列不存在下一个排列时，函数返回false，否则返回true
 
-全排列函数的特性
+反三角函数：$\int \frac{1}{\sqrt{1-x^2}} \, dx = \arcsin x + C$$\int \frac{1}{1+x^2} \, dx = \arctan x + C$
 
-next_permutation(num,num+n)函数是对数组num中的前n个元素进行全排列，同时并改变num数组的值。
-另外，需要强调的是，next_permutation()在使用前需要对欲排列数组按升序排序，否则只能找出该序列之后的全排列数。比如，如果数组num初始化为2,3,1，那么输出就变为了：231312321
-全排列函数的应用题目链接
-题目要求我们按要求完成5*5数独，且只要填ABC，可以有空格子一种方法是遍历每一个格子，逐个填入，时间复杂度(4^25)，显然不行不过我的朋友使用了大量剪枝，最后还是过了%%%大佬 qinye_leaf
-代码链接
-但是我们刚学了全排列函数，就不能使用一下吗？你别说，还真能使用！我们只要先填写每一行，然后就只用40^5就能计算完了因为可以加上一个判断，看看每一行是否符合标准(也算剪枝吧)
-vector&lt;string&gt; eachrow(int row) &#123;    vector&lt;string&gt; result;    string h=string(n-3,&#x27;.&#x27;)+&quot;ABC&quot;;    do&#123; for(int i=0;i&lt;n;i++)&#123;        if(h[i]!=&#x27;.&#x27;)&#123;            if(h[i]==r[row]) result.push_back(h);            break;        &#125;    &#125;    &#125;while(next_permutation(h.begin(),h.end()));    return result;&#125;
-那么这样我们就能得到每一行的可能情况，每行40种之后就可以正常的DFS了
-个人AC代码链接
+双曲函数：$\int \sinh x \, dx = \cosh x + C$$\int \cosh x \, dx = \sinh x + C$
+
+特殊积分：$\int \frac{1}{x^2+a^2} \, dx = \frac{1}{a}\arctan\frac{x}{a} + C$$\int \frac{1}{\sqrt{a^2-x^2}} \, dx = \arcsin\frac{x}{a} + C$$\int \frac{1}{x^2-a^2} \, dx = \frac{1}{2a}\ln\left|\frac{x-a}{x+a}\right| + C$
+
+和差化积公式：$\sin A + \sin B = 2 \sin\left(\frac{A+B}{2}\right) \cos\left(\frac{A-B}{2}\right)$$\sin A - \sin B = 2 \cos\left(\frac{A+B}{2}\right) \sin\left(\frac{A-B}{2}\right)$$\cos A + \cos B = 2 \cos\left(\frac{A+B}{2}\right) \cos\left(\frac{A-B}{2}\right)$$\cos A - \cos B = -2 \sin\left(\frac{A+B}{2}\right) \sin\left(\frac{A-B}{2}\right)$
+
+积化和差公式：$\sin A \cos B = \frac{1}{2}[\sin(A+B) + \sin(A-B)]$$\cos A \sin B = \frac{1}{2}[\sin(A+B) - \sin(A-B)]$$\cos A \cos B = \frac{1}{2}[\cos(A+B) + \cos(A-B)]$$\sin A \sin B = -\frac{1}{2}[\cos(A+B) - \cos(A-B)]$
+
+
+对部分公式的推导：$\int \tan x \, dx = -\ln|\cos x| + C$$\int \tan x \, dx = \int \frac{sinx}{cosx} \,dx = - \int \frac{dcosx}{sinx} \, = -ln|cosx|+ C$
+
+对于 $\int cotx$ 同理
+小技巧：
+$sinx^m cosx^n$之类的，奇数的话拆一个进去积分，偶数的话用倍角或半角公式
+
+在对$\int tanx\,dx$或者$\int secx\,dx$等方法一样，可以类比
+
+奇数如$\int sin^3 \, dx$或者$\int sin^3cosx\,dx$等比如$\int sinx^3\,dx=-\int sinx^2\,dcosx=-\int(1-cos^2x)\,dcosx$$=-cosx+\frac{1}{3}cosx^3+C$
+偶数如$\int cosx^4\,dx$等比如$\int cosx^4\,dx=\int(\frac{1+cos2x}{2})^2\,dx=\frac{1}{4}\int1+cos2x^2+2cos2x\,dx$$=\frac{1}{4}(x+\frac{1}{2}\int cos2x^2\,d2x+\int cos2x\,d2x)+C$$=\frac{1}{4}(x+sin2x+\frac{1}{2}\int \frac{1+cos4x}{2}\,d2x)+C$$=\frac{1}{4}(x+sin2x+\frac{1}{8} \int(1+cos4x)\,d4x)+C$$=\frac{1}{4}(x+sin2x+\frac{1}{8}(4x+sin4x))+C$$=\frac{3}{8}x+\frac{1}{4}sin2x+\frac{1}{32}sin4x+C$
+
+对于$\frac{…+…}{…}$类的可能是把上面的式子拆成两个分别计算例如：$\int \frac{1+x}{\sqrt{2-3x^2}}\,dx$$=\int \frac{1}{\sqrt{2-3x^2}}\,dx+\int \frac{x}{\sqrt{2-3x^2}}\,dx$
+
+要熟记各种三角函数的导数和公式以及转换关系：$secx^2-1=tanx^2$$cscx^2-1=cotx^2$
+arctan(\frac{1}{x})=\begin{cases}
+arccot(x)\ \ \ \ \ \ \ \ \ x>0\\
+arccot(x)-\pi  \ \ x]]></content>
+      <tags>
+        <tag>数学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>有理函数积分</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E4%B8%8D%E5%AE%9A%E7%A7%AF%E5%88%86%E7%AC%94%E8%AE%B02%EF%BC%88%E6%9C%89%E7%90%86%E5%87%BD%E6%95%B0%E5%92%8C%E9%83%A8%E5%88%86%E7%A7%AF%E5%88%86%EF%BC%89/</url>
+    <content><![CDATA[基本方法
+凑成能第一类换元积分的式子  例如$\frac{1}{…}$类的部分分式分解有理函数积分适用条件
+
+有理函数积分当被积函数是有理函数（两个多项式的商）时：$\int \frac{Q(x)}{P(x)}\,​dx$其中 $P(x)$ 和 $Q(x)$ 都是多项式。
+
+
+
+分母可因式分解
+
+
+
+部分分式分解是处理有理函数积分的系统方法，特别适用于：
+
+分母可明确因式分解
+没有更简单的特殊技巧
+需要精确解析表达式
+
+当分母 $Q(x)$ 可以分解为一次因式和不可约二次因式的乘积时：
+
+一次因式：$(x-a)$
+不可约二次因式：$(x^2+px+q)$，其中 $p^2-4q&lt;0$具体分解规则对于一次因式 $(x-a)^k$：
+
+对应部分为：
+\frac{A_1}{x-a}+\frac{A_2}{(x-a)^2}+···+\frac{A_k}{(x-a)^k}对于二次因式 $(x^2+px+q)^m$：\frac{B_1x+C_1}{x^2+px+q}+\frac{B_2x+C_2}{(x^2+px+q)^2}+···+\frac{B_mx+C_m}{(x^2+px+q)^k}但是，在这个部分有一种特殊情况，就是二次式:
+\int \frac{P(x)}{Q(x)^2}
+在这里，可以把函数看成$\frac{d}{dx}\frac{Ax+B}{Q(x)}+\frac{C}{Q(x)}$两种方法实际上是等价的，因为最后必然化成一个简单的倒数积分和简单的分数积分$\frac{1}{Q(x)}$。
+
+例子：
+计算$\int \frac{x^2+1}{(x^2+x+1)^2}\,dx$有两种方式，都能得到答案。1.用标准公式计算得到:\int \frac{x}{(x^2+x+1)^2}\,dx-\int \frac{1}{x^2+x+1}\,dx
+
+接着再分别计算前后的积分，前面得到的是一个分式加上一个含$\arctan x$的式子比较麻烦，不过对于这类题目，我们知道一定能得到第二种简单的方法的式子，所以经过计算得到:
+\frac{1}{3}\frac{d}{dx}\frac{x+2}{x^2+x+1}-\frac{4}{3}\int · \frac{1}{x^2+x+1}\,dx这种解法的好处是，得到前半段以后可以直接当作积分结果，不需要额外的处理。
+判断步骤第一步：检查是否为真分式
+如果 $\deg P(x) \geq \deg Q(x)$：先进行多项式除法（大除法）
+如果 $\deg P(x) &lt; \deg Q(x)$：直接进行部分分式分解就是说最高项次数小就能用这个方法第二步：因式分解分母将分母 $Q(x)$ 完全分解为：
+一次因式 $(x-a_i)^{k_i}$
+不可约二次因式 $(x^2+p_jx+q_j)^{m_j}$第三步：确定分解形式根据因式分解结果，写出部分分式的一般形式。在计算过程中，可以通过给x赋值来快速计算带定值
+
+具体例子分析例1：$\int \frac{x^3+1}{(x^2+1)^2} dx$
+分母：$(x^2+1)^2$（二次因式的平方）
+分解形式：$\frac{Ax+B}{x^2+1} + \frac{Cx+D}{(x^2+1)^2}$
+
+例2：$\int \frac{1}{x(x-1)^2} dx$
+分母：$x(x-1)^2$（一次因式及其平方）
+分解形式：$\frac{A}{x} + \frac{B}{x-1} + \frac{C}{(x-1)^2}$
+
+例3：$\int \frac{x^2+1}{x(x^2+4)} dx$
+分母：$x(x^2+4)$（一次因式 + 二次因式）
+分解形式：$\frac{A}{x} + \frac{Bx+C}{x^2+4}$
+
+例4：$\int \frac{x+1}{x^2+4x+6}\,dx$这个题目看起来和裂项十分相似，但是分母无法因式分解，所以这个方法是不对的。注意到这里上方的次数正好是分母求导结束后的次数，所以游客能采取分开计算的方法。这里首先先把上面的分析翻倍，（因为分母的导数是$2x+4$），接下来在加一个2，减一个2外面再配上$\frac{1}{2}$即可。所以式子变为:$\frac{1}{2} \int \frac{2x+4-2}{x^2+4x+6}\,dx$然后两个部分正好都是我们能计算的第一类换元积分，完成！
+
+$\int \frac{f’(x)}{f(x)} dx$：直接得到 $\ln|f(x)|$
+$\int \frac{1}{x^2+a^2} dx$：直接得到 $\frac{1}{a}\arctan\frac{x}{a}$
+
+个人技巧
+对于一般的式子，通常是去凑积分，先对其1次项，再分离常数项，这样就能直接得到一个ln积分和一个形如$\frac{p}{t^2+a^2}$的式子了，这个是很好积分的($\arctan x$)
+遇到三次式子，可能配凑一个$\pm 1$来计算
+遇到分母次数很高的，考虑倒代换
+其余的式子，直接展开就行了
+
+三角代换部分重要公式当取$\tan x=u$时
+\begin{cases}
+\sin x=\frac{u}{\sqrt{1+u^2}} \\
+\cos x=\sqrt{1+u^2}
+\end{cases}当取$\tan \frac{x}{2}=u$时
+\begin{cases}
+\sin x=\frac{2u}{1+u^2} \\
+\cos x=\frac{1-u^2}{1+u^2}
+\end{cases}然后不要忘记，第二类换元积分是需要乘上对应的导数的，这个导数是t关于x的函数，乘上的是含有t的导数之后像前面一样计算就行了。
+题型分类
+只含有一种三角函数的，用第一类换元积分，例如：$\int \frac{1}{\sin x^4}\,dx$
+上下均有且为一次式的，用上节课的方法代换，例如$\int \frac{\sin x}{\sin x+\cos x}\,dx$
+同名三角函数相加，和差化积，例如$\int \frac{1}{\sin x+\sin 3x}\,dx$
+正常幂(不含分母的)，按奇偶正常拆分
+分母含有高次项的，拆解1，例如$\int \frac{1}{\sin x\cos x^2}$主要是把$\cos x$化成$\tan x$来计算。例如：1\int \frac{dx}{a^2+\sin x^2+b^2+\cos x^2}=\int \frac{\frac{1}{\cos x^2}}{a^2\tan x^2+b^2}\,dx=\int \frac{1+\tan x^2}{a^2\tan x^2+b^2}\,dx根式的代换
+
+重要公式令
+t=\sqrt[n]{ax+b}令
+t=\sqrt[n]{\frac{ax+b}{cx+d}}令
+t=\sqrt[mn]{ax+b}看含有什么来决定怎么设t最后反解出x带入其余部分即可。
+重要例题根式代换类型求下面这个函数的积分
+\int \frac{dx}{\sqrt[n]{(x-a)^{n+1}(x-b)^{n-1}}}\,dx方法：先提取部分，构造类似上面2的一个式子，然后再考虑代换。
+\text{原式}=\int\frac{1}{(x-a)(x-b)\sqrt[n]{\frac{x-a}{x-b}}}\,dx不过接下来直接解出x再带回比较麻烦，所以考虑直接算出$\frac{dx}{(x-a)(x-b)}$这个部分
+t^n=\frac{a-b}{(x-b)^2}\frac{nt^n\,dt}{t}=\frac{a-b}{(x-b)^2}\,dx\frac{n\,dt}{t}=\frac{a-b}{(x-b)^2t^n}\,dx=\frac{a-b}{(x-a)(x-b)}\,dx所以得到原式变为：
+-\frac{n}{a-b}\sqrt[n]{\frac{x-b}{x-a}}重要例题偶数次幂分数类型方法是化为平方分之括号内函数的导数即：
+\int \frac{f'(x)}{f(x)^2+a}例如：
+\int \frac{1}{x^4+1}\,dx=\frac{1}{2}\int\frac{1+\frac{1}{x^2}-1}{x^2+\frac{1}{x^2}}=\frac{1}{2}(\int \frac{d x-\frac{1}{x}}{(x-\frac{1}{x})^2+2}+\int \frac{d x+\frac{1}{x}}{(x+\frac{1}{x})^2+2})=\frac{1}{2\sqrt{2}}\arctan \frac{x-\frac{1}{x}}{\sqrt{2}}-\frac{1}{4\sqrt{2}}\ln|\frac{x^2-\sqrt{2}x+1}{x^2+\sqrt{2}x+1}| 所以类似于$\frac{\text{二次}}{\text{四次}}$的式子，理论上都有可能用这种方式解决
 ]]></content>
+      <tags>
+        <tag>数学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>二阶差分</title>
+    <url>/ZestfulYK-blog/2025/02/24/%E4%BA%8C%E9%98%B6%E5%B7%AE%E5%88%86/</url>
+    <content><![CDATA[用于处理在一个数组的连续区间上进行等差序列的增减
+例如:给1-5这个区间增加12345
+多次操作后,问数组的最终值
+方法就是二阶差分,推导一下就行
+              变化值               下标数组 	0 1 2 3 4 5   6 7 8 9 10初始     0 0 0 0 0 0   0 0 0 0 0变化     0 1 3 5 7 9   0 0 0 0 0一阶     0 1 2 2 2 2  -9 0 0 0 0二阶     0 1 1 0 0 0 -11 9 0 0 0
+所以规律:
+ll d=(e-s)/(r-l);//s第一个位置的值,e最后一个位置的值,r,l是区间范围b[l]=b[l]+s;b[l+1]=b[l+1]+d-s;b[r+1]=b[r+1]-(d+e);b[r+2]=b[r+2]+e;
+然后难一点的话就是阶梯型的修改如123454321这种,然后再不保证l,r一定在范围内,自己推导就行
+vector&lt;ll&gt; d(n+5,0);for(int i=1;i&lt;=mid;i++)&#123;  ll p=keng[i].fs,f=keng[i].sd;  d[p+1]-=2;  if(p+f+1&lt;=n) d[p+f+1]+=1;  if(p-f+1&gt;=0) d[p-f+1]+=1;  else&#123;    ll s=f-p+1;    d[1]+=s;    d[2]+=1-s;  &#125;&#125;]]></content>
       <tags>
         <tag>算法</tag>
       </tags>
@@ -907,6 +1011,63 @@ C=p2_x*p1_y-p1_x*p2_y
 先看是否大于等于最大角，如果是，那么输出1 2 3
 否则计算中间值用$\frac{180}{n}$的倍数代替。
 
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>二分查找</title>
+    <url>/ZestfulYK-blog/2026/01/26/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/</url>
+    <content><![CDATA[二分查找是常见的算法,但是我发现我经常无法区分应当使用哪种变形来计算答案,因此这里做一下讲解.
+标准写法ll l=___,r=___;while(l&lt;=r)&#123;	ll mid=l+(r-l)&gt;&gt;1;	if(____) l=mid+1;	else r=mid-1;&#125;
+判断条件的选择判断条件可以理解为,每次要淘汰哪一部分,并通过l,r指针的移动来确定的
+前提条件:假设现在我们有一个升序的数组
+比如:我现在要查找第一个大于等于key的值那么我们的条件就应该是每次循环都删去小于key的值,不能删去大于的,因为答案可能在这里面
+于是我们的条件就写成:if(a[mid]&lt;key) l=mid+1;为什么是mid+1?因为l表示的是左边界,左边界移动了,就相当于淘汰了左边的小于key的值
+同理,我们在写找第一个大于当前值时,只要改成&lt;=即可
+那么反过来呢?
+没错,把条件和操作全反过来即可.现在我们要找第一个小于等于key的值所以我们每次淘汰的是大于key的值
+条件变为:if(a[mid]&gt;key) r=mid-1;
+答案的取值弄清楚了怎么写条件,我们还需要弄清楚最后l还是r指向的才是答案.
+我的方法是,假设第一次指向的就是正确答案,那么哪个指针指向就是正确答案.所以也是就if对应的变化的指针,就是答案.
+比如查找大于等于key时,if条件后面变化的是l,所以答案就是l所对应的值.
+其他技巧学习二分主要的目的不是为了二分查找,而是为了二分答案.判断条件有可能会更复杂.但是核心还是上面哪两点,首先知道我要删的是什么,其次答案会等于什么位置
+最后,使用二分时不要忘记检查数据是否以及排序,答案是否一定满足升序关系,再加上适量的边界检查,二分就能拿下啦!
+C++自带的二分C++中,能使用lower_bound和upper_bound的有set,multi_set(多重集合),数组,vector
+前者查找第一个大于等于key的值,后者找第一个大于key的值(先保证数组有序才行)
+那么小于或小于等于呢?
+小于可以先查大于等于的,再向前一步小于等于可以先查大于的,再向前一步
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>全排列函数的应用</title>
+    <url>/ZestfulYK-blog/2025/10/22/%E5%85%A8%E6%8E%92%E5%88%97%E5%87%BD%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[全排列函数什么是全排列？简单来说就是排列组合的所有情况，并按照字典顺序输出例如：123全排列的结果为
+123132213231312321
+而实际上全排列需要在代码中用复杂的深度搜索来写这实在是太复杂了！！！于是我就发现了全排列函数这个东西^__^现在我们就来学习一下这个高级函数————next_permutation
+全排列函数#include &lt;iostream&gt;  #include &lt;algorithm&gt;  using namespace std;  int main()  &#123;      int num[3]=&#123;1,2,3&#125;;      do      &#123;          cout&lt;&lt;num[0]&lt;&lt;&quot; &quot;&lt;&lt;num[1]&lt;&lt;&quot; &quot;&lt;&lt;num[2]&lt;&lt;endl;    &#125;while(next_permutation(num,num+3));      return 0;  &#125;
+
+全排列函数详细定义对于next_permutation函数，其函数原型为：
+include   bool next_permutation(iterator start,iterator end)
+
+
+当当前序列不存在下一个排列时，函数返回false，否则返回true
+
+全排列函数的特性
+
+next_permutation(num,num+n)函数是对数组num中的前n个元素进行全排列，同时并改变num数组的值。
+另外，需要强调的是，next_permutation()在使用前需要对欲排列数组按升序排序，否则只能找出该序列之后的全排列数。比如，如果数组num初始化为2,3,1，那么输出就变为了：231312321
+全排列函数的应用题目链接
+题目要求我们按要求完成5*5数独，且只要填ABC，可以有空格子一种方法是遍历每一个格子，逐个填入，时间复杂度(4^25)，显然不行不过我的朋友使用了大量剪枝，最后还是过了%%%大佬 qinye_leaf
+代码链接
+但是我们刚学了全排列函数，就不能使用一下吗？你别说，还真能使用！我们只要先填写每一行，然后就只用40^5就能计算完了因为可以加上一个判断，看看每一行是否符合标准(也算剪枝吧)
+vector&lt;string&gt; eachrow(int row) &#123;    vector&lt;string&gt; result;    string h=string(n-3,&#x27;.&#x27;)+&quot;ABC&quot;;    do&#123; for(int i=0;i&lt;n;i++)&#123;        if(h[i]!=&#x27;.&#x27;)&#123;            if(h[i]==r[row]) result.push_back(h);            break;        &#125;    &#125;    &#125;while(next_permutation(h.begin(),h.end()));    return result;&#125;
+那么这样我们就能得到每一行的可能情况，每行40种之后就可以正常的DFS了
+个人AC代码链接
 ]]></content>
       <tags>
         <tag>算法</tag>
@@ -1011,6 +1172,96 @@ $v$ 计算错误：求 $v$ 时积分常数可省略（因最后会抵消）
       </tags>
   </entry>
   <entry>
+    <title>压行技巧</title>
+    <url>/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/</url>
+    <content><![CDATA[如何给你的代码压行？如果不会压行，你的代码看起来会是这样的：
+int ml(vector&lt;int&gt; s, int n)&#123;    int m = s[0];    for (int i = 0; i &lt;= n; i++)    &#123;        if (s[i] &gt; m)            m = s[i];    &#125;    return m;&#125;
+整整用了9行！实际上其实根本不需用那么多行：int ml(vector&lt;int&gt; s,int n)&#123;    int m=s[0];    for(int i=0;i&lt;=n;i++)&#123;        if(s[i]&gt;m)m=s[i];    &#125;    return m;&#125;
+当然也可以更短：int ml(vector&lt;int&gt; s,int n)&#123;    int m=s[0];    for(int i=0;i&lt;=n;i++) if(s[i]&gt;m) m=s[i];    return m;&#125;那么问题来了，怎么在不影响代码运行的情况下合理的压行呢？
+判断类循环类的压行技巧判断类如果判断语句仅一行，可以考虑压行：
+if(a==1) sum++;else sum--;//或者这样if(a==1)    sum++;//可以通过缩进来方便区分
+两句的话，压行可以考虑用大括号包起来压行前提是你觉得看着没影响
+if(a==1) &#123;sum++;a=2;&#125;
+注意在大括号里的每一句都是要加上封号的，因为这一段代码实际上等价于：
+if(a==1)&#123;    sum++;    a=2;&#125;
+循环类压行也和判断的一样，可以这么压行：
+for(int i=1;i&lt;=n;i++) cout&lt;&lt;1&lt;&lt;endl;//或者这样：for(int i=1;i&lt;=n;i++)    cout&lt;&lt;1&lt;&lt;endl;
+如果是输出的话，其实可以这么写：
+for(int i=1;i&lt;=n;i++) cout&lt;&lt;i&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;
+因为C++cout&lt;&lt;endl;其实是在循环之外的，所以这么写是正确的
+头文件压行下面送给大家万能头文件：
+#include&lt;bits/stdc++.h&gt;
+其他技巧#define ll long long#define rep(1,n) for(int i=1;i&lt;=(n);i++)ll n;int main()&#123;    rep(1,n) cout&lt;&lt;&quot;*&quot;; cout&lt;&lt;endl;&#125;
+通过define来减少代码长度，增加可读性
+一些非常有用的C++自带函数sort(a,a+n);//a为数组，n为a的大小__gcd(x,y);//x，y的最大公约数x=1&lt;&lt;n;//2的n次方
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>华中农业达大学迎新赛题解与反思</title>
+    <url>/ZestfulYK-blog/2025/12/07/%E5%8D%8E%E4%B8%AD%E5%86%9C%E4%B8%9A%E8%BE%BE%E5%A4%A7%E5%AD%A6%E8%BF%8E%E6%96%B0%E8%B5%9B%E9%A2%98%E8%A7%A3%E4%B8%8E%E5%8F%8D%E6%80%9D/</url>
+    <content><![CDATA[M-终极考验
+这题的大致思路是对的，但是最后处理差分时，直接选择了min(i+x,n)，这个就不对了，因为我们要的不是二选1，而是只有在满足要求时才处理。所以把min改成if判断就行了，下次需要注意这个逻辑问题。
+H-对决
+这个题目是纯暴力的搜索题，那么只要一个一个判断就好了，但是此处注意循环范围是$\leq n-4$而不是$&lt;n-4$.最好自己先之上推导一下再提交
+B-爱的魔法
+这一题一开始的错误原因是没有注意到交换最接近的会导致得到的不是最大的数字，例如1999，交换以后是9199是不对的，所以要倒遍历。建议自己先多造几组数据再提交，包括一些边界情况等等。随机数也不错（较小范围能手推的）
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>多源dfs</title>
+    <url>/ZestfulYK-blog/2025/02/12/%E5%A4%9A%E6%BA%90dfs/</url>
+    <content><![CDATA[正常的广搜就是一个起点,像树一样按层先法遍历今天我们要学习的是多源广搜.
+什么是多源dfs顾名思义,从多个起点开始搜索,也是求最短路的一种方法.
+什么时候适用?个人认为是起点不确定,而且终点有多个的情况,
+此时终点是确定的,因此只要同时计算,最后每个起点都会被遍历到,得到的就是最短路了
+例题1:
+给定01矩阵,求每个0到最近的1的距离.
+例题2:
+有 n 个城市，编号为 1 到 n，城市之间通过 m条无向道路连接，每条道路的边权为 1，对于一个城市的繁华度是该城市所连接的道路数量。我们将每个城市的繁华度列出并去重后，从小到大排序得到 $a_1​,a_2​,…,a_k$​，现在将所有繁华度为 $a_i$(1≤i≤k) 的城市称作 i 级城市。Bingbong 现在需要你帮助他回答对于任意编号为 x(1≤x≤n) 的城市，从该城市出发，前往比该城市级别更高的城市的最短路径长度，或报告无法到达。  
+注意：此处 k 级城市为最高级城市。
+例题2实现起来可能会有一些麻烦,但是发现一个事情是不存在跨过大繁华度城市达到终点的情况,因此,只要每次从大到小,在路径变短时才需要入队,简化了实现.
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ACM集训队训练,同构图挑战</title>
+    <url>/ZestfulYK-blog/2025/02/24/%E5%90%8C%E6%9E%84%E5%9B%BE%E6%8C%91%E6%88%98/</url>
+    <content><![CDATA[定义路径的权值为路径上最大的边权,两点的距离定义为所有路径中权值的最小值
+给定两张图,判断两张图之间每两个点的距离是否对应相等
+思路自环对距离的影响为:增大路径的权值,所以自环没有作用,可以删去图上的环对距离的影响为:因为我们最后总是会选择较短的路,因此所有环上的最大边可以删去重边相当于一种特殊的环,选择最小的那一个留下就行
+那么经过处理以后,这个无向图貌似变成了一颗最小生成树?
+不用怀疑,这就是最小生成树森林!
+那么怎么证明呢?
+我发现一个类似的算法:反向删除构建最小生成树构建过程具体如下:按边权从大到小依次删去边,要是不影响连通性则删去,最后得到最小生成树
+应用在这一题,我们破环相当于删去了不影响连接性的一条边权较大的边,所以最后得到的就是最小生成树
+而我们需要判断距离是否一样,那么只要其最小生成森林一样就行
+因为此处已经得出结论,只要算出最小生成树,问题就解决了一半,所以接下来正向考虑每一条边加入图中对距离的影响
+在两张图中同时进行最小生成树算法,要是这两条边的边权一样,连起的区块相同,那么所有点在两张图的距离仍对应相等
+证明(DeepSeek):
+
+这是因为在按权值从小到大逐步添加边的过程中，每一步合并相同的连通分量（区块），使得任意两点首次连通时的边权值相同。而两点间的最小瓶颈距离正是它们首次连通时的边权值（若始终不连通则为无穷）。因此，对于任意两点，它们在两张图中的距离相等。
+
+但是在算法实现中,这是比较困难的,因为可能构建顺序不完全一致.
+方法是把距离相同的边同时操作,每一次操作观察图的连通情况,由此来判断得到的生成树是否一样
+按照之前的结论,重边和自环对答案没有影响,因为最后算的反正是连通性,所以不需要特殊处理,这样就简化了操作
+比赛中和赛后补题中出现的思路问题在比赛时,我们想到了构建生成树来简化计算,但是停留在每一步相等才行,并没有想到只需要判断连通性就行
+最后是计算区块信息的问题,我赛时的想法是通过计算异或和区分每个区块,每个点给予随机值作为初始哈希值,这是对的,但是在赛后计算总连通性时出问题.方法是结合加法,每个区块的和为总哈希
+所以最后代码上除了还要学习一下dsu标准写法外没有大问题
+总之是一道好题,已严肃补完
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>前缀和笔记</title>
     <url>/ZestfulYK-blog/2025/12/08/%E5%89%8D%E7%BC%80%E5%92%8C%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[前缀和定义
@@ -1036,48 +1287,6 @@ int countSubarrays(vector&lt;int&gt;&amp; nums,int k) &#123;    unordered_map&lt
 vector&lt;int&gt; xorPre(n+1, 0);for (int i = 1; i &lt;= n; i++) &#123;    xorPre[i] = xorPre[i-1] ^ a[i];&#125;// 区间[l, r]的异或和int xorsum = xorPre[r] ^ xorPre[l-1];
 7.二维差分数组// 初始化二维差分vector&lt;vector&lt;int&gt;&gt; diff(m+2, vector&lt;int&gt;(n+2, 0));// 子矩阵(x1,y1)-(x2,y2)增加valvoid rangeAdd2D(int x1, int y1, int x2, int y2, int val) &#123;    diff[x1][y1] += val;    diff[x2+1][y1] -= val;    diff[x1][y2+1] -= val;    diff[x2+1][y2+1] += val;&#125;// 恢复原矩阵vector&lt;vector&lt;int&gt;&gt; res(m+1, vector&lt;int&gt;(n+1, 0));for (int i = 1; i &lt;= m; i++) &#123;    for (int j = 1; j &lt;= n; j++) &#123;        res[i][j] = res[i-1][j] + res[i][j-1] - res[i-1][j-1] + diff[i][j];    &#125;&#125;
 然后很重要的一点是，有时可能是假设前缀和数组，最后再反推原数组来进行构造。
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>华中农业达大学迎新赛题解与反思</title>
-    <url>/ZestfulYK-blog/2025/12/07/%E5%8D%8E%E4%B8%AD%E5%86%9C%E4%B8%9A%E8%BE%BE%E5%A4%A7%E5%AD%A6%E8%BF%8E%E6%96%B0%E8%B5%9B%E9%A2%98%E8%A7%A3%E4%B8%8E%E5%8F%8D%E6%80%9D/</url>
-    <content><![CDATA[M-终极考验
-这题的大致思路是对的，但是最后处理差分时，直接选择了min(i+x,n)，这个就不对了，因为我们要的不是二选1，而是只有在满足要求时才处理。所以把min改成if判断就行了，下次需要注意这个逻辑问题。
-H-对决
-这个题目是纯暴力的搜索题，那么只要一个一个判断就好了，但是此处注意循环范围是$\leq n-4$而不是$&lt;n-4$.最好自己先之上推导一下再提交
-B-爱的魔法
-这一题一开始的错误原因是没有注意到交换最接近的会导致得到的不是最大的数字，例如1999，交换以后是9199是不对的，所以要倒遍历。建议自己先多造几组数据再提交，包括一些边界情况等等。随机数也不错（较小范围能手推的）
-]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>压行技巧</title>
-    <url>/ZestfulYK-blog/2025/10/24/%E5%8E%8B%E8%A1%8C%E6%8A%80%E5%B7%A7/</url>
-    <content><![CDATA[如何给你的代码压行？如果不会压行，你的代码看起来会是这样的：
-int ml(vector&lt;int&gt; s, int n)&#123;    int m = s[0];    for (int i = 0; i &lt;= n; i++)    &#123;        if (s[i] &gt; m)            m = s[i];    &#125;    return m;&#125;
-整整用了9行！实际上其实根本不需用那么多行：int ml(vector&lt;int&gt; s,int n)&#123;    int m=s[0];    for(int i=0;i&lt;=n;i++)&#123;        if(s[i]&gt;m)m=s[i];    &#125;    return m;&#125;
-当然也可以更短：int ml(vector&lt;int&gt; s,int n)&#123;    int m=s[0];    for(int i=0;i&lt;=n;i++) if(s[i]&gt;m) m=s[i];    return m;&#125;那么问题来了，怎么在不影响代码运行的情况下合理的压行呢？
-判断类循环类的压行技巧判断类如果判断语句仅一行，可以考虑压行：
-if(a==1) sum++;else sum--;//或者这样if(a==1)    sum++;//可以通过缩进来方便区分
-两句的话，压行可以考虑用大括号包起来压行前提是你觉得看着没影响
-if(a==1) &#123;sum++;a=2;&#125;
-注意在大括号里的每一句都是要加上封号的，因为这一段代码实际上等价于：
-if(a==1)&#123;    sum++;    a=2;&#125;
-循环类压行也和判断的一样，可以这么压行：
-for(int i=1;i&lt;=n;i++) cout&lt;&lt;1&lt;&lt;endl;//或者这样：for(int i=1;i&lt;=n;i++)    cout&lt;&lt;1&lt;&lt;endl;
-如果是输出的话，其实可以这么写：
-for(int i=1;i&lt;=n;i++) cout&lt;&lt;i&lt;&lt;&quot; &quot;; cout&lt;&lt;endl;
-因为C++cout&lt;&lt;endl;其实是在循环之外的，所以这么写是正确的
-头文件压行下面送给大家万能头文件：
-#include&lt;bits/stdc++.h&gt;
-其他技巧#define ll long long#define rep(1,n) for(int i=1;i&lt;=(n);i++)ll n;int main()&#123;    rep(1,n) cout&lt;&lt;&quot;*&quot;; cout&lt;&lt;endl;&#125;
-通过define来减少代码长度，增加可读性
-一些非常有用的C++自带函数sort(a,a+n);//a为数组，n为a的大小__gcd(x,y);//x，y的最大公约数x=1&lt;&lt;n;//2的n次方
 ]]></content>
       <tags>
         <tag>算法</tag>
@@ -1138,29 +1347,6 @@ ll count_divisible(ll l, ll r, ll d) &#123;    ll first= (l%d==0) ? l : l+d-l%d;
       </tags>
   </entry>
   <entry>
-    <title>我这学期犯过的唐</title>
-    <url>/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/</url>
-    <content><![CDATA[不知道vector的size是size_t类型
-因为是size_t所以直接加减会出错，比如减成负数的时候。
-
-内层循环变量写错
-这个会导致外层循环少了几次
-
-sort里面的数据范围没开正确
-例如要对’n*m’的数据排序，却只写了n
-
-不看清读入顺序
-看清读入的是有序的还是乱序的，不要被样例蒙蔽了双眼
-
-位运算不写ll
-区分以下代码的区别:
-
-(1&lt;&lt;i) //得到int(1ll&lt;&lt;i) //得到ll]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>广工月赛</title>
     <url>/ZestfulYK-blog/2025/10/20/%E5%B9%BF%E5%B7%A5%E6%9C%88%E8%B5%9B/</url>
     <content><![CDATA[ZestfulYK的战绩
@@ -1178,6 +1364,36 @@ J
 
 代码:
 #include&lt;bits/stdc++.h&gt;using namespace std;#define ll long longint main()&#123;    ll n; cin&gt;&gt;n;    ll s=sqrt(n);    if(s*s!=n) s++;    ll last=n%s;    for(int i=last;i&gt;=1;i--) cout&lt;&lt;i&lt;&lt;&quot; &quot;;    for(int j=1;j&lt;=n/s;j++)&#123;        for(int i=last+j*s;i&gt;last+(j-1)*s;i--) cout&lt;&lt;i&lt;&lt;&quot; &quot;;    &#125;&#125;]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>广度优先搜索变形(dp)</title>
+    <url>/ZestfulYK-blog/2025/02/24/%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2(dp)/</url>
+    <content><![CDATA[用途:查询最短路,计算答案值范围较小的dp题目
+最短路就不解释了,讲讲第二种是怎么回事
+题目:给定两个数组a,b($a_i,b_i&lt;2048$),长度为n$(1&lt;n&lt;2048)$,x初始为0,每次允许操作
+\begin{cases}
+x=max(0,x-a_i)\\ \\
+x=x\oplus b[i]
+\end{cases}求最后x的最大值
+因为a对x的影响是减小,b是增大,异或b以后也不会超过2048,也就是最多2048个答案,那么可以用类似广搜的做法来计算每一步能取到的所有答案,这样就不需要dfs了
+所以代码:
+void solve()&#123;  ll n; cin&gt;&gt;n;  vector&lt;ll&gt; a(n+1),b(n+1);  for(int i=1;i&lt;=n;i++) cin&gt;&gt;a[i];  for(int i=1;i&lt;=n;i++) cin&gt;&gt;b[i];  set&lt;ll&gt; last; last.insert(0);  for(int i=1;i&lt;=n;i++)&#123;    set&lt;ll&gt; now;    for(int j:last)&#123;      now.insert(max(0ll,j-a[i]));      now.insert((j^b[i]));    &#125;    last=now;  &#125;  ll maxn=-1;  for(int i:last) maxn=max(maxn,i);  cout&lt;&lt;maxn&lt;&lt;endl;&#125;]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>广搜变形</title>
+    <url>/ZestfulYK-blog/2025/02/24/%E5%B9%BF%E6%90%9C%E5%8F%98%E5%BD%A2/</url>
+    <content><![CDATA[题目描述:在正常的广搜上加一个条件:每个点有开放时间,在开放之前禁止更新
+方法:实际上,当开放后,第一个来更新他的点,是他周围第一个被更新过的点,所以距离直接标为min(dist[nowx][nowy]+1,open[nowx][nowy]+1)
+然后加上一个优先队列就行了这里提一下二维的优先队列写法:
+priority_queue&lt;pair&lt;ll,pair&lt;ll,ll&gt;&gt;,vector&lt;pair&lt;ll,pair&lt;ll,ll&gt;&gt;&gt;,greater&lt;&gt;&gt; q;
+这样就不用依赖tuple了
+]]></content>
       <tags>
         <tag>算法</tag>
       </tags>
@@ -1297,6 +1513,100 @@ GCD二级结论结论1lcm(a,b)*gcd(a,b)=ab结论2gcd(a,b) = gcd(a,|b-a|)结论3g
 
 那么接下来我们计算阶乘和逆元就能解答了（（怎么这么麻烦，没招了）
 ]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我这学期犯过的唐</title>
+    <url>/ZestfulYK-blog/2025/12/16/%E6%88%91%E8%BF%99%E5%AD%A6%E6%9C%9F%E7%8A%AF%E8%BF%87%E7%9A%84%E5%94%90/</url>
+    <content><![CDATA[不知道vector的size是size_t类型
+因为是size_t所以直接加减会出错，比如减成负数的时候。
+
+内层循环变量写错
+这个会导致外层循环少了几次
+
+sort里面的数据范围没开正确
+例如要对’n*m’的数据排序，却只写了n
+
+不看清读入顺序
+看清读入的是有序的还是乱序的，不要被样例蒙蔽了双眼
+
+位运算不写ll
+区分以下代码的区别:
+
+(1&lt;&lt;i) //得到int(1ll&lt;&lt;i) //得到ll
+冷知识,最后一个问题这个sb已经错了两次了
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>最大子段和</title>
+    <url>/ZestfulYK-blog/2025/02/12/%E6%9C%80%E5%A4%A7%E5%AD%90%E6%AE%B5%E5%92%8C/</url>
+    <content><![CDATA[
+方法1:处理当前位置之前的前缀和的最小值,每次计算当前位置到这个位置的子段和即可代码:const ll inf=1e9+1;void solve()&#123;  ll n; cin&gt;&gt;n;  vector&lt;ll&gt; a(n+1);  for(int i=1;i&lt;=n;i++) cin&gt;&gt;a[i];  ll minn=0,now=0,ans=-inf;  for(int i=1;i&lt;=n;i++)&#123;    now+=a[i];    ans=max(ans,now-minn);    minn=min(minn,now);  &#125;  cout&lt;&lt;ans&lt;&lt;endl;&#125;
+
+
+注意几个细节,首先minn存储的是到目前为止的最小值,应该默认为0,在所有数字全为正数的情况下,表示空串的前缀和为0.先计算ans再计算minn,这是因为不能产生空串,保证取的是前面的前缀和.
+
+方法2:传统dp法:
+
+代码:#include&lt;bits/stdc++.h&gt;using namespace std;int main()&#123;    long long a,maxn=LONG_LONG_MIN,sum=0,n;    cin&gt;&gt;n;    for(int i=1;i&lt;=n;i++)&#123;        cin&gt;&gt;a; sum+=a;        if(sum&lt;a) sum=a;        if(sum&gt;maxn) maxn=sum;    &#125;    cout&lt;&lt;maxn&lt;&lt;endl;&#125;
+思路:如果当前值比前面求的和还要大,那么放弃前面的求和,直接新开一段
+变形:求子段%p意义下的最大子段和
+依旧先计算前缀和(在%p意义下),前面的前缀和更小,可能是两个和还没相差p,要是当前的更小,大概率是超过了p,翻上去了,所以要考虑两个位置,前缀最小值和第一个比当前数字大的前缀和值.
+代码略,自己写去,up懒
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>构造操作类题目</title>
+    <url>/ZestfulYK-blog/2025/12/16/%E6%9E%84%E9%80%A0%E6%93%8D%E4%BD%9C%E7%B1%BB%E9%A2%98%E7%9B%AE/</url>
+    <content><![CDATA[定义
+构造一些操作，使得数据满足操作要求，通常还会有次数限制
+
+方法此类题目现在遇到过三种做法：
+
+一种是直接操作，不关心部分值，直接对全局操作，使得再让全局满足要求的同时，使得部分也满足要求
+另一种是进行操作，最后只改变一个量，每次用多步做一步（和魔方有点像？）
+
+例题1.B. Siga ta Kymata
+
+题目描述：给你一个排列 $^{\text{∗}}$ 。从 $1$ 到 $n$ 的每个整数的排列 $p$ 。您还拥有一个大小为 $n$ 的二进制 $^{\text{†}}$ 字符串 $s$ ，其中 $s_i = \mathtt{0}$ 代表所有 $1 \le i \le n$ 。您最多可以执行以下操作 $5$ 次：选择任意两个整数 $l$ 和 $r$ ，使得 $1 \le l \le r \le n$ .然后，对于每一个 $i$ 使得 $l&lt; i&lt; q$ 和 $\min(p_l, p_r) &lt; p_i &lt; \max(p_l, p_r)$ 同时成立，你将把 $s_i$设为 $\mathtt{1}$ 。您还会得到一个大小为 $n$ 的二进制字符串 $x$ 。执行运算后，对于每一个 $1 \le i \le n$ 都必须成立：如果 $x_i = \mathtt{1}$ ，则 $s_i = \mathtt{1}$ 。注意，如果 $x_i = \mathtt{0}$ ，那么 $s_i$ 可以有任意值。找出最多5个运算序列，使上述条件得到满足，或者报告不可能做到这一点。请注意，您不必尽量减少操作次数。
+
+解法：|----------------|-------------------n------------|                |                   |           ||----------------|-------------------|——————————a[n]|                |                   |           |a[1]----------------------------------------------|                |                   |           ||                |                   |           ||----------------1--------------------------------
+
+一共画了5个框，也就是5次操作的范围
+这里实际上是把所有能改变的全改变了，然后也就满足了要求
+所以5次也是合理的，证明了做法的正确
+
+2.西安之泪 - 洛谷
+
+题目描述：给定一颗无根树,共有n个顶点。每个顶点 i 都具有一个点权$a_i$，初始所有点权都为0。你可以进行如下的操作最多不超过$3n$次：指定顶点的编号 r,u (1≤r,u≤n)，使得这棵树暂时以顶点 r 为根，随后对于顶点 u 的子树中的每一个顶点 v，将其点权修改为 av​⊕u。此处的 ⊕ 表示按位异或。
+
+这一题就是尝试操作每一个顶点，分步完成。让每个顶点的邻居给这个顶点发一次，那么最终剩下的节点就被⊕了出度数-1次。如果是偶数，不变；但是奇数时，为了保持不变，那么我们在自己给自己发一次就行了。
+]]></content>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>根号分治</title>
+    <url>/ZestfulYK-blog/2025/02/12/%E6%A0%B9%E5%8F%B7%E5%88%86%E6%B2%BB/</url>
+    <content><![CDATA[常见于含有两数相乘的题目中,或者数据范围在根号上下时可采用不同复杂度的算法平衡总复杂度
+例题1:D. Another Problem about Beautiful Pairs
+求i,j对,满足$a_ia_j==i-j(i&gt;j)$,n最大是$210^5$注意到,在$a_i$较大时,适合直接暴力枚举,因为没枚举几次就超过边界了,在$a_i$较小时,不适枚举,
+所以划分一个界限,大于$\sqrt{n}$的枚举,小于$\sqrt{n}$的只计算$\sqrt{n}$次,这么划分的作用是两边刚好全部包括在内如果$a_i$小的话$a_j$可能大,但是这部分被大于$\sqrt{n}$的部分枚举到了,减少了无效枚举所以代码:
+void solve()&#123;  ll n,ans=0; cin&gt;&gt;n;  vector&lt;ll&gt; a(n+1);  for(int i=1;i&lt;=n;i++) cin&gt;&gt;a[i];  ll fj=sqrt(n);  for(int i=1;i&lt;=n;i++)&#123;    if(a[i]&gt;n) continue;    if(a[i]&lt;=fj) 	    for(int x=1,j=i+a[i];x&lt;=fj&amp;&amp;j&lt;=n;x++,j+=a[i]) if(j-i==a[i]*a[j]) ans++;    else&#123;      for(int j=i-a[i];j&gt;=1;j-=a[i]) if(i-j==a[i]*a[j]) ans++;      for(int j=i+a[i];j&lt;=n;j+=a[i]) if(j-i==a[i]*a[j]) ans++;    &#125;  &#125;  cout&lt;&lt;ans&lt;&lt;endl;&#125;
+例题2:F. Remainder Problem
+操作: 给x位置加上y查询: 求$\sum_{i=1}^n a_i(i \mod x==y)$n为$5*10^5$
+查询时,如果是x较大,查询时暴力也能计算,但是x较小时,查询起来会很麻烦,但是可以预处理一下,开一个数组,sum[x][y]表示i mod x == y的所有数字之和所以依旧分开计算,当x小于$\sqrt{n}$时,采用方法2预处理,x大于$\sqrt{n}$时采用方法1,暴力计算对于每个输入的x,在数组中计算一次,再去预处理数组中加一下,两者合起来都只需要700左右的循环次数,执行比较快,注意别被卡常即可,用C的输入输出方法
+代码:
+#include&lt;bits/stdc++.h&gt;using namespace std;int sum[710][710],a[500010];int main()&#123;  int q; scanf(&quot;%d&quot;,&amp;q);  for(int j=1;j&lt;=q;j++)&#123;    int op,x,y; scanf(&quot;%d%d%d&quot;,&amp;op,&amp;x,&amp;y);    if(op==1)&#123;      for(int i=1;i&lt;700;++i) sum[i][x%i]+=y;      a[x]+=y;    &#125;    else&#123;      if(x&lt;700) cout&lt;&lt;sum[x][y]&lt;&lt;endl;      else&#123;        int ans=0;        for(int i=y;i&lt;=500000;i+=x) ans+=a[i];        printf(&quot;%d\n&quot;,ans);      &#125;    &#125;  &#125;&#125;]]></content>
       <tags>
         <tag>算法</tag>
       </tags>
@@ -1476,34 +1786,76 @@ n×m ≤ 3×10⁷
       </tags>
   </entry>
   <entry>
-    <title>构造操作类题目</title>
-    <url>/ZestfulYK-blog/2025/12/16/%E6%9E%84%E9%80%A0%E6%93%8D%E4%BD%9C%E7%B1%BB%E9%A2%98%E7%9B%AE/</url>
-    <content><![CDATA[定义
-构造一些操作，使得数据满足操作要求，通常还会有次数限制
+    <title>程C笔记2</title>
+    <url>/ZestfulYK-blog/2025/12/16/%E7%A8%8BC%E7%AC%94%E8%AE%B02/</url>
+    <content><![CDATA[递归函数的定义注意一下在命名函时，可以不写参数的名称，比如：void fun(int,int)
+结构体排序void mySwap(Data *p1,Data *p2)&#123;//交换函数    Data t=*p1;    *p1=*p2;    *p2=t;&#125;for(int i=0;i&lt;n-1;i++)&#123;    for(int j=0;j&lt;n-i-1;j++)&#123;       if(a[j].num&gt;a[j+1].num ||        (a[j].num==a[j+1].num &amp;&amp; a[j].value&gt;a[j+1].value))&#123;           mySwap(&amp;a[j],&amp;a[j+1]);        &#125;    &#125;&#125;
 
-方法此类题目现在遇到过三种做法：
+传入时注意，要加上&amp;，传入地址，使得函数可以交换地址。
 
-一种是直接操作，不关心部分值，直接对全局操作，使得再让全局满足要求的同时，使得部分也满足要求
-另一种是进行操作，最后只改变一个量，每次用多步做一步（和魔方有点像？）
+数组的定义
+使用new和delete一起运算。
 
-例题1.B. Siga ta Kymata
+基本方法// 创建一维动态数组数据类型* 指针名 = new 数据类型[元素个数];// 释放内存delete[] 指针名;
+一维数组示例// 方法1：创建基本类型的一维数组int n = 5;int* arr1 = new int[n];  // 创建包含5个整数的数组delete[] arr1;
+二维数组
+比一维数组多了一个*
 
-题目描述：给你一个排列 $^{\text{∗}}$ 。从 $1$ 到 $n$ 的每个整数的排列 $p$ 。您还拥有一个大小为 $n$ 的二进制 $^{\text{†}}$ 字符串 $s$ ，其中 $s_i = \mathtt{0}$ 代表所有 $1 \le i \le n$ 。您最多可以执行以下操作 $5$ 次：选择任意两个整数 $l$ 和 $r$ ，使得 $1 \le l \le r \le n$ .然后，对于每一个 $i$ 使得 $l&lt; i&lt; q$ 和 $\min(p_l, p_r) &lt; p_i &lt; \max(p_l, p_r)$ 同时成立，你将把 $s_i$设为 $\mathtt{1}$ 。您还会得到一个大小为 $n$ 的二进制字符串 $x$ 。执行运算后，对于每一个 $1 \le i \le n$ 都必须成立：如果 $x_i = \mathtt{1}$ ，则 $s_i = \mathtt{1}$ 。注意，如果 $x_i = \mathtt{0}$ ，那么 $s_i$ 可以有任意值。找出最多5个运算序列，使上述条件得到满足，或者报告不可能做到这一点。请注意，您不必尽量减少操作次数。
-
-解法：|----------------|-------------------n------------|                |                   |           ||----------------|-------------------|——————————a[n]|                |                   |           |a[1]----------------------------------------------|                |                   |           ||                |                   |           ||----------------1--------------------------------
-
-一共画了5个框，也就是5次操作的范围
-这里实际上是把所有能改变的全改变了，然后也就满足了要求
-所以5次也是合理的，证明了做法的正确
-
-2.西安之泪 - 洛谷
-
-题目描述：给定一颗无根树,共有n个顶点。每个顶点 i 都具有一个点权$a_i$，初始所有点权都为0。你可以进行如下的操作最多不超过$3n$次：指定顶点的编号 r,u (1≤r,u≤n)，使得这棵树暂时以顶点 r 为根，随后对于顶点 u 的子树中的每一个顶点 v，将其点权修改为 av​⊕u。此处的 ⊕ 表示按位异或。
-
-这一题就是尝试操作每一个顶点，分步完成。让每个顶点的邻居给这个顶点发一次，那么最终剩下的节点就被⊕了出度数-1次。如果是偶数，不变；但是奇数时，为了保持不变，那么我们在自己给自己发一次就行了。
-]]></content>
+内存连续 // 分配连续内存int** arr = new int*[rows];  // 创建行指针数组arr[0] = new int[rows * cols];  // 分配所有元素的空间// 设置行指针for (int i = 1; i &lt; rows; i++) &#123;    arr[i] = arr[i-1] + cols;&#125;
+内存不连续// 创建二维数组int** arr = new int*[rows];  // 创建行指针数组for (int i = 0; i &lt; rows; i++) &#123;    arr[i] = new int[cols];  // 为每一行分配内存&#125;]]></content>
       <tags>
         <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>程C笔记</title>
+    <url>/ZestfulYK-blog/2025/12/11/%E7%A8%8BC%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[1. 头文件和命名空间C++ 中的 string 类定义在头文件 string 中，通常使用 std 命名空间。
+s3=strcat(s1,s2);//加在后面int x=strcmp(s1,s2)//返回三种情况,见下面cout&lt;&lt;strlen(s1)&lt;&lt;endl;//输出的是长度，等同于s1.length()strcpy(s1+x1,s2+x2);//把前面的对应部分添加到前面去，完全覆盖之前的内容memcpy(a+x1,b+x2,sizeof(int)*8);//也是把后面的放到前面，只不过需要规定放入的内容sizeof(s1);//考虑后面的&#x27;\0&#x27;，比strlen大1.
+x=strcmp(s1,s2)= 
+\begin{cases}
+ -1  \ \ \ \ \ s1 \leq s2\\
+0\ \ \ \ s1=s2\\
+1\ \ \ \ s1 \geq s2
+\end{cases}memcpy例子：int a[8]=&#123;1,2,3,4,5,6,7,8&#125;;int b[10]=&#123;10,9,8,7,6,5,4,3,2,1&#125;;memcpy(b,a,sizeof(int)*8);for(int i=0;i&lt;10;i++)    cout&lt;&lt;b[i];输出：1234567821
+2.函数int maxGap(int* p, int n)//传入p[0]的地址，能改变在主函数里的值static int t;//静态局部变量，下次还是调用上次的值//例如：int cnm(int p,int q)&#123;	static int t=0;	t+=p+q;	return t;&#125;signed main()&#123;	cout&lt;&lt;cnm(1,2)&lt;&lt;cnm(2,3)&lt;&lt;endl;&#125;
+
+局部变量，全局变量，如果多个声明，那么优先使用内部的数据
+int a=5;int main()&#123;	int a=10,b=20;	for(int i=1;i&lt;=3;i++)&#123;		cout&lt;&lt;a++&lt;&lt;&quot; &quot;&lt;&lt;b&lt;&lt;endl;		&#123;			static a=0;			for(int j=1;j&lt;=5;j++)&#123;				a+=j;			&#125;			b+=a;		&#125;	&#125;&#125;
+
+要根据函数返回的类型来决定函数的类型
+
+要根据函数内的使用变量来决定函数使用的参数值//例如：char* fun(int c)&#123;//程C一般不用string，自己写都行	return &quot;yes&quot;;&#125;int* fun1(int c)&#123;	int a[]=&#123;1,2,3&#125;;	return a;&#125;
+C++变量初始化
+
+int a=10;bool b=1;//b=true;char c=&#x27;c&#x27;;int a[10]=&#123;1,2,3,4&#125;;int a[]=&#123;1,2,3,4&#125;;int a[3][3]=&#123;1,2,3,5,6&#125;;int a[3][3]=&#123;&#123;1,2&#125;,&#123;3,4&#125;&#125;;int solve(int a,int b=10)&#123;//有时可能定义在mian函数前面	return a+b;//有值用值，反之用默认值&#125;
+C++ 插入排序void insertSort(int arr[],int n)&#123;	for(int i=1;i&lt;n;i++)&#123;		int key=arr[i];		int j=i-1;		while(j&gt;=0&amp;&amp;key&lt;arr[j])&#123;//注意不是和相邻元素比较			arr[j+1]=arr[j];			j--;		&#125;		arr[j+1]=key;	&#125;&#125;
+C++斐波那契数列int climbStair(int n)&#123;	if(n&lt;=2) return n;	int prev2=1;	int prev1=2;//注意此处的定义是反过来的，上课被坑到了（	int current;	for(int i=3;i&lt;=n;i++)&#123;		current=prev1+prev2;		prev2=prev1;		prev1=current;	&#125;	return current;&#125;
+汉诺塔问题void digui(int n,char start,char temp,char target)&#123;	if(n==1)&#123;		printf(&quot;%d:%c--&gt;%c\n&quot;,n,start,target);//只有一个直接移动		return;	&#125;	digui(n-1,start,target,temp);//前n-1个到转移柱子上	printf(&quot;%d:%c--&gt;%c\n&quot;,n,start,target);//把第n个移动到目标柱子上	digui(n-1,temp,start,target);//前n-1个到目标柱子上&#125;
+最大公约数函数#defien ll long longll gcd(ll a,ll b)&#123;	if(b==0) return a;	//if(a%b==0) return b;	return gcd(b,a%b);&#125;//pow返回的是浮点型，注意类型的转换
+上机课J题算法原理
+这是$Stern–Brocot$ 树,用于生成全部有理数的一种函数OI wiki 链接：Stern–Brocot 树与 Farey 序列 - OI Wiki
+首先规定$\frac{0}{1}$是0,$\frac{1}{0}$是$\infty$，接下来每次在他们中间插入它们的中位分数，即$\frac{a+c}{b+d}$.
+其次也可以用三元组来计算这些有理分数，先设定\left(\frac{0}{1},\frac{1}{1},\frac{1}{0}\right) 为初始状态，然后每一个节点设\left(\frac{a}{b},\frac{p}{q},\frac{c}{d}\right)计算\left(\frac{a}{b},\frac{a+p}{b+q},\frac{c}{d}\right),\left(\frac{a}{b},\frac{p+c}{q+d},\frac{c}{d}\right)作为左右节点，有用的部分是计算得到的节点
+证明
+考虑矩阵A= \begin{pmatrix} b & d \\ a & c \end{pmatrix}
+
+根是单位阵
+左边的节点是乘上矩阵L = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}
+右边的节点是乘上R = \begin{pmatrix} 1 & 0 \\ 1 & 1 \end{pmatrix}
+当然，加入的节点还是原来的算法
+
+单调性的话自然成立，可以理解为糖水混合，不会比浓度高的浓，也不会比浓度低的淡然后为什么一定是互质即最简呢？
+
+
+根据裴蜀定理
+
+设 𝑎,𝑏 是不全为零的整数。那么，对于任意整数 𝑥,𝑦，都有 $gcd(𝑎,𝑏) ∣𝑎𝑥 +𝑏𝑦$ 成立；而且，存在整数 𝑥,𝑦，使得 $𝑎𝑥 +𝑏𝑦 =gcd(𝑎,𝑏)$ 成立。
+
+这里我们取x=y=1，那么就有新的分子分母也互质。
+]]></content>
+      <tags>
+        <tag>数学</tag>
       </tags>
   </entry>
   <entry>
@@ -1639,79 +1991,6 @@ int a[5] = &#123;1, 2, 3, 4, 5&#125;;int *ptr = (int *)(&amp;a + 1); printf(&quo
 ]]></content>
       <tags>
         <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>程C笔记2</title>
-    <url>/ZestfulYK-blog/2025/12/16/%E7%A8%8BC%E7%AC%94%E8%AE%B02/</url>
-    <content><![CDATA[递归函数的定义注意一下在命名函时，可以不写参数的名称，比如：void fun(int,int)
-结构体排序void mySwap(Data *p1,Data *p2)&#123;//交换函数    Data t=*p1;    *p1=*p2;    *p2=t;&#125;for(int i=0;i&lt;n-1;i++)&#123;    for(int j=0;j&lt;n-i-1;j++)&#123;       if(a[j].num&gt;a[j+1].num ||        (a[j].num==a[j+1].num &amp;&amp; a[j].value&gt;a[j+1].value))&#123;           mySwap(&amp;a[j],&amp;a[j+1]);        &#125;    &#125;&#125;
-
-传入时注意，要加上&amp;，传入地址，使得函数可以交换地址。
-
-数组的定义
-使用new和delete一起运算。
-
-基本方法// 创建一维动态数组数据类型* 指针名 = new 数据类型[元素个数];// 释放内存delete[] 指针名;
-一维数组示例// 方法1：创建基本类型的一维数组int n = 5;int* arr1 = new int[n];  // 创建包含5个整数的数组delete[] arr1;
-二维数组
-比一维数组多了一个*
-
-内存连续 // 分配连续内存int** arr = new int*[rows];  // 创建行指针数组arr[0] = new int[rows * cols];  // 分配所有元素的空间// 设置行指针for (int i = 1; i &lt; rows; i++) &#123;    arr[i] = arr[i-1] + cols;&#125;
-内存不连续// 创建二维数组int** arr = new int*[rows];  // 创建行指针数组for (int i = 0; i &lt; rows; i++) &#123;    arr[i] = new int[cols];  // 为每一行分配内存&#125;]]></content>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>程C笔记</title>
-    <url>/ZestfulYK-blog/2025/12/11/%E7%A8%8BC%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[1. 头文件和命名空间C++ 中的 string 类定义在头文件 string 中，通常使用 std 命名空间。
-s3=strcat(s1,s2);//加在后面int x=strcmp(s1,s2)//返回三种情况,见下面cout&lt;&lt;strlen(s1)&lt;&lt;endl;//输出的是长度，等同于s1.length()strcpy(s1+x1,s2+x2);//把前面的对应部分添加到前面去，完全覆盖之前的内容memcpy(a+x1,b+x2,sizeof(int)*8);//也是把后面的放到前面，只不过需要规定放入的内容sizeof(s1);//考虑后面的&#x27;\0&#x27;，比strlen大1.
-x=strcmp(s1,s2)= 
-\begin{cases}
- -1  \ \ \ \ \ s1 \leq s2\\
-0\ \ \ \ s1=s2\\
-1\ \ \ \ s1 \geq s2
-\end{cases}memcpy例子：int a[8]=&#123;1,2,3,4,5,6,7,8&#125;;int b[10]=&#123;10,9,8,7,6,5,4,3,2,1&#125;;memcpy(b,a,sizeof(int)*8);for(int i=0;i&lt;10;i++)    cout&lt;&lt;b[i];输出：1234567821
-2.函数int maxGap(int* p, int n)//传入p[0]的地址，能改变在主函数里的值static int t;//静态局部变量，下次还是调用上次的值//例如：int cnm(int p,int q)&#123;	static int t=0;	t+=p+q;	return t;&#125;signed main()&#123;	cout&lt;&lt;cnm(1,2)&lt;&lt;cnm(2,3)&lt;&lt;endl;&#125;
-
-局部变量，全局变量，如果多个声明，那么优先使用内部的数据
-int a=5;int main()&#123;	int a=10,b=20;	for(int i=1;i&lt;=3;i++)&#123;		cout&lt;&lt;a++&lt;&lt;&quot; &quot;&lt;&lt;b&lt;&lt;endl;		&#123;			static a=0;			for(int j=1;j&lt;=5;j++)&#123;				a+=j;			&#125;			b+=a;		&#125;	&#125;&#125;
-
-要根据函数返回的类型来决定函数的类型
-
-要根据函数内的使用变量来决定函数使用的参数值//例如：char* fun(int c)&#123;//程C一般不用string，自己写都行	return &quot;yes&quot;;&#125;int* fun1(int c)&#123;	int a[]=&#123;1,2,3&#125;;	return a;&#125;
-C++变量初始化
-
-int a=10;bool b=1;//b=true;char c=&#x27;c&#x27;;int a[10]=&#123;1,2,3,4&#125;;int a[]=&#123;1,2,3,4&#125;;int a[3][3]=&#123;1,2,3,5,6&#125;;int a[3][3]=&#123;&#123;1,2&#125;,&#123;3,4&#125;&#125;;int solve(int a,int b=10)&#123;//有时可能定义在mian函数前面	return a+b;//有值用值，反之用默认值&#125;
-C++ 插入排序void insertSort(int arr[],int n)&#123;	for(int i=1;i&lt;n;i++)&#123;		int key=arr[i];		int j=i-1;		while(j&gt;=0&amp;&amp;key&lt;arr[j])&#123;//注意不是和相邻元素比较			arr[j+1]=arr[j];			j--;		&#125;		arr[j+1]=key;	&#125;&#125;
-C++斐波那契数列int climbStair(int n)&#123;	if(n&lt;=2) return n;	int prev2=1;	int prev1=2;//注意此处的定义是反过来的，上课被坑到了（	int current;	for(int i=3;i&lt;=n;i++)&#123;		current=prev1+prev2;		prev2=prev1;		prev1=current;	&#125;	return current;&#125;
-汉诺塔问题void digui(int n,char start,char temp,char target)&#123;	if(n==1)&#123;		printf(&quot;%d:%c--&gt;%c\n&quot;,n,start,target);//只有一个直接移动		return;	&#125;	digui(n-1,start,target,temp);//前n-1个到转移柱子上	printf(&quot;%d:%c--&gt;%c\n&quot;,n,start,target);//把第n个移动到目标柱子上	digui(n-1,temp,start,target);//前n-1个到目标柱子上&#125;
-最大公约数函数#defien ll long longll gcd(ll a,ll b)&#123;	if(b==0) return a;	//if(a%b==0) return b;	return gcd(b,a%b);&#125;//pow返回的是浮点型，注意类型的转换
-上机课J题算法原理
-这是$Stern–Brocot$ 树,用于生成全部有理数的一种函数OI wiki 链接：Stern–Brocot 树与 Farey 序列 - OI Wiki
-首先规定$\frac{0}{1}$是0,$\frac{1}{0}$是$\infty$，接下来每次在他们中间插入它们的中位分数，即$\frac{a+c}{b+d}$.
-其次也可以用三元组来计算这些有理分数，先设定\left(\frac{0}{1},\frac{1}{1},\frac{1}{0}\right) 为初始状态，然后每一个节点设\left(\frac{a}{b},\frac{p}{q},\frac{c}{d}\right)计算\left(\frac{a}{b},\frac{a+p}{b+q},\frac{c}{d}\right),\left(\frac{a}{b},\frac{p+c}{q+d},\frac{c}{d}\right)作为左右节点，有用的部分是计算得到的节点
-证明
-考虑矩阵A= \begin{pmatrix} b & d \\ a & c \end{pmatrix}
-
-根是单位阵
-左边的节点是乘上矩阵L = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}
-右边的节点是乘上R = \begin{pmatrix} 1 & 0 \\ 1 & 1 \end{pmatrix}
-当然，加入的节点还是原来的算法
-
-单调性的话自然成立，可以理解为糖水混合，不会比浓度高的浓，也不会比浓度低的淡然后为什么一定是互质即最简呢？
-
-
-根据裴蜀定理
-
-设 𝑎,𝑏 是不全为零的整数。那么，对于任意整数 𝑥,𝑦，都有 $gcd(𝑎,𝑏) ∣𝑎𝑥 +𝑏𝑦$ 成立；而且，存在整数 𝑥,𝑦，使得 $𝑎𝑥 +𝑏𝑦 =gcd(𝑎,𝑏)$ 成立。
-
-这里我们取x=y=1，那么就有新的分子分母也互质。
-]]></content>
-      <tags>
-        <tag>数学</tag>
       </tags>
   </entry>
   <entry>
