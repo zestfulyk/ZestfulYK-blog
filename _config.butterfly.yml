@@ -18,7 +18,12 @@ nav:
   fixed: false
 
 menu:
-  # Home: / || fas fa-home
+  首页: / || fas fa-home
+  归档: /archives/ || fas fa-archive
+  标签: /tags/ || fas fa-tags
+  分类: /categories/ || fas fa-folder-open
+  友链: /friends/ || fas fa-link
+  关于: /about/ || fas fa-heart
   # List||fas fa-list:
   #   Music: /music/ || fas fa-music
   #   Movie: /movies/ || fas fa-video
@@ -47,7 +52,7 @@ code_blocks:
 #   icon: link || the description || color
 social:
   fab fa-github: https://github.com/zestfulyk || Github || '#24292e'
-  fas fa-envelope: 717056060@qq.com || Email || '#4a7dbe'
+  fas fa-envelope: mailto:717056060@qq.com || Email || '#4a7dbe'
 
 # --------------------------------------
 # Image Settings
@@ -472,8 +477,8 @@ math:
 search:
   # Choose: algolia_search / local_search / docsearch
   # leave it empty if you don't need search
-  use:
-  placeholder:
+  use: local_search
+  placeholder: 搜索
 
   # Algolia Search
   algolia_search:

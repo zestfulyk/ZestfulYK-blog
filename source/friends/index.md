@@ -15,17 +15,21 @@ layout: page
 3. 我会尽快添加！
 
 ## 我的朋友们
-
+```
 - 名称：群猫猫
 - 简介：后端大手
 - 链接：https://blog.v185v.xyz/
+```
 
+```
 - 名称：刘澈
 - 简介：产品大手
 - 链接：https://blog-eta-teal-77.vercel.app/
+```
 
 ## 我的信息
 ```yaml
 名称: ZestfulYK's Blog
 简介: 技术分享与生活随笔
 链接: https://zestfulyk.github.io/ZestfulYK-blog/
+```
