@@ -52,6 +52,7 @@ code_blocks:
 #   icon: link || the description || color
 social:
   fab fa-github: https://github.com/zestfulyk || Github || '#24292e'
+  fab fa-bilibili: https://space.bilibili.com/3546771233966592?spm_id_from=333.1007.0.0.0 || Bilibili || '#00A1D6'
   fas fa-envelope: mailto:717056060@qq.com || Email || '#4a7dbe'
 
 # --------------------------------------
@@ -293,7 +294,7 @@ aside:
       enable: true
       icon: fab fa-github
       text: Follow Me
-      link: https://github.com/xxxxxx
+      link: https://github.com/zestfulyk
   card_announcement:
     enable: true
     content: This is my Blog
@@ -1078,12 +1079,9 @@ CDN:
   # For example: https://cdn.staticfile.org/${cdnjs_name}/${version}/${min_cdnjs_file}
   custom_format:
 
-mathjax:
-  enable: true
-  per_page: false
-  cdn: //cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
-
   option:
+    # Busuanzi: site UV/PV and per-article page views (page_pv)
+    busuanzi: //busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js
     # abcjs_basic_js:
     # activate_power_mode:
     # algolia_js:
