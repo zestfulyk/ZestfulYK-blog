@@ -213,8 +213,8 @@ $$5^{bm}\equiv 1\ (\ mod\ n\ )$$
 综上
 $$F(m)=\begin{cases}
 gcd(m,p^{e-1}(p-1))\ \ \ \ \ p\text{是奇素数}\\
-1\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e=1\\
-2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e=2\\
+1\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e=1\\
+2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e>2\\
 gcd(m,2)gcd(m,2^{e-2})\ p=2,e=2\\
 \end{cases}$$
 # 优化计算实现
@@ -224,11 +224,89 @@ gcd(m,2)gcd(m,2^{e-2})\ p=2,e=2\\
 卡米歇尔函数其实就是所有阶的最小公倍数,记作$\lambda(n)$,这个也是有计算公式的
 $$\lambda(m)=\begin{cases}
 p^{e-1}(p-1)\ \ \ \ \ p\text{是奇素数}\\
-1\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e=1\\
-2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e=2\\
-2^{e-2}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e=2\\
+1\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e=1\\
+2\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e=2\\
+2^{e-2}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ p=2,e>2\\
 \end{cases}$$
 
-所以到此整题结束,代码我还没写,等我写一个比AI更简洁易懂的算法竞赛版本出来,估计过一两天发
+所以到此整题结束,参考代码:(使用了一些我常用的宏定义)
+
+```C++
+ll gcd(ll a,ll b){return b==0?a:gcd(b,a%b);}
+const ll N=1e5+10;
+vector<ll> prime;
+ll spf[N];
+void init(){
+  for(int i=2;i<=N-10;i++){
+    if(spf[i]==0){
+      prime.push_back(i);
+      spf[i]=i;
+    }
+    for(int p:prime){
+      if(i*p>N) break;
+      spf[i*p]=p;
+      if(i%p==0) break;
+    }
+  }
+}
+ll qpow(ll base,ll exp){
+  ll ans=1;
+  while(exp){
+    if(exp&1) ans=ans*base;
+    base=base*base;
+    exp>>=1;
+  }
+  return ans;
+}
+vector<pair<ll,ll>> fact(ll n){
+  vector<pair<ll,ll>> ans;
+  for(int p:prime){
+    ll cnt=0;
+    while(n%p==0) n/=p,cnt++;
+    if(cnt) ans.pb({p,cnt});
+    if(n==1) break;
+  }
+  if(n!=1) ans.pb({n,1});
+  return ans;
+}
+void solve(){
+  ll n,ans=0,lam=1; cin>>n;
+  vector<pair<ll,ll>> fn=fact(n),flam;
+  for(auto i:fn){
+    if(i.fs!=2) lam*=qpow(i.fs,i.sd-1)*(i.fs-1);
+    else if(i.sd==2) lam*=2;
+    else if(i.sd>2) lam*=qpow(2,i.sd-2);
+  }
+  flam=fact(lam);
+  ll len=flam.size();
+  vector<ll> cnt(len+1,0);
+  while(cnt[len]!=1){
+    ll m=1,fm=1,pi=1,rem;
+    for(int i=0;i<len;i++)
+      m*=qpow(flam[i].fs,cnt[i]);
+    for(auto i:fn){
+      if(i.fs!=2) fm*=gcd(m,qpow(i.fs,i.sd-1)*(i.fs-1));
+      else if(i.sd==2) fm*=gcd(m,2);
+      else if(i.sd>2) fm*=gcd(m,2)*gcd(m,qpow(2,i.sd-2));
+    }
+    rem=lam/m;
+    vector<pair<ll,ll>> tmp=fact(rem);
+    for(auto i:tmp) pi*=1-i.fs;
+    ans+=m*fm*pi;
+    cnt[0]++;
+    for(int i=0;i<len;i++)
+      if(cnt[i]>flam[i].sd)
+        cnt[i]=0,cnt[i+1]++;
+  }
+  cout<<ans<<endl;
+}
+signed main(){
+  fast
+  init();
+  ll T; cin>>T;
+  while(T--) solve();
+  return 0;
+}
+```
 
 要是有更好的解释方式或者有错误之处,欢迎指出
