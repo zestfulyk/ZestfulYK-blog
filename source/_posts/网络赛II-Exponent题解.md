@@ -66,9 +66,9 @@ F(m)&=\sum_{d|m}A(d)\\
 F&=1 * A\\
 \mu * F&=\mu * 1 * A\\
 \mu * F&=\varepsilon \ * A\\
-\sum_{m|d}\mu(\frac{d}{m})F(m)&=\sum_{m|d}\varepsilon(\frac{d}{m})A(m)\\
-\sum_{m|d}\mu(\frac{d}{m})F(d)&=A(d)\\
-A(d)&=\sum_{m|d}\mu(\frac{d}{m})F(m)\\
+\sum_{m|d}\mu\left(\frac{d}{m}\right)F(m)&=\sum_{m|d}\varepsilon\left(\frac{d}{m}\right)A(m)\\
+\sum_{m|d}\left(\frac{d}{m}\right)F(d)&=A(d)\\
+A(d)&=\sum_{m|d}\left(\frac{d}{m}\right)F(m)\\
 \end{split}$$
 (注意此处的m已经不是原来的m了,卷积后带入的是d)
 
@@ -76,19 +76,19 @@ A(d)&=\sum_{m|d}\mu(\frac{d}{m})F(m)\\
 $$\begin{split}
 &\sum_{i=1}^n ord(i)\\
 =&\sum_{d|\varphi(n)}d\cdot A(d)\\
-=&\sum_{d|\varphi(n)}d\sum_{m|d}\mu(\frac{d}{m})F(m)
+=&\sum_{d|\varphi(n)}d\sum_{m|d}\mu\left(\frac{d}{m}\right)F(m)
 \end{split}$$
 接下来依旧是尝试交换求和顺序,如果改成先计算F(m),再看m被计算的次数.因此交换求和顺序的第一步应该得到:
 $$\begin{split}
 &\sum_{i=1}^n ord(i)\\
-=&\sum_{d|\varphi(n)}d\sum_{m|d}\mu(\frac{d}{m})F(m)\\
-=&\sum_{m|\varphi(n)}F(m)\sum_{d|\frac{\varphi(n)}{m}}\mu(\frac{d}{m})\cdot d
+=&\sum_{d|\varphi(n)}d\sum_{m|d}\mu\left(\frac{d}{m}\right)F(m)\\
+=&\sum_{m|\varphi(n)}F(m)\sum_{d|\frac{\varphi(n)}{m}}\mu\left(\frac{d}{m}\right)\cdot d
 \end{split}$$
 接下来设`d=mk`,所以
 $$\begin{split}
 &\sum_{i=1}^n ord(i)\\
-=&\sum_{m|\varphi(n)}F(m)\sum_{d|\frac{\varphi(n)}{m}}\mu(\frac{d}{m})\cdot d\\
-=&\sum_{m|\varphi(n)}m\cdot F(m)\sum_{k|\frac{\varphi(n))}{m}}\mu(\frac{mk}{m})\cdot mk\\
+=&\sum_{m|\varphi(n)}F(m)\sum_{d|\frac{\varphi(n)}{m}}\mu\left(\frac{d}{m}\right)\cdot d\\
+=&\sum_{m|\varphi(n)}m\cdot F(m)\sum_{k|\frac{\varphi(n))}{m}}\mu\left(\frac{mk}{m}\right)\cdot mk\\
 =&\sum_{m|\varphi(m)}m\cdot F(m)\sum_{k|\frac{\varphi(n)}{m}}k\mu(k)
 \end{split}$$
 # 补充知识讲解2
