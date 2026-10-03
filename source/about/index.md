@@ -3,19 +3,22 @@ title: 关于我
 date: 2025-10-20 22:41:03
 layout: page
 ---
-# 👋 你好，我是 ZestfulYK！
+# 你好，我是 ZestfulYK！
 
-这里是我的个人角落，欢迎来到我的世界！
+这里是我的个人角落，欢迎来到我的世界!
+
 ![我的头像](images/avatar.png)
 
-## 🎯 我是谁
+## 我是谁
 
-- 💼 纯萌新（
-- 🎓 大学生
-- 🌍 杭州
-- ❤️ 音游，穹，MC
+- 工大
+- 杭州
+- 音游,ACM
 
-## 🛠️ 技能栈
+## 我会什么
+
+- 算法竞赛
+- 前端基础
 
 ### 编程语言
 - JavaScript/TypeScript
@@ -27,18 +30,24 @@ layout: page
 - Node.js
 - Git
 
-## 📈 我的经历
+## 我的经历
 
-### 比赛经理
+- 浙江工业大学,目前大二
+
+### 比赛经历
+
 - **CSP提高** 
   - 初赛二等
   - 复赛三等
 
+- **ACM**
+  - ICPC西安邀请赛铜奖
+  - 天梯赛个人二等奖
 
-## 📫 联系我
+## 联系我
 
-- 📧 邮箱：717056060@qq.com
-- 🐱 GitHub：[zestfulyk](https://github.com/zestfulyk)
+- 邮箱：717056060@qq.com
+- GitHub：[zestfulyk](https://github.com/zestfulyk)
 
 ---
 
