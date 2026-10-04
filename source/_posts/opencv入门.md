@@ -3,14 +3,6 @@ title: opencv入门
 date: 2026-09-28 13:32:41
 tags:
 ---
-# OpenCV 入门教程（C++ 版）
-
-> 面向零基础入门，所有示例均为**完整可编译**的 C++ 代码。
-> 对应本机环境：Windows + MinGW (GCC) + OpenCV 4.12.0
-> OpenCV 安装路径：`D:\opencv\build\x64\mingw\install`
-
----
-
 # OpenCV 入门教程(C++ 版)
 
 > 面向零基础入门，所有示例均为**完整可编译**的 C++ 代码。
@@ -20,8 +12,7 @@ tags:
 
 ## 目录
 
-- [OpenCV 入门教程（C++ 版）](#opencv-入门教程c-版)
-- [OpenCV 入门教程(C++ 版)](#opencv-入门教程c-版-1)
+- [OpenCV 入门教程(C++ 版)](#opencv-入门教程c-版)
   - [目录](#目录)
   - [0. 环境与编译方式](#0-环境与编译方式)
     - [0.1 编译命令](#01-编译命令)
