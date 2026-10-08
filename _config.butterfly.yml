@@ -297,7 +297,7 @@ aside:
       link: https://github.com/zestfulyk
   card_announcement:
     enable: true
-    content: This is my Blog
+    content: 若博客中的文章有问题,请及时发邮件告诉我
   card_recent_post:
     enable: true
     # If set 0 will show all

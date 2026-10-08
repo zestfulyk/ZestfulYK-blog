@@ -1,7 +1,7 @@
 ---
 title: 程C笔记
 date: 2025-12-11 22:15:00
-tags: 数学
+tags: C++
 mathjax: true
 ---
 ## 1. 头文件和命名空间

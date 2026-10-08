@@ -1,7 +1,7 @@
 ---
 title: opencv入门
 date: 2026-09-28 13:32:41
-tags:
+tags: OpenCV
 ---
 # OpenCV 入门教程(C++ 版)
 
