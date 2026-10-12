@@ -16,13 +16,22 @@ layout: page
 
 ## 我的朋友们
 ```
-- 名称：猫猫虫
+- 猫猫虫
 - 简介：后端大手
-- 链接：https://blog.v185v.xyz/
 ```
 
+- 链接：[v185v的博客](https://blog.v185v.xyz/)
+
 ```
-- 名称：刘澈
+- 刘澈
 - 简介：产品大手
-- 链接：https://blog-eta-teal-77.vercel.app/
 ```
+
+- 链接：[刘澈的博客](https://blog-eta-teal-77.vercel.app/)
+
+```
+- 查尔根
+- 简介: 小说大手
+```
+
+- 链接: [查尔根的博客](https://chalgen.online/)
