@@ -1,0 +1,282 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>ZJUT夏季考核8.16题解 | ZestfulYK的Blog</title><meta name="author" content="ZestfulYK"><meta name="copyright" content="ZestfulYK"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="声明此文章为ZJUT暑期考核的题解,和我队友qinye_leaf一起整理编写而成,之前一直没发,现在发 补题链接:20260816 ZJUT暑期考核 补题 - Codeforces 不想写题了,所以来写题解了,参考代码可以看我补题里面的提交 A. A&amp;B problem知识点博弈论,模拟 观察虽然说看似Alice搬运1到最前面是一个不错的策略,但是仔细想一下的话会发现,Bob可以直接在你正">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ZJUT夏季考核8.16题解">
+<meta property="og:url" content="https://zestfulyk.github.io/ZestfulYK-blog/2026/10/12/ZJUT%E5%A4%8F%E5%AD%A3%E8%80%83%E6%A0%B88-16%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="ZestfulYK的Blog">
+<meta property="og:description" content="声明此文章为ZJUT暑期考核的题解,和我队友qinye_leaf一起整理编写而成,之前一直没发,现在发 补题链接:20260816 ZJUT暑期考核 补题 - Codeforces 不想写题了,所以来写题解了,参考代码可以看我补题里面的提交 A. A&amp;B problem知识点博弈论,模拟 观察虽然说看似Alice搬运1到最前面是一个不错的策略,但是仔细想一下的话会发现,Bob可以直接在你正">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png">
+<meta property="article:published_time" content="2026-10-12T07:07:13.000Z">
+<meta property="article:modified_time" content="2026-10-12T09:54:24.756Z">
+<meta property="article:author" content="ZestfulYK">
+<meta property="article:tag" content="题解">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "ZJUT夏季考核8.16题解",
+  "url": "https://zestfulyk.github.io/ZestfulYK-blog/2026/10/12/ZJUT%E5%A4%8F%E5%AD%A3%E8%80%83%E6%A0%B88-16%E9%A2%98%E8%A7%A3/",
+  "image": "https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png",
+  "datePublished": "2026-10-12T07:07:13.000Z",
+  "dateModified": "2026-10-12T09:54:24.756Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ZestfulYK",
+      "url": "https://zestfulyk.github.io/ZestfulYK-blog"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/ZestfulYK-blog/images/avatar.png"><link rel="canonical" href="https://zestfulyk.github.io/ZestfulYK-blog/2026/10/12/ZJUT%E5%A4%8F%E5%AD%A3%E8%80%83%E6%A0%B88-16%E9%A2%98%E8%A7%A3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/ZestfulYK-blog/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/ZestfulYK-blog/',
+  algolia: undefined,
+  localSearch: {"path":"/ZestfulYK-blog/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ZJUT夏季考核8.16题解',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/ZestfulYK-blog/images/avatar.png" onerror="this.onerror=null;this.src='/ZestfulYK-blog/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/ZestfulYK-blog/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/ZestfulYK-blog/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/ZestfulYK-blog/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/friends/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/ZestfulYK-blog/"><span class="site-name">ZestfulYK的Blog</span></a><a class="nav-page-title" href="/ZestfulYK-blog/"><span class="site-name">ZJUT夏季考核8.16题解</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/friends/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">ZJUT夏季考核8.16题解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-12T07:07:13.000Z" title="发表于 2026-10-12 15:07:13">2026-10-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-12T09:54:24.756Z" title="更新于 2026-10-12 17:54:24">2026-10-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h1><p>此文章为ZJUT暑期考核的题解,和我队友qinye_leaf一起整理编写而成,之前一直没发,现在发</p>
+<p>补题链接:<a target="_blank" rel="noopener" href="https://codeforces.com/gym/710969">20260816 ZJUT暑期考核 补题 - Codeforces</a></p>
+<p>不想写题了,所以来写题解了,参考代码可以看我补题里面的提交</p>
+<h1 id="A-A-amp-B-problem"><a href="#A-A-amp-B-problem" class="headerlink" title="A. A&amp;B problem"></a>A. A&amp;B problem</h1><h2 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h2><p>博弈论,模拟</p>
+<h2 id="观察"><a href="#观察" class="headerlink" title="观察"></a>观察</h2><p>虽然说看似Alice搬运1到最前面是一个不错的策略,但是仔细想一下的话会发现,Bob可以直接在你正前方拦截,这样就没法实现搬运了,所以这个策略并不是最优解  (样例因为数据规模较小,所以给人一种错觉,认为搬运1是正确的)</p>
+<p>操作的实质我认为是<strong>拦截</strong>,因为一旦交换,前面的数就无法再到后面去了,所以对于Alice来说,把一个小的数字交换到前面是有效的,因为这个小的数字相当于被<strong>锁死在了前面</strong>,不会再换到后面了</p>
+<p>既然没有办法通过搬运较小值使得前面的存在值更小,那么我们得换一个思路</p>
+<p>我们的目标是让字典序更小,这说明,开头的数字更加重要,那么很显然,我们应该优先保证开头的数字更小,那么我们是否应该优先选择保证开头数字更小而暂时不考虑后面呢?</p>
+<p>简单证明一下:</p>
+<p>要是你不考虑前面的,而优先考虑后面的,那么Bob必然会把前面字典序变大,显然不如优先考虑开头更优,所以优先考虑开头是更优的</p>
+<p>接下来,我们来考虑怎么让开头的数字更小</p>
+<h2 id="手玩小样例找规律"><a href="#手玩小样例找规律" class="headerlink" title="手玩小样例找规律"></a>手玩小样例找规律</h2><p>当n比较小的时候,比如n等于1,2,3时,答案是显然的,当n&gt;=4时,就需要博弈了</p>
+<p>n=3时,结论是先看后面两位,要是后面两位交换更优,先交换后两位,否则先前两位</p>
+<p>比如数组是1 2 3 4</p>
+<p>可选位置是1,2,3,如果我先选择了3,对手就会选择2,最后剩下1,得到4 1 2 3,最劣<br>如果我先选择2,对手就会选择1,剩下3,得到3 1 4 2,比刚才略好一点<br>如果我先选择1,对手就会选择2,剩下3,得到2 3 4 1,最优<br>(当第一步确定后,剩余数组长度小于3,结论已给出,所以后手操作确定)</p>
+<p>可以看出,我们通过选择1,锁定了2在开头,从而保证了第一个位置最优</p>
+<p>又比如,数组是1 3 2 4</p>
+<p>如果我先选择3,显然最劣,跳过<br>如果我先选择1,对手会选择3,得到3 4 1 2<br>如果我先选择2,对手会选择3,最后得到2 1 4 3,显然是最优决策</p>
+<p>所以当<code>p3&lt;p2</code>时,直接选2更优</p>
+<p>双比如,数组是3 2 4 1</p>
+<p>此处显然先选择3最优,之后对手只能选择1,所以得到2 1 3 4</p>
+<p>叒比如,数组是4 2 3 1</p>
+<p>此处依然是选择3更优,要是先选择了1,4就到第二位了,显然也不如先选3更优</p>
+<p>上面两个情况一起看,就能看出什么时候选3了:<br>在双这个例子中,选3是因为我把一个小的数字交换到前面了,对手只能采取防御性操作,否则将留下大优势给我,所以被迫选择1<br>在叒这个例子中,即使选1看着不坏,但是不如先操作后面的,把劣势留给后手让其被迫防御,做出不优选择</p>
+<p>因此当<code>p4&lt;p2</code>时,选3更优</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>只要看前四位就能决定当前第一位的值,因为再往后的博弈影响不到第一位,</p>
+<p>简单证明:</p>
+<p>当我选择第4位去操作时,前三位的状态相当于先后手互换,变成Bob先手,那么前四位将变成字典序最大,显然不优</p>
+<p>前四位的决策总结起来是:</p>
+<p>假设先手是Alice<br>设前四位为<code>p1</code>,<code>p2</code>,<code>p3</code>,<code>p4</code><br>若<code>p3&lt;p2</code>小 操作2 则一定最优 否则后手可以先操作1 直接截断优势<br>若<code>p3&gt;p2</code>大 但是<code>p4&lt;p2</code> 则操作3 后手必须操作1 不然大劣势<br>否则只能操作1 不然后手换大的</p>
+<h2 id="进一步博弈"><a href="#进一步博弈" class="headerlink" title="进一步博弈"></a>进一步博弈</h2><p>不知道你们有没有玩过围棋,下围棋常常是当你在某一片已经确定胜利或失败后(但是仍然还剩下几步时),直接放弃不管,去下别的地方,因为既然胜负已分,那么不如早些结束,去别的地方争抢地盘,等到最后再来走这些不得不走的棋</p>
+<p>同样的,这一题也适用这个方案.</p>
+<p>当你交换完某些部分后,当某一段只剩下长度为1的博弈了,直接放弃就行,选择继续操作后面创下优势,最后回头再处理这些位置</p>
+<p>比如1 3 2 4 这个例子中,假设Alice先手,那么她选择2,但是Bob没必要跟上去选择1,因为这里的局面已经固定了,不如选择1,直接去操作后面的,这样先后手交换,对Bob反而更有利</p>
+<p>这样完整逻辑就齐了,代码实现注意先后手交换的问题和边界len&lt;4的情况就行</p>
+<p>时间复杂度<code>O(n)</code></p>
+<h1 id="B-Entangled-dots"><a href="#B-Entangled-dots" class="headerlink" title="B. Entangled dots"></a>B. Entangled dots</h1><h2 id="知识点-1"><a href="#知识点-1" class="headerlink" title="知识点"></a>知识点</h2><p>dp,树状数组,线段树</p>
+<h2 id="观察-1"><a href="#观察-1" class="headerlink" title="观察"></a>观察</h2><p>这种可满足性的问题显然会令人想到二分图或者并查集,但是注意到一个约束可能和很多个约束相矛盾,不适合建图,因此需要其他的方法</p>
+<p>既然不能考虑和当前约束违背的约束,那么反过来,考虑和当前约束不违背的约束呢?</p>
+<p>分析一下什么情况是不矛盾的,一共有三种情况(为什么还是比较好理解的):</p>
+<script type="math/tex; mode=display">\text{当j<i时},\begin{cases} p_j==p_i \\
+p_j<l_i \\
+r_j<p_i
+\end{cases}</script><p>第一种,他们宣称的最大值一样; 后面两种,他们宣称的最大值不在区间的交集内部</p>
+<p>题目提到,l和r是单调递增的,所以如果约束A和B不矛盾B又不和C矛盾,那么A和C也不矛盾</p>
+<p>证明不会,可以问问AI,这里就不证明了</p>
+<h2 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h2><p>所以可以考虑不矛盾的情况,那么这说明我们可以采取dp来完成这一道题,每次看前面合法的约束来进行转移就行</p>
+<p>转移方程:</p>
+<script type="math/tex; mode=display">dp[i]=max(dp[j])+1\ [p_j==p_i \lor  p_j<l_i \lor r_j<p_i]</script><h2 id="维护转移"><a href="#维护转移" class="headerlink" title="维护转移"></a>维护转移</h2><p>注意到需要求的是前面满足某个条件的最值,而且求的都是区间最值,那么显然适用树状数组或者线段树维护,因为不然需要O(n)的查找,会爆</p>
+<p>开一颗大小为n的树状数组,然后每个位置上放的是dp值,最后再维护最大值就行了</p>
+<p>比如要加入当前的dp值,那么在p_i位置上放入dp_i,然后再做一遍树状数组或者线段树的更新,这样查询<code>[1,p]</code>就能得到不超过p的所有约束的最大dp值了,符合状态转移方程,另外几个值也是一样的维护方式(没有见过这个方法的,可以先试试先用树状数组写最长不下降子序列,会更好理解)</p>
+<p>时间复杂度<code>O(nlogn)</code></p>
+<p>当然有更快的双指针法,时间复杂度可以<code>O(n)</code>(我不会,璃歌学长会)</p>
+<p>另外,这题可以被解答的关键条件是递增,否则无解</p>
+<h1 id="C-Tree-kx-b"><a href="#C-Tree-kx-b" class="headerlink" title="C. Tree kx+b"></a>C. Tree <code>kx+b</code></h1><h2 id="知识点-2"><a href="#知识点-2" class="headerlink" title="知识点"></a>知识点</h2><p>树,dp,数学</p>
+<h2 id="观察-2"><a href="#观察-2" class="headerlink" title="观察"></a>观察</h2><p>假设这棵树就只有两个点,那么根节点的取值显然是有一个最优区间的,</p>
+<p>比如:假如树是 3—10</p>
+<p>根为3,那么根取<code>[3,10]</code>,得到的答案都一样</p>
+<p>假设这颗树只有三个节点:</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">   6</span><br><span class="line"> /   \</span><br><span class="line">1    5</span><br></pre></td></tr></table></figure>
+<p>那么6调整到<code>[1,5]</code>都是最优的</p>
+<p>因此可以发现,调整后的值存在一个最优区间,只要都在这个区间内,都是最优的</p>
+<p>那么考虑每个节点的最优区间怎么计算</p>
+<h2 id="合并最优区间-计算最优区间"><a href="#合并最优区间-计算最优区间" class="headerlink" title="合并最优区间,计算最优区间"></a>合并最优区间,计算最优区间</h2><p>对于叶子节点,最优区间显然是<code>[x,x]</code></p>
+<p>对于非叶子节点,考虑怎么计算当前的最优区间,此时问题抽象成:<br>你有一堆区间,每个区间内有一个点,可以在自己的区间内移动,如果移出去了,那么会付出额外代价;你还有一个点,可以移动这个点,然后你要找一个新区间,使得这个区间内取的点,到所有区间内的点的距离加上移动这个点的代价之和最小</p>
+<p>对于父节点,考虑父节点取值到子节点最小距离累加,若子节点取了超越最优区间的值,要付出额外代价<br>与父距离-1,自己与其子节点距离增加&gt;= 1,显然付出的代价增加,不如让父节点靠近区间<br>因此,只要考虑父节点的移动就行了,子节点的点必然是不会移出自己的区间的</p>
+<p>那么问题可以化简为:<br>你有一堆区间,加上区间<code>[x,x]</code>,你要找一个新区间,使得这个区间内取的点,到所有区间的距离之和最小且相等(距离定义为到区间上所有点的最短的那个距离)</p>
+<p>设每个区间的取值为<code>[l,r]</code><br>对于这种距离函数,<code>&lt;l_i</code>时 斜率<code>=-1</code>,<code>l,r</code>斜率<code>0</code>,<code>&gt;r</code> 斜率<code>+1</code><br>那么这个距离函数就是一条折线,斜率初始为<code>-x</code>,每经过一个点斜率<code>+1</code>,当斜率为0时最优,也就是中位数</p>
+<p>故把所有端点排序 2 * m个端点,此时父节点最优区间为m~m+1 将新值(新区间内随便取一个就行)然后带入回原来的式子算总代价即可</p>
+<p>时间复杂度为<code>O(nlogn)</code></p>
+<h1 id="D-Sliders-easy-version"><a href="#D-Sliders-easy-version" class="headerlink" title="D. Sliders (easy version)"></a>D. Sliders (easy version)</h1><h2 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h2><p>对于滑块位置$p_j$,如果前后有滑块顶过来,他们的连续段位置是等差为1的</p>
+<p>我们可以通过构建新数组$c_j$,含义是滑块j此前的空位数量 满足$p_j = c_j + j$这样对于连续段,他们的取值都是一样的值,对于后面的处理更加方便</p>
+<p>同时由于是线性操作,根据期望线性性质,对于期望计算简化为</p>
+<script type="math/tex; mode=display">E[p_j] = E[c_j] + j</script><p>这个技巧不使用也能正常解决问题,但是使用会方便很多,下面的计算是建立在这个技巧之上的,没使用的版本不做讲解</p>
+<p>对于每次询问的j号滑块,我们要计算$c_j$最终取值的期望,自然考虑$c_j$位置的取值</p>
+<h2 id="讨论操作影响"><a href="#讨论操作影响" class="headerlink" title="讨论操作影响"></a>讨论操作影响</h2><p>对于$c_j$,第i次操作$(id_i,r_i)$下：</p>
+<ul>
+<li>若$id_i == id_j$,则$c_j = r_i$</li>
+<li>若$id_i &lt; id_j$即本次操作在其左侧,则$c_j = max(c_j,r_i)$</li>
+<li>若$id_i &gt; id_j$ 即在右侧,则$c_j = min(c_j,r_i)$</li>
+</ul>
+<p>故$c_j$最终的取值只可能在所有r的取值和$c_j$初始值处 对其升序排序<br>期望</p>
+<script type="math/tex; mode=display">E[c_j] = \sum( v * P[v] )</script><p>v为所有可能取值 故我们需要知道最终落在每个位置的概率</p>
+<h2 id="转换概率计算方式"><a href="#转换概率计算方式" class="headerlink" title="转换概率计算方式"></a>转换概率计算方式</h2><p>难点2：转换间接法计算概率方式 直接计算不容易处理 故通过间接法计算</p>
+<script type="math/tex; mode=display">P[c_j=v] = P[c_j > v-1] + P[c_j > v]</script><p>现在子问题变成 如何计算$P[c_j &gt; v]$</p>
+<h2 id="子问题"><a href="#子问题" class="headerlink" title="子问题"></a>子问题</h2><p>讨论操作种类(对应上文):<br>我们要考虑是不等式:</p>
+<script type="math/tex; mode=display">c_j > v</script><p>是否成立</p>
+<ul>
+<li>若$r_i &gt; v \rightarrow 1$ (不等式值必定为1 即1-设置器)</li>
+<li>否则 $ri &lt;= v  \rightarrow 0$ (即0-设置器)</li>
+<li>左侧：若$ri &gt; v \rightarrow 1$ 否则不等式值保持不变</li>
+<li>右侧：若$ri &lt;= v \rightarrow 0$ 否则不等式值保持不变</li>
+</ul>
+<p>经过讨论分类,那么我们需要统计的实际上是:</p>
+<ul>
+<li>A种1-设置器</li>
+<li>B种0-设置器 </li>
+<li>m-A-B种保持不变</li>
+</ul>
+<p>在随机排列中,不改变操作虽然会插在序列的各个位置,但它们不影响状态</p>
+<p>真正决定最终状态的是:最后一个设置器是1设置器,还是0设置器</p>
+<p>因为所有 m 个操作随机排列，那么只看这 A+B 个设置器的相对顺序,它们也是完全随机均匀的(不改变操作没有影响这个相对顺序)</p>
+<p>故若不等式成立 则A+B序列的最后一个位置一定是A操作</p>
+<script type="math/tex; mode=display">P[cj > v] = A / (A+B)</script><p>这里需要注意一个特判</p>
+<p>若A+B = 0 则全为不改变操作 所以取决于初始状态$c_j$是否&gt;v</p>
+<p>至此概率计算公式推导完成</p>
+<h2 id="如何快速计算所有概率P"><a href="#如何快速计算所有概率P" class="headerlink" title="如何快速计算所有概率P"></a>如何快速计算所有概率P</h2><p>这里的意思实际上是,为了计算所有概率,方法是对于每一个可能的位置计算一下概率,所以需要有一个递推关系计算当前询问的所有概率</p>
+<p>怎么才能实现相邻P之间的转移呢</p>
+<p>首先边界<code>P[cj &gt; -inf]</code>为1 所有1,2操作都是1设置器,3操作都是不改变操作<br>数学归纳法<code>P[cj &gt; v-1]</code>已知,求<code>P[cj &gt; v]</code>即处理<code>r = v</code>的情况:(操作种类对应上文)</p>
+<ul>
+<li><code>r = v</code> 从1（设置器） -&gt; 0</li>
+<li>左侧:<code>r = v</code> 从1 -&gt; 不改变操作</li>
+<li>右侧:<code>r = v</code> 从不改变操作 -&gt; 0</li>
+</ul>
+<p><code>O(m)</code>处理即可算出所有取值的对应概率P,带回式子计算即可得到最终期望</p>
+<p>最终时间复杂度:<code>O(qmlogm)</code></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zestfulyk.github.io/ZestfulYK-blog">ZestfulYK</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zestfulyk.github.io/ZestfulYK-blog/2026/10/12/ZJUT%E5%A4%8F%E5%AD%A3%E8%80%83%E6%A0%B88-16%E9%A2%98%E8%A7%A3/">https://zestfulyk.github.io/ZestfulYK-blog/2026/10/12/ZJUT%E5%A4%8F%E5%AD%A3%E8%80%83%E6%A0%B88-16%E9%A2%98%E8%A7%A3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://zestfulyk.github.io/ZestfulYK-blog" target="_blank">ZestfulYK的Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/ZestfulYK-blog/tags/%E9%A2%98%E8%A7%A3/">题解</a></div><div class="post-share"><div class="social-share" data-image="/ZestfulYK-blog/images/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/ZestfulYK-blog/2026/10/11/Linux%E5%92%8CCTF%E5%88%9D%E6%AD%A5%E5%AD%A6%E4%B9%A0/" title="Linux和CTF初步学习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Linux和CTF初步学习</div></div><div class="info-2"><div class="info-item-1">环境显然我是不可能给我的电脑搞双系统的,因为我不会,所以我是用windows的wsl下载了一个Ubuntu来使用 如何启动打开cmd或者powershell,输入wsl就行了 1wsl Linux的文件结构有根树,绝对路径必须是从/,也就是根节点出发来访问 如果你插入了一个U盘,那么必须要先连接这两颗树,把U盘挂在一个节点下面,相当于把自己的路径入口提供给系统访问,这个过程称之为挂载 Windows系统类似于森林,只要换一个树根就行  Windows 常见是多盘符根，像多棵树；Linux 是单根树，根是 /。挂载就是把另一个文件系统的根“嫁接”到 Linux 目录树的某个目录上，作为入口。挂载后整体仍然是一棵以 / 为根的树，通过挂载点路径就能访问另一个文件系统  注意,挂载只是提供入口,但是不会把所有信息复制过来 比如,要用Linux访问Windows的内容,需要把盘挂载在这棵树上面,以贴合Linux的访问逻辑 Windows中的WSL按照我的理解,相当于一个电脑中同时运行了两个不同操作系统的电脑,然后通过电脑内部的本地局域网连接,从而实现访问 这样做,可以最大限度的保持Lin...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/ZestfulYK-blog/images/avatar.png" onerror="this.onerror=null;this.src='/ZestfulYK-blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZestfulYK</div><div class="author-info-description">这是ZestfulYK的博客网站,求关注</div><div class="site-data"><a href="/ZestfulYK-blog/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/ZestfulYK-blog/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/ZestfulYK-blog/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zestfulyk"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/zestfulyk" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://space.bilibili.com/3546771233966592?spm_id_from=333.1007.0.0.0" target="_blank" title="Bilibili"><i class="fab fa-bilibili" style="color: #00A1D6;"></i></a><a class="social-icon" href="mailto:717056060@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">若博客中的文章有问题,请及时发邮件告诉我</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E"><span class="toc-number">1.</span> <span class="toc-text">声明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#A-A-amp-B-problem"><span class="toc-number">2.</span> <span class="toc-text">A. A&amp;B problem</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9"><span class="toc-number">2.1.</span> <span class="toc-text">知识点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%82%E5%AF%9F"><span class="toc-number">2.2.</span> <span class="toc-text">观察</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%8B%E7%8E%A9%E5%B0%8F%E6%A0%B7%E4%BE%8B%E6%89%BE%E8%A7%84%E5%BE%8B"><span class="toc-number">2.3.</span> <span class="toc-text">手玩小样例找规律</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">2.4.</span> <span class="toc-text">结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%8D%9A%E5%BC%88"><span class="toc-number">2.5.</span> <span class="toc-text">进一步博弈</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#B-Entangled-dots"><span class="toc-number">3.</span> <span class="toc-text">B. Entangled dots</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9-1"><span class="toc-number">3.1.</span> <span class="toc-text">知识点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%82%E5%AF%9F-1"><span class="toc-number">3.2.</span> <span class="toc-text">观察</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA-1"><span class="toc-number">3.3.</span> <span class="toc-text">结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%B4%E6%8A%A4%E8%BD%AC%E7%A7%BB"><span class="toc-number">3.4.</span> <span class="toc-text">维护转移</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#C-Tree-kx-b"><span class="toc-number">4.</span> <span class="toc-text">C. Tree kx+b</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9-2"><span class="toc-number">4.1.</span> <span class="toc-text">知识点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%82%E5%AF%9F-2"><span class="toc-number">4.2.</span> <span class="toc-text">观察</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%88%E5%B9%B6%E6%9C%80%E4%BC%98%E5%8C%BA%E9%97%B4-%E8%AE%A1%E7%AE%97%E6%9C%80%E4%BC%98%E5%8C%BA%E9%97%B4"><span class="toc-number">4.3.</span> <span class="toc-text">合并最优区间,计算最优区间</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#D-Sliders-easy-version"><span class="toc-number">5.</span> <span class="toc-text">D. Sliders (easy version)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%80%E5%B7%A7"><span class="toc-number">5.1.</span> <span class="toc-text">技巧</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A8%E8%AE%BA%E6%93%8D%E4%BD%9C%E5%BD%B1%E5%93%8D"><span class="toc-number">5.2.</span> <span class="toc-text">讨论操作影响</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AC%E6%8D%A2%E6%A6%82%E7%8E%87%E8%AE%A1%E7%AE%97%E6%96%B9%E5%BC%8F"><span class="toc-number">5.3.</span> <span class="toc-text">转换概率计算方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%90%E9%97%AE%E9%A2%98"><span class="toc-number">5.4.</span> <span class="toc-text">子问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E8%AE%A1%E7%AE%97%E6%89%80%E6%9C%89%E6%A6%82%E7%8E%87P"><span class="toc-number">5.5.</span> <span class="toc-text">如何快速计算所有概率P</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/12/ZJUT%E5%A4%8F%E5%AD%A3%E8%80%83%E6%A0%B88-16%E9%A2%98%E8%A7%A3/" title="ZJUT夏季考核8.16题解">ZJUT夏季考核8.16题解</a><time datetime="2026-10-12T07:07:13.000Z" title="发表于 2026-10-12 15:07:13">2026-10-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/11/Linux%E5%92%8CCTF%E5%88%9D%E6%AD%A5%E5%AD%A6%E4%B9%A0/" title="Linux和CTF初步学习">Linux和CTF初步学习</a><time datetime="2026-10-10T16:02:13.000Z" title="发表于 2026-10-11 00:02:13">2026-10-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/11/OpenCV%E5%AE%9E%E7%8E%B0%E7%94%BB%E6%9D%BF/" title="OpenCV实现画板">OpenCV实现画板</a><time datetime="2026-10-10T16:00:58.000Z" title="发表于 2026-10-11 00:00:58">2026-10-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/08/OpenCV%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/" title="OpenCV新手教程">OpenCV新手教程</a><time datetime="2026-10-08T15:08:00.000Z" title="发表于 2026-10-08 23:08:00">2026-10-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/08/%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E4%B8%80%E4%B8%AA%E7%B1%BB%E6%9C%80%E5%A4%9A%E4%BA%A7%E7%94%9F%E4%B8%80%E4%B8%AA%E5%AE%9E%E4%BE%8B/" title="怎么保证一个类最多产生一个实例">怎么保证一个类最多产生一个实例</a><time datetime="2026-10-08T15:03:15.000Z" title="发表于 2026-10-08 23:03:15">2026-10-08</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By ZestfulYK</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/ZestfulYK-blog/js/utils.js?v=5.5.2"></script><script src="/ZestfulYK-blog/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/ZestfulYK-blog/js/search/local-search.js?v=5.5.2"></script></div></div></body></html>
