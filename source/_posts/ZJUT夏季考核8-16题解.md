@@ -2,6 +2,7 @@
 title: ZJUT夏季考核8.16题解
 date: 2026-10-12 15:07:13
 tags: ACM题解
+mathjax: true
 ---
 
 # 声明
