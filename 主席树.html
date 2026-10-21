@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>主席树可视化 · 可持久化线段树</title>
+<style>
+  :root{
+    --bg:#070b16;
+    --panel:#0e1526;
+    --panel2:#0b1220;
+    --line:rgba(148,163,184,.16);
+    --text:#e6ecf8;
+    --muted:#93a3c4;
+    --cyan:#22d3ee;
+    --violet:#a78bfa;
+    --amber:#fbbf24;
+    --green:#34d399;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 560px at 12% -12%, rgba(34,211,238,.13), transparent 62%),
+      radial-gradient(900px 520px at 100% -4%, rgba(167,139,250,.12), transparent 58%),
+      var(--bg);
+    color:var(--text);
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    min-height:100vh;
+    padding:16px 20px 32px;
+  }
+  .app{max-width:1720px;margin:0 auto;}
+
+  /* ---------- topbar ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .logo{
+    width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#22d3ee,#a78bfa);color:#06101f;font-size:19px;font-weight:800;
+    box-shadow:0 8px 26px rgba(34,211,238,.28);
+  }
+  h1{font-size:18px;margin:0;letter-spacing:.4px;}
+  .brand p{margin:3px 0 0;font-size:12px;color:var(--muted);}
+  .tabs{display:flex;gap:6px;background:#0d1424;padding:5px;border-radius:13px;border:1px solid var(--line);}
+  .tab{
+    border:0;background:transparent;color:var(--muted);padding:8px 16px;border-radius:9px;
+    cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:.16s;white-space:nowrap;
+  }
+  .tab:hover{color:#d6e6ff;}
+  .tab.active{
+    background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(167,139,250,.18));
+    color:#eaf5ff;box-shadow:inset 0 0 0 1px rgba(34,211,238,.38);
+  }
+
+  /* ---------- toolbar ---------- */
+  .toolbar{
+    display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+    background:linear-gradient(180deg,rgba(19,29,51,.9),rgba(13,20,36,.9));
+    border:1px solid var(--line);border-radius:15px;padding:10px 13px;margin-bottom:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+  .field{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-weight:600;}
+  .field input{
+    background:#080f1c;border:1px solid #22304e;color:#e6eefc;border-radius:9px;
+    padding:8px 10px;font-size:13px;outline:none;font-family:inherit;transition:.15s;
+  }
+  .field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.12);}
+  #arrInput{width:280px;letter-spacing:.6px;font-variant-numeric:tabular-nums;}
+  .field input[type=number]{width:64px;text-align:center;}
+  .btn{
+    background:#131d33;color:#c8d4ea;border:1px solid #253455;border-radius:10px;
+    padding:8px 12px;font-size:12.5px;cursor:pointer;font-weight:600;font-family:inherit;
+    transition:.15s;white-space:nowrap;
+  }
+  .btn:hover{border-color:#3b5585;color:#fff;transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+  .btn.primary{
+    background:linear-gradient(135deg,#0e7490,#4338ca);border-color:transparent;color:#eaf6ff;
+    box-shadow:0 4px 16px rgba(34,211,238,.18);
+  }
+  .btn.primary:hover{box-shadow:0 8px 22px rgba(34,211,238,.3);}
+  .divider{width:1px;height:22px;background:var(--line);margin:0 3px;}
+  .step-tag{
+    margin-left:auto;font-size:12px;color:#a9c4ea;background:#0a1322;border:1px solid var(--line);
+    padding:7px 12px;border-radius:9px;font-variant-numeric:tabular-nums;white-space:nowrap;
+  }
+
+  /* ---------- layout ---------- */
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 356px;gap:14px;align-items:start;}
+  .card{
+    background:linear-gradient(180deg,rgba(17,26,46,.92),rgba(11,18,32,.92));
+    border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    box-shadow:0 18px 40px rgba(0,0,0,.25);
+  }
+  .canvas-card{display:flex;flex-direction:column;min-width:0;}
+  .card-head{
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    padding:10px 14px;font-size:12px;color:#93a3c4;border-bottom:1px solid var(--line);
+    background:rgba(8,14,26,.5);
+  }
+  .card-head b{color:#cfe0f7;font-weight:700;}
+  .card-head .hint{margin-left:auto;font-size:11px;color:#6b7c9e;}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .dot.cyan{background:var(--cyan);box-shadow:0 0 10px var(--cyan);}
+  .dot.violet{background:var(--violet);box-shadow:0 0 10px var(--violet);}
+  .canvas-scroll{
+    max-height:calc(100vh - 232px);min-height:470px;overflow:auto;
+    overscroll-behavior:contain;scrollbar-width:thin;
+  }
+  .canvas-scroll::-webkit-scrollbar{width:9px;height:9px;}
+  .canvas-scroll::-webkit-scrollbar-thumb{background:#22304e;border-radius:8px;}
+  .canvas-scroll::-webkit-scrollbar-track{background:transparent;}
+  svg{display:block;width:100%;height:auto;font-family:inherit;}
+
+  /* ---------- side ---------- */
+  .side{padding:13px;display:flex;flex-direction:column;gap:12px;min-width:0;}
+  .side-top{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+  .qstatus{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .stat{background:#0b1322;border:1px solid var(--line);border-radius:10px;padding:8px 9px;min-width:0;}
+  .stat span{display:block;font-size:10px;color:#7c8dae;margin-bottom:3px;white-space:nowrap;}
+  .stat b{font-size:16px;color:#e8f0ff;font-variant-numeric:tabular-nums;display:block;overflow:hidden;text-overflow:ellipsis;}
+  .explain{
+    font-size:12px;line-height:1.72;color:#a9b8d4;background:#0a1221;
+    border:1px solid var(--line);border-left:3px solid rgba(34,211,238,.55);
+    border-radius:10px;padding:10px 12px;
+  }
+  .explain b{color:#eaf4ff;}
+  .explain .mono{font-family:ui-monospace,Consolas,Menlo,monospace;color:#8fe9ff;font-size:11.5px;}
+  .explain.error{border-left-color:#f87171;color:#fecaca;}
+  .legend{display:flex;flex-wrap:wrap;gap:9px 12px;font-size:11px;color:var(--muted);}
+  .legend span{display:flex;align-items:center;}
+  .lg{width:11px;height:11px;border-radius:3px;display:inline-block;margin-right:5px;border:1px solid transparent;flex:0 0 auto;}
+  .lg.new{background:linear-gradient(135deg,#0e7490,#4338ca);border-color:#4dd6f0;}
+  .lg.old{background:#141d31;border-color:#3a4a6a;}
+  .lg.re{background:repeating-linear-gradient(90deg,#f59e0b 0 3px,transparent 3px 6px);}
+  .lg.nil{border:1px dashed #4a5a7c;background:transparent;}
+  .lg.cur{background:#0b3340;border-color:#22d3ee;}
+  .lg.visited{background:#1b1a3a;border-color:#a78bfa;}
+  .lg.target{background:#2a2410;border-color:#fbbf24;}
+  .side-title{font-size:11px;margin:2px 0 -2px;color:#7f92b8;letter-spacing:.8px;text-transform:uppercase;font-weight:700;}
+  .chips{display:flex;flex-wrap:wrap;gap:5px;}
+  .chip{font-size:10px;padding:2px 7px;background:#0d1728;border:1px solid #223050;border-radius:6px;color:#93a3c4;}
+  .chip b{color:#67e8f9;font-weight:700;}
+  .tiny{font-size:10.5px;line-height:1.6;color:#6f80a2;margin:0;}
+  .table-wrap{max-height:290px;overflow:auto;border:1px solid var(--line);border-radius:10px;scrollbar-width:thin;}
+  .table-wrap::-webkit-scrollbar{width:8px;}
+  .table-wrap::-webkit-scrollbar-thumb{background:#22304e;border-radius:8px;}
+  .nodetable{width:100%;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums;}
+  .nodetable th{
+    position:sticky;top:0;z-index:1;background:#101a2c;color:#8294b8;font-weight:700;
+    padding:6px 7px;text-align:left;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:.4px;
+  }
+  .nodetable td{padding:4px 7px;color:#b9c7e0;border-bottom:1px solid rgba(255,255,255,.04);white-space:nowrap;}
+  .nodetable tbody tr:hover td{background:rgba(148,163,184,.06);}
+  .nodetable tr.isnew td{background:rgba(34,211,238,.10);color:#ddf8ff;}
+  .nodetable tr.isroot td:first-child{color:#22d3ee;font-weight:700;}
+  .star{color:#22d3ee;margin-left:1px;font-size:8px;vertical-align:top;}
+  .c-sum{color:#eef5ff;font-weight:800;}
+  .c-ver{color:#6b7c9e;}
+  .zero{color:#4c5b7b;}
+
+  /* ---------- query log ---------- */
+  .qlog{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;max-height:320px;overflow:auto;scrollbar-width:thin;}
+  .qlog::-webkit-scrollbar{width:8px;}
+  .qlog::-webkit-scrollbar-thumb{background:#22304e;border-radius:8px;}
+  .qlog li{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:11.5px;line-height:1.62;color:#a9b8d4;background:#0b1322;}
+  .qlog li.current{border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.06);color:#dff6ff;box-shadow:0 0 0 1px rgba(34,211,238,.12) inset;}
+  .qlog li.current.answer{border-color:rgba(52,211,153,.6);background:rgba(52,211,153,.08);}
+  .qlog .ft{display:flex;justify-content:space-between;gap:8px;font-weight:700;color:#cfe0f7;margin-bottom:3px;font-size:11.5px;}
+  .qlog b{color:#7ff3ff;font-weight:800;}
+  .qlog li.answer b{color:#6ef7c0;}
+  .qlog .formula{font-family:ui-monospace,Consolas,Menlo,monospace;font-size:11px;color:#9fb4d8;}
+  .answer{
+    padding:12px 14px;border-radius:12px;font-size:12.5px;color:#c9fbe9;
+    background:linear-gradient(135deg,rgba(52,211,153,.14),rgba(34,211,238,.13));
+    border:1px solid rgba(52,211,153,.4);
+  }
+  .answer b{font-size:22px;color:#6ef7c0;margin-left:4px;font-variant-numeric:tabular-nums;}
+
+  /* ---------- svg: build ---------- */
+  .node rect{fill:#141d31;stroke:#2c3f63;stroke-width:1.4;}
+  .node .sum{fill:#dfe8fa;font-size:16px;font-weight:700;text-anchor:middle;}
+  .node .nid{fill:#7787a8;font-size:9px;text-anchor:middle;font-weight:600;}
+  .node.isnew rect{fill:url(#gNew);stroke:#4dd6f0;stroke-width:1.8;}
+  .node.isnew .sum{fill:#f2feff;}
+  .node.isnew .nid{fill:#a9e9f7;}
+  .node.isleaf rect{stroke:#4b6490;}
+  .node:hover rect{stroke:#8bb6ff;stroke-width:2;}
+  .node.isnew{filter:url(#softGlow);animation:pop .45s cubic-bezier(.2,1.5,.4,1) both;transform-box:fill-box;transform-origin:center;}
+  @keyframes pop{from{opacity:0;transform:scale(.55);}to{opacity:1;transform:scale(1);}}
+  .leafval{fill:#8396b8;font-size:9.5px;text-anchor:middle;}
+  .nilnode rect{fill:#0c1322;stroke:#3a4a6a;stroke-dasharray:4 4;}
+  .nilnode .nilsum{fill:#5b6b8c;font-size:16px;text-anchor:middle;}
+  .nilnode .nid{fill:#4d5c7a;font-size:9px;text-anchor:middle;font-weight:600;}
+  .nilslot circle{fill:#0a1120;stroke:#31405f;stroke-dasharray:3 3;}
+  .nilslot text{fill:#5d6d8e;font-size:9px;text-anchor:middle;}
+  .edge{stroke:#4a5f8c;stroke-width:1.6;fill:none;stroke-linecap:round;}
+  .niledge{stroke:#2d3c5a;stroke-width:1.1;stroke-dasharray:3 4;fill:none;}
+  .reuse{stroke:#f59e0b;stroke-width:1.5;fill:none;stroke-dasharray:5 5;opacity:.62;}
+  .reuse:hover{opacity:1;stroke-width:2.2;}
+  .vl1{font-size:12.5px;font-weight:700;fill:#cfe0f7;}
+  .vl1 .vtag{fill:#22d3ee;}
+  .vl1 .vmeta{fill:#93a3c4;font-weight:600;}
+  .vl2{font-size:10.5px;fill:#7d8dae;}
+
+  /* ---------- svg: query ---------- */
+  .qedge{stroke:#33456b;stroke-width:1.5;fill:none;}
+  .qnode rect{fill:#121b2e;stroke:#2b3d5f;stroke-width:1.4;}
+  .qnode .qlen{fill:#7b8db0;font-size:9px;text-anchor:middle;font-variant-numeric:tabular-nums;}
+  .qnode .qdiff{fill:#e8f0ff;font-size:16px;font-weight:800;text-anchor:middle;font-variant-numeric:tabular-nums;}
+  .qnode .qpair{fill:#8b9cbd;font-size:9px;text-anchor:middle;font-variant-numeric:tabular-nums;}
+  .qnode.zero .qdiff,.qnode.zero .qpair{fill:#55658a;}
+  .qnode.visited rect{fill:#1b1a3a;stroke:#a78bfa;}
+  .qnode.visited .qdiff{fill:#c4b5fd;}
+  .qnode.target rect{fill:#2a2410;stroke:#fbbf24;stroke-width:2;stroke-dasharray:6 3;}
+  .qnode.target .qdiff{fill:#fde68a;}
+  .qnode.active rect{fill:#0b3340;stroke:#22d3ee;stroke-width:2.2;filter:url(#qglow);}
+  .qnode.active .qdiff{fill:#8ff6ff;}
+  .qnode.answer rect{fill:#062b23;stroke:#34d399;stroke-width:2.4;filter:url(#qglowGreen);}
+  .qnode.answer .qdiff{fill:#6ef7c0;}
+  .qnode{animation:qfade .3s ease both;}
+  @keyframes qfade{from{opacity:.4;}to{opacity:1;}}
+  .answerTag{fill:#6ef7c0;font-size:10px;font-weight:800;text-anchor:middle;letter-spacing:1px;}
+  .qkbadge{fill:#8ff6ff;font-size:10.5px;font-weight:800;text-anchor:middle;font-variant-numeric:tabular-nums;}
+  .placeholder{fill:#5c6d90;font-size:14px;text-anchor:middle;}
+
+  .view[hidden]{display:none !important;}
+  @media (max-width:1280px){
+    .layout{grid-template-columns:1fr;}
+    .side{order:2;}
+    .canvas-scroll{max-height:64vh;}
+  }
+  @media (min-width:1281px){
+    .side{max-height:calc(100vh - 208px);overflow-y:auto;scrollbar-width:thin;}
+    .side::-webkit-scrollbar{width:8px;}
+    .side::-webkit-scrollbar-thumb{background:#22304e;border-radius:8px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">◈</div>
+      <div>
+        <h1>主席树可视化</h1>
+        <p>可持久化线段树 · 建树复用 + 区间第 k 小</p>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-view="build">① 构建过程</button>
+      <button class="tab" data-view="query">② 区间第 k 小</button>
+    </div>
+  </header>
+
+  <!-- ================= BUILD VIEW ================= -->
+  <div class="view" id="view-build">
+    <div class="toolbar">
+      <label class="field"><span>a[1..n]</span>
+        <input id="arrInput" type="text" spellcheck="false" value="3, 1, 4, 1, 5, 9, 2, 6">
+      </label>
+      <button class="btn primary" id="btnApply">重建</button>
+      <span class="divider"></span>
+      <button class="btn" id="btnReset">⏮ 重置</button>
+      <button class="btn" id="btnPrev">◀ 上一步</button>
+      <button class="btn" id="btnNext">下一步 ▶</button>
+      <button class="btn" id="btnPlay">▶ 自动构建</button>
+      <button class="btn" id="btnAll">⏭ 全部</button>
+      <span class="step-tag" id="stepTag">版本 8 / 8</span>
+    </div>
+
+    <div class="layout">
+      <section class="card canvas-card">
+        <div class="card-head">
+          <span class="dot cyan"></span>
+          <span>版本栈：每行一个版本，只画出被修改的路径；<b>虚线</b>表示指针直接复用旧节点</span>
+          <span class="hint">悬停节点看详情 · 滚轮查看其他版本 · ← → 键单步</span>
+        </div>
+        <div class="canvas-scroll" id="buildScroll"><svg id="buildSvg"></svg></div>
+      </section>
+
+      <aside class="card side">
+        <div class="side-top">
+          <div class="stat"><span>已建版本</span><b id="statVer">—</b></div>
+          <div class="stat"><span>节点数</span><b id="statNodes">—</b></div>
+          <div class="stat"><span>本步新建</span><b id="statNew">—</b></div>
+        </div>
+        <div class="explain" id="buildExplain"></div>
+        <div class="legend">
+          <span><i class="lg new"></i>本步新建</span>
+          <span><i class="lg old"></i>旧节点</span>
+          <span><i class="lg re"></i>复用指针</span>
+          <span><i class="lg nil"></i>空指针 0</span>
+        </div>
+        <h3 class="side-title">离散化 · 值 → 排名</h3>
+        <div class="chips" id="chips"></div>
+        <h3 class="side-title">节点数组（动态开点）</h3>
+        <div class="table-wrap" id="tableWrap"><table class="nodetable" id="nodeTable"></table></div>
+        <p class="tiny">每个节点存 lc / rc / sum。插入一个数只新建 O(log n) 个节点，其余子树指针原封不动地指向旧版本，这就是「可持久化」。</p>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ================= QUERY VIEW ================= -->
+  <div class="view" id="view-query" hidden>
+    <div class="toolbar">
+      <label class="field"><span>l</span><input id="q_l" type="number" value="2" min="1"></label>
+      <label class="field"><span>r</span><input id="q_r" type="number" value="8" min="1"></label>
+      <label class="field"><span>k</span><input id="q_k" type="number" value="3" min="1"></label>
+      <button class="btn primary" id="btnQuery">开始查询</button>
+      <span class="divider"></span>
+      <button class="btn" id="qPrev">◀ 上一步</button>
+      <button class="btn" id="qNext">下一步 ▶</button>
+      <button class="btn" id="qPlay">▶ 自动</button>
+      <span class="step-tag" id="qTag">区间 [2,8] 第 3 小</span>
+    </div>
+
+    <div class="layout">
+      <section class="card canvas-card">
+        <div class="card-head">
+          <span class="dot violet"></span>
+          <span>把版本 r 与版本 l−1 的树叠在一起：节点上大字 = <b>cnt(r) − cnt(l−1)</b>，小字 = 两个版本的计数</span>
+          <span class="hint">从左子树的差值判断往哪边走</span>
+        </div>
+        <div class="canvas-scroll" id="queryScroll"><svg id="querySvg"></svg></div>
+      </section>
+
+      <aside class="card side">
+        <div class="explain" id="queryExplain"></div>
+        <div class="qstatus">
+          <div class="stat"><span>当前 k</span><b id="qK">—</b></div>
+          <div class="stat"><span>当前区间</span><b id="qInterval">—</b></div>
+        </div>
+        <h3 class="side-title">推导过程</h3>
+        <ol class="qlog" id="qLog"></ol>
+        <div class="answer" id="qAnswer" hidden></div>
+        <div class="legend">
+          <span><i class="lg cur"></i>当前节点</span>
+          <span><i class="lg visited"></i>已走过</span>
+          <span><i class="lg target"></i>下一步</span>
+        </div>
+        <p class="tiny">a[l..r] 的第 k 小 = 在前缀版本 root[r] 与 root[l−1] 上同时走：左子树个数差 ≥ k 就走左，否则 k 减去该差值后走右。</p>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const $ = (id) => document.getElementById(id);
+
+const App = {
+  model: null,
+  step: 0,
+  view: 'build',
+  playing: false,
+  playTimer: null,
+  bandH: 250,
+  q: { active: false, result: null, cursor: 0, playing: false, timer: null }
+};
+
+/* ======================================================================
+   数据模型：可持久化线段树（动态开点，值域为离散化后的 [1..m]）
+   ====================================================================== */
+function buildModel(nums) {
+  const vals = Array.from(new Set(nums)).sort((a, b) => a - b);
+  const m = vals.length;
+  const rank = new Map(vals.map((v, i) => [v, i + 1]));
+
+  // 节点 0 表示空指针
+  const nodes = [{
+    id: 0, ver: 0, l: 0, r: 0, sum: 0, left: 0, right: 0,
+    parent: null, side: null, depth: 0
+  }];
+  const versions = [{ root: 0, ids: [], value: null, rank: null }];
+
+  function newNode(ver, l, r, sum, parent, side, depth) {
+    const id = nodes.length;
+    nodes.push({ id, ver, l, r, sum, left: 0, right: 0, parent, side, depth });
+    return id;
+  }
+
+  function update(prev, l, r, pos, ver, parent, side, depth) {
+    const cur = newNode(ver, l, r, nodes[prev].sum + 1, parent, side, depth);
+    nodes[cur].left = nodes[prev].left;
+    nodes[cur].right = nodes[prev].right;
+    if (l === r) return cur;
+    const mid = (l + r) >> 1;
+    if (pos <= mid) {
+      nodes[cur].left = update(nodes[prev].left, l, mid, pos, ver, cur, 'L', depth + 1);
+    } else {
+      nodes[cur].right = update(nodes[prev].right, mid + 1, r, pos, ver, cur, 'R', depth + 1);
+    }
+    return cur;
+  }
+
+  let root = 0;
+  for (let i = 0; i < nums.length; i++) {
+    const ver = i + 1;
+    const before = nodes.length;
+    root = update(root, 1, m, rank.get(nums[i]), ver, null, null, 0);
+    const ids = [];
+    for (let k = before; k < nodes.length; k++) ids.push(k);
+    versions.push({ root, ids, value: nums[i], rank: rank.get(nums[i]) });
+  }
+
+  const D = m <= 1 ? 0 : Math.ceil(Math.log2(m));
+  return { nums, vals, m, rank, nodes, versions, D };
+}
+
+/* ======================================================================
+   构建过程渲染
+   ====================================================================== */
+function renderBuild() {
+  const M = App.model;
+  if (!M) return;
+  const { m, nodes, versions, D, vals } = M;
+  const step = App.step;
+
+  const W = 1200;
+  const gapY = 56;
+  const boxW = 58, boxH = 40;
+  const padL = 172, padR = 62, padTop = 26, padBottom = 26;
+  const innerW = W - padL - padR;
+  const bandH = (D + 1) * gapY + 38;
+  App.bandH = bandH;
+  const H = padTop + (step + 1) * bandH + padBottom;
+
+  const xOf = (l, r) => padL + ((((l + r) / 2) - 0.5) / m) * innerW;
+  const yOf = (v, d) => padTop + v * bandH + 30 + d * gapY;
+  const yBand = (v) => padTop + v * bandH;
+
+  // 所有被画出的节点坐标
+  const pos = new Map();
+  pos.set(0, { x: xOf(1, m), y: yOf(0, 0) });
+  for (let v = 1; v <= step; v++) {
+    for (const id of versions[v].ids) {
+      const n = nodes[id];
+      pos.set(id, { x: xOf(n.l, n.r), y: yOf(v, n.depth) });
+    }
+  }
+
+  const defs = `
+    <defs>
+      <linearGradient id="gNew" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#0e7490"/>
+        <stop offset="1" stop-color="#3730a3"/>
+      </linearGradient>
+      <linearGradient id="gAccent" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#22d3ee"/>
+        <stop offset="1" stop-color="#a78bfa"/>
+      </linearGradient>
+      <marker id="arrowReuse" viewBox="0 0 10 10" refX="9" refY="5"
+              markerWidth="6.5" markerHeight="6.5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#fbbf24"/>
+      </marker>
+      <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="3" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>`;
+
+  let bands = '';
+  for (let v = 0; v <= step; v++) {
+    const y0 = yBand(v);
+    if (v % 2 === 1) {
+      bands += `<rect x="0" y="${y0}" width="${W}" height="${bandH}" fill="#ffffff" fill-opacity="0.016"/>`;
+    }
+    if (v === step) {
+      bands += `<rect x="0" y="${y0}" width="3.5" height="${bandH}" fill="url(#gAccent)" opacity="0.85"/>`;
+    }
+    bands += `<line x1="16" y1="${y0}" x2="${W - 16}" y2="${y0}" stroke="#ffffff" stroke-opacity="0.07"/>`;
+
+    const vs = versions[v];
+    let l1, l2;
+    if (v === 0) {
+      l1 = `<tspan class="vtag">v0</tspan><tspan class="vmeta"> root[0] = 0</tspan>`;
+      l2 = `空树 · 所有计数为 0`;
+    } else {
+      l1 = `<tspan class="vtag">v${v}</tspan><tspan class="vmeta"> root[${v}] = #${vs.root}</tspan>`;
+      l2 = `插入 a[${v}] = ${vs.value} → 排名 ${vs.rank}`;
+    }
+    bands += `<text x="20" y="${y0 + 37}" class="vl1">${l1}</text>`;
+    bands += `<text x="20" y="${y0 + 57}" class="vl2">${l2}</text>`;
+  }
+
+  let edges = '';
+  let slots = '';
+  let boxes = '';
+
+  // 版本 0 的空树节点
+  const g = pos.get(0);
+  boxes += `<g class="nilnode">
+      <title>节点 0 · 空指针 / 空树</title>
+      <rect x="${g.x - boxW / 2}" y="${g.y - boxH / 2}" width="${boxW}" height="${boxH}" rx="10"/>
+      <text class="nilsum" x="${g.x}" y="${g.y + 1}">∅</text>
+      <text class="nid" x="${g.x}" y="${g.y + 14}">#0</text>
+    </g>`;
+
+  for (let v = 1; v <= step; v++) {
+    for (const id of versions[v].ids) {
+      const n = nodes[id];
+      if (n.l === n.r) continue;
+      const p = pos.get(id);
+      const mid = (n.l + n.r) >> 1;
+      const kids = [
+        { cid: n.left, l: n.l, r: mid },
+        { cid: n.right, l: mid + 1, r: n.r }
+      ];
+      for (const kid of kids) {
+        if (kid.cid === 0) {
+          // 空指针：画一个虚线小圆圈
+          const cx = xOf(kid.l, kid.r);
+          const cy = yOf(v, n.depth + 1);
+          edges += `<line class="niledge" x1="${p.x}" y1="${p.y + 19}" x2="${cx}" y2="${cy - 11}"/>`;
+          slots += `<g class="nilslot"><title>空指针 0</title>
+              <circle cx="${cx}" cy="${cy}" r="8"/>
+              <text x="${cx}" y="${cy + 3.4}">0</text>
+            </g>`;
+        } else if (nodes[kid.cid].ver === v) {
+          const q = pos.get(kid.cid);
+          edges += `<path class="edge" d="M ${p.x} ${p.y + boxH / 2 - 1} L ${q.x} ${q.y - boxH / 2 + 1}"/>`;
+        } else {
+          const q = pos.get(kid.cid);
+          // 复用指针：向上连到旧版本中的节点
+          const dx = q.x - p.x, dy = q.y - p.y;
+          const len = Math.hypot(dx, dy) || 1;
+          const ux = dx / len, uy = dy / len;
+          const r1 = 22, r2 = 30;
+          const x1 = p.x + ux * r1, y1 = p.y + uy * r1;
+          const x2 = q.x - ux * r2, y2 = q.y - uy * r2;
+          const mx = (x1 + x2) / 2 + (q.x >= p.x ? 32 : -32);
+          const my = (y1 + y2) / 2;
+          edges += `<path class="reuse" d="M ${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}" marker-end="url(#arrowReuse)">
+              <title>右侧/左侧子树未改动 → 指针直接复用节点 #${kid.cid}</title>
+            </path>`;
+        }
+      }
+    }
+  }
+
+  for (let v = 1; v <= step; v++) {
+    for (const id of versions[v].ids) {
+      const n = nodes[id];
+      const p = pos.get(id);
+      boxes += buildNodeBox(p.x, p.y, n, v === step, vals, boxW, boxH);
+    }
+  }
+
+  const svg = $('buildSvg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('width', W);
+  svg.setAttribute('height', H);
+  svg.innerHTML = defs + bands + edges + slots + boxes;
+}
+
+function buildNodeBox(x, y, n, isNew, vals, boxW, boxH) {
+  const leaf = n.l === n.r;
+  let cls = 'node';
+  if (isNew) cls += ' isnew';
+  if (leaf) cls += ' isleaf';
+  let s = `<g class="${cls}">
+      <title>节点 #${n.id} · 区间 [${n.l}, ${n.r}] · sum = ${n.sum} · 创建于版本 ${n.ver}</title>
+      <rect x="${x - boxW / 2}" y="${y - boxH / 2}" width="${boxW}" height="${boxH}" rx="10"/>
+      <text class="sum" x="${x}" y="${y - 1}">${n.sum}</text>
+      <text class="nid" x="${x}" y="${y + 13}">#${n.id}</text>
+    </g>`;
+  if (leaf) {
+    s += `<text class="leafval" x="${x}" y="${y + boxH / 2 + 14}">值 ${vals[n.l - 1]}</text>`;
+  }
+  return s;
+}
+
+/* ======================================================================
+   构建侧栏
+   ====================================================================== */
+function renderTable() {
+  const M = App.model;
+  if (!M) return;
+  const { nodes, versions } = M;
+  const step = App.step;
+
+  const roots = new Set();
+  for (let v = 0; v <= step; v++) roots.add(versions[v].root);
+
+  let html = `<thead><tr><th>#</th><th>区间</th><th>lc</th><th>rc</th><th>sum</th><th>ver</th></tr></thead><tbody>`;
+  html += `<tr class="row-nil ${step === 0 ? 'isnew' : ''}">
+      <td>0</td><td>空</td><td class="zero">0</td><td class="zero">0</td><td class="c-sum">0</td><td class="c-ver">—</td>
+    </tr>`;
+
+  for (let i = 1; i < nodes.length; i++) {
+    const n = nodes[i];
+    if (n.ver > step) break;
+    const cls = [];
+    if (n.ver === step) cls.push('isnew');
+    if (roots.has(n.id)) cls.push('isroot');
+    html += `<tr class="${cls.join(' ')}">
+        <td>${n.id}${roots.has(n.id) ? '<span class="star">★</span>' : ''}</td>
+        <td>[${n.l},${n.r}]</td>
+        <td class="${n.left ? '' : 'zero'}">${n.left}</td>
+        <td class="${n.right ? '' : 'zero'}">${n.right}</td>
+        <td class="c-sum">${n.sum}</td>
+        <td class="c-ver">${n.ver}</td>
+      </tr>`;
+  }
+  html += '</tbody>';
+
+  $('nodeTable').innerHTML = html;
+  const wrap = $('tableWrap');
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function renderBuildSide() {
+  const M = App.model;
+  if (!M) return;
+  const step = App.step;
+  const n = M.nums.length;
+  const vs = M.versions;
+
+  let count = 0;
+  for (let i = 1; i < M.nodes.length; i++) {
+    if (M.nodes[i].ver <= step) count++; else break;
+  }
+
+  $('statVer').textContent = `${step} / ${n}`;
+  $('statNodes').textContent = count;
+  $('statNew').textContent = step === 0 ? 0 : vs[step].ids.length;
+  $('stepTag').textContent = `版本 ${step} / ${n}`;
+  $('btnPrev').disabled = step === 0;
+  $('btnNext').disabled = step === n;
+  $('btnPlay').textContent = App.playing ? '⏸ 暂停' : '▶ 自动构建';
+
+  if (step === 0) {
+    $('buildExplain').innerHTML =
+      `<b>版本 0：空树</b><br>root[0] = 0，所有计数为 0。点击「下一步」，把第一个数插入值域线段树。`;
+  } else {
+    const v = vs[step];
+    const ids = v.ids.map(i => `#${i}`).join(' ');
+    $('buildExplain').innerHTML =
+      `<b>插入 a[${step}] = ${v.value}</b>（离散化排名 ${v.rank}）<br>
+       新建 <b>${v.ids.length}</b> 个节点：<span class="mono">${ids}</span><br>
+       #${v.root} 成为 <span class="mono">root[${step}]</span>；没被修改的另一棵子树，指针直接复用旧节点（橙色虚线）。`;
+  }
+
+  $('chips').innerHTML = M.vals
+    .map((val, i) => `<span class="chip">${val} <b>→ ${i + 1}</b></span>`)
+    .join('');
+}
+
+function scrollBuildTo(step) {
+  const sc = $('buildScroll');
+  const svg = $('buildSvg');
+  const scale = svg.getBoundingClientRect().width / 1200 || 1;
+  const y = step * App.bandH * scale;
+  sc.scrollTo({ top: Math.max(0, y - 34), behavior: 'smooth' });
+}
+
+function refreshBuild(scroll = true) {
+  renderBuild();
+  renderTable();
+  renderBuildSide();
+  if (scroll) scrollBuildTo(App.step);
+  else $('buildScroll').scrollTop = 0;
+}
+
+/* ======================================================================
+   构建交互
+   ====================================================================== */
+function setStep(v) {
+  stopBuildPlay();
+  const max = App.model.versions.length - 1;
+  App.step = Math.min(max, Math.max(0, v));
+  refreshBuild();
+}
+
+function startBuildPlay() {
+  const max = App.model.versions.length - 1;
+  if (App.step >= max) {
+    App.step = 0;
+    refreshBuild();
+  }
+  App.playing = true;
+  renderBuildSide();
+  App.playTimer = setInterval(() => {
+    if (App.step >= max) { stopBuildPlay(); return; }
+    App.step++;
+    refreshBuild();
+    if (App.step >= max) stopBuildPlay();
+  }, 780);
+}
+
+function stopBuildPlay() {
+  if (App.playTimer) clearInterval(App.playTimer);
+  App.playTimer = null;
+  if (App.playing) {
+    App.playing = false;
+    renderBuildSide();
+  }
+}
+
+function toggleBuildPlay() {
+  if (App.playing) stopBuildPlay();
+  else startBuildPlay();
+}
+
+function parseArray(text) {
+  return text.split(/[\s,，、;；]+/)
+    .map(s => s.trim())
+    .filter(s => /^-?\d+$/.test(s))
+    .map(Number)
+    .filter(Number.isFinite);
+}
+
+function loadArray(nums, full) {
+  stopBuildPlay();
+  App.model = buildModel(nums);
+  App.step = full ? App.model.versions.length - 1 : 0;
+  resetQuery();
+  setQueryDefaults(nums.length);
+  refreshBuild(false);
+}
+
+function setQueryDefaults(n) {
+  const l = n >= 2 ? 2 : 1;
+  const r = n;
+  const k = Math.max(1, Math.min(r - l + 1, 2));
+  $('q_l').value = l;
+  $('q_r').value = r;
+  $('q_k').value = k;
+  for (const id of ['q_l', 'q_r', 'q_k']) $(id).max = n;
+  $('qTag').textContent = `区间 [${l},${r}] 第 ${k} 小`;
+}
+
+function applyArray() {
+  let nums = parseArray($('arrInput').value);
+  if (nums.length === 0) {
+    alert('请输入至少一个整数，用逗号或空格分隔。');
+    return;
+  }
+  let clipped = false;
+  if (nums.length > 12) {
+    nums = nums.slice(0, 12);
+    clipped = true;
+  }
+  $('arrInput').value = nums.join(', ');
+  loadArray(nums, true);
+  if (clipped) alert('为保持可视化清晰，最多只取前 12 个数。');
+}
+
+/* ======================================================================
+   查询：区间第 k 小
+   ====================================================================== */
+function runQuery(l, r, k) {
+  const M = App.model;
+  const { nodes, m, vals, versions } = M;
+
+  const rootR = versions[r].root;
+  const rootL = versions[l - 1].root;
+  const total = nodes[rootR].sum - nodes[rootL].sum;
+  if (k < 1 || k > total) {
+    return { error: `区间 [${l}, ${r}] 一共只有 ${total} 个数，k 必须在 1..${total} 之间。` };
+  }
+
+  // 完整值域树：每个节点同时持有 (版本 r 的节点, 版本 l-1 的节点)
+  const tree = [];
+  const byInterval = new Map();
+
+  function go(ur, ul, lo, hi, depth) {
+    const idx = tree.length;
+    const node = {
+      idx, ur, ul, lo, hi, depth,
+      sumR: nodes[ur].sum,
+      sumL: nodes[ul].sum,
+      diff: nodes[ur].sum - nodes[ul].sum,
+      left: null, right: null
+    };
+    tree.push(node);
+    byInterval.set(lo + '-' + hi, idx);
+    if (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      node.left = go(nodes[ur].left, nodes[ul].left, lo, mid, depth + 1);
+      node.right = go(nodes[ur].right, nodes[ul].right, mid + 1, hi, depth + 1);
+    }
+    return idx;
+  }
+  go(rootR, rootL, 1, m, 0);
+
+  // 逐层推导
+  const frames = [];
+  const path = [];
+  let ur = rootR, ul = rootL, lo = 1, hi = m, kk = k;
+
+  while (true) {
+    const idx = byInterval.get(lo + '-' + hi);
+    path.push(idx);
+
+    if (lo === hi) {
+      frames.push({
+        type: 'answer', idx, lo, hi, k: kk,
+        value: vals[lo - 1], path: path.slice()
+      });
+      break;
+    }
+
+    const mid = (lo + hi) >> 1;
+    const lr = nodes[ur].left, ll = nodes[ul].left;
+    const rr = nodes[ur].right, rl = nodes[ul].right;
+    const leftDiff = nodes[lr].sum - nodes[ll].sum;
+    const goLeft = kk <= leftDiff;
+
+    const frame = {
+      type: 'branch', idx, lo, hi, mid,
+      kBefore: kk,
+      leftDiff,
+      rightDiff: nodes[rr].sum - nodes[rl].sum,
+      leftSumR: nodes[lr].sum, leftSumL: nodes[ll].sum,
+      rightSumR: nodes[rr].sum, rightSumL: nodes[rl].sum,
+      goLeft,
+      leftChildIdx: byInterval.get(lo + '-' + mid),
+      rightChildIdx: byInterval.get((mid + 1) + '-' + hi),
+      nextIdx: goLeft ? byInterval.get(lo + '-' + mid) : byInterval.get((mid + 1) + '-' + hi),
+      path: path.slice()
+    };
+
+    if (goLeft) {
+      ur = lr; ul = ll; hi = mid;
+    } else {
+      kk -= leftDiff;
+      ur = rr; ul = rl; lo = mid + 1;
+      frame.kAfter = kk;
+    }
+    frames.push(frame);
+  }
+
+  return { tree, byInterval, frames, total, l, r, k, rootR, rootL };
+}
+
+function renderQuery() {
+  const svg = $('querySvg');
+  const M = App.model;
+  const Q = App.q;
+
+  if (!Q.active || !Q.result) {
+    svg.setAttribute('viewBox', '0 0 1200 420');
+    svg.setAttribute('width', 1200);
+    svg.setAttribute('height', 420);
+    svg.innerHTML = `<text class="placeholder" x="600" y="200">输入 l、r、k，点击「开始查询」</text>`;
+    return;
+  }
+
+  const { m, D, vals } = M;
+  const res = Q.result;
+  const frame = res.frames[Q.cursor];
+  const tree = res.tree;
+
+  const W = 1200;
+  const gapY = 92;
+  const padL = 72, padR = 48, padTop = 50, padBottom = 34;
+  const innerW = W - padL - padR;
+  const H = padTop + (D + 1) * gapY + padBottom;
+
+  const xOf = (lo, hi) => padL + ((((lo + hi) / 2) - 0.5) / m) * innerW;
+  const yOf = d => padTop + d * gapY;
+
+  const bw = 64, bh = 52;
+
+  const pos = new Map();
+  for (const n of tree) pos.set(n.idx, { x: xOf(n.lo, n.hi), y: yOf(n.depth) });
+
+  const visited = new Set(frame.path.slice(0, -1));
+  const curIdx = frame.idx;
+  const targetIdx = frame.type === 'branch' ? frame.nextIdx : -1;
+
+  // 边
+  let edges = '';
+  for (const n of tree) {
+    if (n.left === null) continue;
+    const p = pos.get(n.idx);
+    for (const cidx of [n.left, n.right]) {
+      const c = pos.get(cidx);
+      edges += `<path class="qedge" d="M ${p.x} ${p.y + bh / 2 - 1} L ${c.x} ${c.y - bh / 2 + 1}"/>`;
+    }
+  }
+
+  // 节点
+  let boxes = '';
+  for (const n of tree) {
+    const p = pos.get(n.idx);
+    const cls = ['qnode'];
+    if (n.diff === 0) cls.push('zero');
+    if (visited.has(n.idx)) cls.push('visited');
+    if (n.idx === targetIdx) cls.push('target');
+    if (n.idx === curIdx) cls.push(frame.type === 'answer' ? 'answer' : 'active');
+
+    const isLeaf = n.lo === n.hi;
+    boxes += `<g class="${cls.join(' ')}">
+        <title>区间 [${n.lo}, ${n.hi}] · 版本 r 计数 ${n.sumR} · 版本 l−1 计数 ${n.sumL} · 差值 ${n.diff}</title>
+        <rect x="${p.x - bw / 2}" y="${p.y - bh / 2}" width="${bw}" height="${bh}" rx="11"/>
+        <text class="qlen" x="${p.x}" y="${p.y - 13}">[${n.lo},${n.hi}]</text>
+        <text class="qdiff" x="${p.x}" y="${p.y + 3}">${n.diff}</text>
+        <text class="qpair" x="${p.x}" y="${p.y + 18}">${n.sumR}−${n.sumL}</text>
+      </g>`;
+    if (isLeaf) {
+      boxes += `<text class="leafval" x="${p.x}" y="${p.y + bh / 2 + 14}">值 ${vals[n.lo - 1]}</text>`;
+    }
+    if (n.idx === curIdx && frame.type === 'branch') {
+      boxes += `<text class="qkbadge" x="${p.x}" y="${p.y - bh / 2 - 9}">k=${frame.kBefore}</text>`;
+    }
+    if (n.idx === curIdx && frame.type === 'answer') {
+      boxes += `<text class="answerTag" x="${p.x}" y="${p.y + bh / 2 + 30}">答 案</text>`;
+    }
+  }
+
+  const defs = `
+    <defs>
+      <filter id="qglow" x="-70%" y="-70%" width="240%" height="240%">
+        <feGaussianBlur stdDeviation="4" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="qglowGreen" x="-70%" y="-70%" width="240%" height="240%">
+        <feGaussianBlur stdDeviation="5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>`;
+
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('width', W);
+  svg.setAttribute('height', H);
+  svg.innerHTML = defs + edges + boxes;
+}
+
+function renderQuerySide() {
+  const M = App.model;
+  const Q = App.q;
+
+  if (!M) return;
+
+  if (!Q.active || !Q.result) {
+    $('queryExplain').className = 'explain';
+    $('queryExplain').innerHTML =
+      `输入 l、r、k，点击「开始查询」。<br>
+       原理：a[l..r] 的第 k 小 = 在 <span class="mono">root[r]</span> 与 <span class="mono">root[l−1]</span> 两棵树上同步走，
+       用左子树的计数差判断走哪边。`;
+    $('qK').textContent = '—';
+    $('qInterval').textContent = '—';
+    $('qLog').innerHTML = '';
+    $('qAnswer').hidden = true;
+    $('qPrev').disabled = true;
+    $('qNext').disabled = true;
+    $('qPlay').textContent = '▶ 自动';
+    return;
+  }
+
+  const res = Q.result;
+  const frame = res.frames[Q.cursor];
+  const last = res.frames[res.frames.length - 1];
+
+  $('queryExplain').className = 'explain';
+  $('queryExplain').innerHTML =
+    `<b>区间 [${res.l}, ${res.r}] 第 ${res.k} 小</b>，共 ${res.total} 个数。<br>
+     版本 <b>r=${res.r}</b>（root #${res.rootR}）− 版本 <b>l−1=${res.l - 1}</b>（root #${res.rootL}），
+     节点差值 = 该值域在 a[${res.l}..${res.r}] 中的出现次数。`;
+
+  $('qK').textContent = frame.type === 'branch' ? frame.kBefore : frame.k;
+  $('qInterval').textContent = `[${frame.lo}, ${frame.hi}]`;
+  $('qTag').textContent = `区间 [${res.l},${res.r}] 第 ${res.k} 小 · 第 ${Q.cursor + 1}/${res.frames.length} 步`;
+
+  let html = '';
+  for (let i = 0; i <= Q.cursor; i++) {
+    const f = res.frames[i];
+    const cur = i === Q.cursor;
+    if (f.type === 'branch') {
+      html += `<li class="${cur ? 'current' : ''}">
+          <div class="ft"><span>区间 [${f.lo}, ${f.hi}]</span><span>k = ${f.kBefore}</span></div>
+          <div class="formula">左子 [${f.lo},${f.mid}]：${f.leftSumR} − ${f.leftSumL} = <b>${f.leftDiff}</b></div>
+          <div>${f.goLeft
+            ? `k = ${f.kBefore} ≤ ${f.leftDiff} → 第 k 小在左子树，进入 [${f.lo},${f.mid}]，k 不变`
+            : `k = ${f.kBefore} &gt; ${f.leftDiff} → 进入右子树 [${f.mid + 1},${f.hi}]，k ← ${f.kBefore} − ${f.leftDiff} = <b>${f.kAfter}</b>`}
+          </div>
+        </li>`;
+    } else {
+      html += `<li class="${cur ? 'current answer' : ''}">
+          <div class="ft"><span>叶子 [${f.lo}, ${f.lo}]</span><span>k = ${f.k}</span></div>
+          <div>到达叶子：压缩排名 <b>${f.lo}</b>，对应原值 <b>${f.value}</b></div>
+        </li>`;
+    }
+  }
+  $('qLog').innerHTML = html;
+  const log = $('qLog');
+  log.scrollTop = log.scrollHeight;
+
+  if (Q.cursor === res.frames.length - 1) {
+    $('qAnswer').hidden = false;
+    $('qAnswer').innerHTML = `区间 [${res.l}, ${res.r}] 第 ${res.k} 小 =<b>${last.value}</b>`;
+  } else {
+    $('qAnswer').hidden = true;
+  }
+
+  $('qPrev').disabled = Q.cursor === 0;
+  $('qNext').disabled = Q.cursor === res.frames.length - 1;
+  $('qPlay').textContent = Q.playing ? '⏸ 暂停' : '▶ 自动';
+}
+
+function resetQuery() {
+  stopQueryPlay();
+  App.q = { active: false, result: null, cursor: 0, playing: false, timer: null };
+  renderQuery();
+  renderQuerySide();
+}
+
+function startQuery() {
+  const M = App.model;
+  if (!M) return;
+  const n = M.nums.length;
+
+  let l = Math.round(Number($('q_l').value));
+  let r = Math.round(Number($('q_r').value));
+  let k = Math.round(Number($('q_k').value));
+
+  if (!Number.isFinite(l) || !Number.isFinite(r) || !Number.isFinite(k)) {
+    showQueryError('请输入整数 l、r、k。');
+    return;
+  }
+  if (!(l >= 1 && r <= n && l <= r)) {
+    showQueryError(`需要满足 1 ≤ l ≤ r ≤ ${n}。`);
+    return;
+  }
+  const total = r - l + 1;
+  if (!(k >= 1 && k <= total)) {
+    showQueryError(`区间 [${l}, ${r}] 有 ${total} 个数，k 必须在 1..${total} 之间。`);
+    return;
+  }
+
+  const res = runQuery(l, r, k);
+  if (res.error) { showQueryError(res.error); return; }
+
+  stopQueryPlay();
+  App.q = { active: true, result: res, cursor: 0, playing: false, timer: null };
+  $('q_l').value = l;
+  $('q_r').value = r;
+  $('q_k').value = k;
+  renderQuery();
+  renderQuerySide();
+}
+
+function showQueryError(msg) {
+  $('queryExplain').className = 'explain error';
+  $('queryExplain').innerHTML = `<b>无法查询：</b>${msg}`;
+}
+
+function queryStep(delta) {
+  const Q = App.q;
+  if (!Q.active || !Q.result) return;
+  stopQueryPlay();
+  const max = Q.result.frames.length - 1;
+  Q.cursor = Math.min(max, Math.max(0, Q.cursor + delta));
+  renderQuery();
+  renderQuerySide();
+}
+
+function startQueryPlay() {
+  const Q = App.q;
+  if (!Q.active || !Q.result) {
+    startQuery();
+    return;
+  }
+  if (Q.playing) { stopQueryPlay(); return; }
+
+  const max = Q.result.frames.length - 1;
+  if (Q.cursor >= max) Q.cursor = 0;
+  Q.playing = true;
+  renderQuery();
+  renderQuerySide();
+
+  Q.timer = setInterval(() => {
+    if (Q.cursor >= max) { stopQueryPlay(); return; }
+    Q.cursor++;
+    renderQuery();
+    renderQuerySide();
+    if (Q.cursor >= max) stopQueryPlay();
+  }, 950);
+}
+
+function stopQueryPlay() {
+  const Q = App.q;
+  if (!Q) return;
+  if (Q.timer) clearInterval(Q.timer);
+  Q.timer = null;
+  if (Q.playing) {
+    Q.playing = false;
+    renderQuerySide();
+  }
+}
+
+/* ======================================================================
+   初始化与事件
+   ====================================================================== */
+function bindEvents() {
+  $('btnApply').addEventListener('click', applyArray);
+  $('arrInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') applyArray();
+  });
+
+  $('btnReset').addEventListener('click', () => setStep(0));
+  $('btnPrev').addEventListener('click', () => setStep(App.step - 1));
+  $('btnNext').addEventListener('click', () => setStep(App.step + 1));
+  $('btnPlay').addEventListener('click', toggleBuildPlay);
+  $('btnAll').addEventListener('click', () => {
+    stopBuildPlay();
+    App.step = App.model.versions.length - 1;
+    refreshBuild();
+  });
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const view = tab.dataset.view;
+      if (view === App.view) return;
+      App.view = view;
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+      $('view-build').hidden = view !== 'build';
+      $('view-query').hidden = view !== 'query';
+      if (view === 'query') {
+        stopBuildPlay();
+        if (!App.q.active) startQuery();
+        else { renderQuery(); renderQuerySide(); }
+      } else {
+        stopQueryPlay();
+      }
+    });
+  });
+
+  $('btnQuery').addEventListener('click', startQuery);
+  $('qPrev').addEventListener('click', () => queryStep(-1));
+  $('qNext').addEventListener('click', () => queryStep(1));
+  $('qPlay').addEventListener('click', startQueryPlay);
+  ['q_l', 'q_r', 'q_k'].forEach(id => {
+    $(id).addEventListener('keydown', e => { if (e.key === 'Enter') startQuery(); });
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.target && e.target.matches && e.target.matches('input, textarea')) return;
+    if (App.view === 'build') {
+      if (e.key === 'ArrowRight') { e.preventDefault(); setStep(App.step + 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); setStep(App.step - 1); }
+      else if (e.key === ' ') { e.preventDefault(); toggleBuildPlay(); }
+    } else {
+      if (e.key === 'ArrowRight') { e.preventDefault(); queryStep(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); queryStep(-1); }
+      else if (e.key === ' ') { e.preventDefault(); startQueryPlay(); }
+    }
+  });
+}
+
+function init() {
+  bindEvents();
+  loadArray([3, 1, 4, 1, 5, 9, 2, 6], true);
+}
+
+if (typeof document !== 'undefined') {
+  init();
+}
+</script>
+</body>
+</html>

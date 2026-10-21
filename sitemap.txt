@@ -1,3 +1,4 @@
+https://zestfulyk.github.io/ZestfulYK-blog/2026/10/21/%E7%BA%BF%E6%AE%B5%E6%A0%91%E8%BF%9B%E9%98%B6%E7%AC%94%E8%AE%B02/
 https://zestfulyk.github.io/ZestfulYK-blog/2026/10/16/%E7%BA%BF%E6%AE%B5%E6%A0%91%E8%BF%9B%E9%98%B6%E7%AC%94%E8%AE%B01/
 https://zestfulyk.github.io/ZestfulYK-blog/2026/10/19/OpenCV%E5%AE%9E%E6%88%98-%E7%9B%B4%E6%96%B9%E5%9B%BE%E5%9D%87%E8%A1%A1%E5%8C%96/
 https://zestfulyk.github.io/ZestfulYK-blog/2026/10/16/java%E7%AC%94%E8%AE%B01/
@@ -66,13 +67,13 @@ https://zestfulyk.github.io/ZestfulYK-blog/2025/12/07/DP%E5%AD%A6%E4%B9%A0%E7%AC
 https://zestfulyk.github.io/ZestfulYK-blog/2025/12/07/%E5%8D%8E%E4%B8%AD%E5%86%9C%E4%B8%9A%E8%BE%BE%E5%A4%A7%E5%AD%A6%E8%BF%8E%E6%96%B0%E8%B5%9B%E9%A2%98%E8%A7%A3%E4%B8%8E%E5%8F%8D%E6%80%9D/
 https://zestfulyk.github.io/ZestfulYK-blog
 https://zestfulyk.github.io/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95%E6%8C%91%E6%88%98%E8%B5%9B%E9%A2%98%E8%A7%A3/
-https://zestfulyk.github.io/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/%E9%AD%94%E6%96%B9/
+https://zestfulyk.github.io/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/OpenCV/
-https://zestfulyk.github.io/ZestfulYK-blog/tags/java/
-https://zestfulyk.github.io/ZestfulYK-blog/tags/bash/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/ACM%E9%A2%98%E8%A7%A3/
+https://zestfulyk.github.io/ZestfulYK-blog/tags/bash/
+https://zestfulyk.github.io/ZestfulYK-blog/tags/java/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/%E6%95%B0%E5%AD%A6/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/C/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/%E7%A8%8BC%E8%AF%BE%E7%A8%8B%E9%A2%98%E8%A7%A3/
