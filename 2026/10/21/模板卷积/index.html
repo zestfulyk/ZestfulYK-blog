@@ -1,0 +1,473 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>模板卷积 | ZestfulYK的Blog</title><meta name="author" content="ZestfulYK"><meta name="copyright" content="ZestfulYK"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="前言上课使用到的一个网站 CNN Explainer可视化 CNN，讲卷积的时候看着很爽，那个kernel滑过去的样子一目了然 这篇是课上临时记的，后来找AI又补了一堆，算是把模板卷积这一块（空间域滤波）从头捋了一遍 这篇文章的旧版本基本没有内容,只有框架,这篇文章是找AI拓充出来的(感谢DeepSeek老师,注意到上面那句话也是他写的) 模板卷积到底在算啥模板（模板&#x2F;核&#x2F;kernel&#x2F;mask）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模板卷积">
+<meta property="og:url" content="https://zestfulyk.github.io/ZestfulYK-blog/2026/10/21/%E6%A8%A1%E6%9D%BF%E5%8D%B7%E7%A7%AF/index.html">
+<meta property="og:site_name" content="ZestfulYK的Blog">
+<meta property="og:description" content="前言上课使用到的一个网站 CNN Explainer可视化 CNN，讲卷积的时候看着很爽，那个kernel滑过去的样子一目了然 这篇是课上临时记的，后来找AI又补了一堆，算是把模板卷积这一块（空间域滤波）从头捋了一遍 这篇文章的旧版本基本没有内容,只有框架,这篇文章是找AI拓充出来的(感谢DeepSeek老师,注意到上面那句话也是他写的) 模板卷积到底在算啥模板（模板&#x2F;核&#x2F;kernel&#x2F;mask）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png">
+<meta property="article:published_time" content="2026-10-21T12:12:32.000Z">
+<meta property="article:modified_time" content="2026-10-21T12:14:43.060Z">
+<meta property="article:author" content="ZestfulYK">
+<meta property="article:tag" content="OpenCV">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "模板卷积",
+  "url": "https://zestfulyk.github.io/ZestfulYK-blog/2026/10/21/%E6%A8%A1%E6%9D%BF%E5%8D%B7%E7%A7%AF/",
+  "image": "https://zestfulyk.github.io/ZestfulYK-blog/images/avatar.png",
+  "datePublished": "2026-10-21T12:12:32.000Z",
+  "dateModified": "2026-10-21T12:14:43.060Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ZestfulYK",
+      "url": "https://zestfulyk.github.io/ZestfulYK-blog"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/ZestfulYK-blog/images/avatar.png"><link rel="canonical" href="https://zestfulyk.github.io/ZestfulYK-blog/2026/10/21/%E6%A8%A1%E6%9D%BF%E5%8D%B7%E7%A7%AF/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/ZestfulYK-blog/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/ZestfulYK-blog/',
+  algolia: undefined,
+  localSearch: {"path":"/ZestfulYK-blog/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '模板卷积',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/ZestfulYK-blog/images/avatar.png" onerror="this.onerror=null;this.src='/ZestfulYK-blog/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/ZestfulYK-blog/archives/"><div class="headline">文章</div><div class="length-num">64</div></a><a href="/ZestfulYK-blog/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/ZestfulYK-blog/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/friends/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/ZestfulYK-blog/"><span class="site-name">ZestfulYK的Blog</span></a><a class="nav-page-title" href="/ZestfulYK-blog/"><span class="site-name">模板卷积</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/friends/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/ZestfulYK-blog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">模板卷积</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-21T12:12:32.000Z" title="发表于 2026-10-21 20:12:32">2026-10-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-21T12:14:43.060Z" title="更新于 2026-10-21 20:14:43">2026-10-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上课使用到的一个网站 <a target="_blank" rel="noopener" href="https://poloclub.github.io/cnn-explainer/">CNN Explainer</a><br>可视化 CNN，讲卷积的时候看着很爽，那个kernel滑过去的样子一目了然</p>
+<p>这篇是课上临时记的，后来找AI又补了一堆，算是把模板卷积这一块（空间域滤波）从头捋了一遍</p>
+<p>这篇文章的旧版本基本没有内容,只有框架,这篇文章是找AI拓充出来的(感谢DeepSeek老师,注意到上面那句话也是他写的)</p>
+<h1 id="模板卷积到底在算啥"><a href="#模板卷积到底在算啥" class="headerlink" title="模板卷积到底在算啥"></a>模板卷积到底在算啥</h1><p>模板（模板/核/kernel/mask）就是一个小矩阵，比如 $3\times3$、$5\times5$</p>
+<p>拿它扣在图像的每一个像素上，把覆盖到的像素和核里对应位置的数相乘，再全部加起来，得到的新值就是输出图像对应位置的像素值</p>
+<p>写成公式，核 $K$ 大小 $(2a+1)\times(2a+1)$，作用在 $(x,y)$ 上：</p>
+<script type="math/tex; mode=display">
+g(x,y)=\sum_{i=-a}^{a}\sum_{j=-a}^{a}K(i,j)\cdot f(x+i,y+j)</script><p>再按需要除以核元素之和（归一化系数），或者取绝对值/加偏移</p>
+<p>所以本质上就是一个<strong>加权求和</strong>，核里的数字决定“看重周围哪些邻居”</p>
+<h2 id="相关和卷积的区别"><a href="#相关和卷积的区别" class="headerlink" title="相关和卷积的区别"></a>相关和卷积的区别</h2><p>严格来说上面这个式子叫<strong>互相关（correlation）</strong>，卷积要先把核翻转 $180^\circ$：</p>
+<script type="math/tex; mode=display">
+g(x,y)=\sum_{i}\sum_{j}K(i,j)\cdot f(x-i,y-j)</script><p>不过图像处理里的模板基本都<strong>左右上下对称</strong>（均值、高斯、拉普拉斯、Sobel 全是对称的），翻不翻一样，所以大家平时都混着叫卷积</p>
+<p>只有在核不对称的时候（比如某些一阶微分模板）才要注意一下</p>
+<h2 id="为什么核要“归一化”"><a href="#为什么核要“归一化”" class="headerlink" title="为什么核要“归一化”"></a>为什么核要“归一化”</h2><p>如果是全正的平滑核，核元素加起来是 $S$，那么不除以 $S$ 的话，输出灰度会被放大 $S$ 倍，整张图直接过曝，白花花一片</p>
+<p>所以均值核前面要乘 $\frac{1}{9}$，高斯核前面要乘 $\frac{1}{16}$</p>
+<p>含负数的锐化核则要保证<strong>元素之和 = 0</strong>，这样图像中灰度平坦的区域（周围值都差不多）算出来正好是 0，也就是“没变化的地方不给响应”，这才叫边缘检测</p>
+<h1 id="边缘点的处理"><a href="#边缘点的处理" class="headerlink" title="边缘点的处理"></a>边缘点的处理</h1><p>核滑到图像最边上，会有一圈“吃不饱”的位置，凑不满 $3\times3$ 个邻居，这时候怎么办：</p>
+<ul>
+<li><strong>舍弃</strong>：只计算内部能完整覆盖的区域，输出图会小一圈（$(W-2)\times(H-2)$），最简单但会丢边上的信息</li>
+<li><strong>往外复制</strong>：把最边上的像素值往外延拓一圈（<code>BORDER_REPLICATE</code>），或者镜像（<code>BORDER_REFLECT</code>）、补零（<code>BORDER_CONSTANT</code>）</li>
+<li>补零的问题是在原图边界上会凭空造出一条“灰度突变”，边缘检测时会出现一圈假的亮边</li>
+</ul>
+<p>OpenCV 里 <code>filter2D</code> 的最后一个参数就是干这个的</p>
+<h1 id="矩阵（模板）的分类"><a href="#矩阵（模板）的分类" class="headerlink" title="矩阵（模板）的分类"></a>矩阵（模板）的分类</h1><p>按“核里有没有负数”大致分成两类，用途完全相反</p>
+<h2 id="全正"><a href="#全正" class="headerlink" title="全正"></a>全正</h2><h3 id="全部为-1-——-均值（盒式）滤波"><a href="#全部为-1-——-均值（盒式）滤波" class="headerlink" title="全部为 1 —— 均值（盒式）滤波"></a>全部为 1 —— 均值（盒式）滤波</h3><script type="math/tex; mode=display">
+\frac{1}{9}\begin{pmatrix}1&1&1\\1&1&1\\1&1&1\end{pmatrix}</script><p>就是把周围 9 个像素求平均，使得图像更光滑、更平滑</p>
+<p>核越大越糊，$5\times5$ 就是 25 个点求平均</p>
+<p>它的毛病是<strong>模糊得没轻重</strong>——中心点和八丈远的邻居权重一样，处理完会丢细节、边缘变圆</p>
+<h3 id="高斯加权"><a href="#高斯加权" class="headerlink" title="高斯加权"></a>高斯加权</h3><script type="math/tex; mode=display">
+\frac{1}{16}\begin{pmatrix}1&2&1\\2&4&2\\1&2&1\end{pmatrix}</script><p>高斯加权平均，越靠近中心的邻居权重越大，能尽量保留原始数据</p>
+<p>核元素由二维高斯函数采样得到：</p>
+<script type="math/tex; mode=display">
+G(x,y)=\frac{1}{2\pi\sigma^2}e^{-\frac{x^2+y^2}{2\sigma^2}}</script><p>指数部分有 $e^{-(x^2+y^2)}$ 这种结构，所以看起来正好是 $1,2,1$ / $2,4,2$ / $1,2,1$</p>
+<p>$\sigma$ 越大，核里各项越平均，就越接近均值滤波；$\sigma$ 越小，就越接近“只信自己”</p>
+<p>用整数近似再统一除以和（这里是 16），是为了避免浮点核带来的额外开销，误差可以忽略</p>
+<p>高斯核还有个很重要的性质：<strong>可分离</strong>，一个 $3\times3$ 的二维高斯可以拆成两个一维核</p>
+<script type="math/tex; mode=display">
+\frac{1}{16}\begin{pmatrix}1&2&1\\2&4&2\\1&2&1\end{pmatrix}=\frac{1}{4}\begin{pmatrix}1\\2\\1\end{pmatrix}\cdot\frac{1}{4}\begin{pmatrix}1&2&1\end{pmatrix}</script><p>于是 $n\times n$ 的二维卷积可以从 $n^2$ 次乘法降到 $2n$ 次，实际工程里几乎都是这么实现的</p>
+<h2 id="含有负数"><a href="#含有负数" class="headerlink" title="含有负数"></a>含有负数</h2><p>负数核用来抠出“变化量”，也就是边缘</p>
+<h3 id="四连通拉普拉斯"><a href="#四连通拉普拉斯" class="headerlink" title="四连通拉普拉斯"></a>四连通拉普拉斯</h3><script type="math/tex; mode=display">
+\begin{pmatrix}0&-1&0\\-1&4&-1\\0&-1&0\end{pmatrix}</script><p>中心减掉上下左右，相当于<strong>相减</strong>，使得图像锐化：灰度连续的地方相互抵消得 0，只有灰度不连续的地方才留下非零值，就有效果了</p>
+<p>系数 $4$ 保证核元素之和为 $0$，所以平坦区域输出 0</p>
+<h3 id="八连通拉普拉斯"><a href="#八连通拉普拉斯" class="headerlink" title="八连通拉普拉斯"></a>八连通拉普拉斯</h3><script type="math/tex; mode=display">
+\begin{pmatrix}-1&-1&-1\\-1&8&-1\\-1&-1&-1\end{pmatrix}</script><p>连对角线的邻居一起减，中心系数变成 $8$</p>
+<p>对斜向的边缘比四连通更敏感，但对角线方向的噪声也会被放大，抗噪更差</p>
+<h1 id="中值滤波"><a href="#中值滤波" class="headerlink" title="中值滤波"></a>中值滤波</h1><p>和卷积的思路不一样：不是加权求和，而是<strong>选择附近几个点（比如 $3\times3$ 共 9 个）排序后取中值</strong>作为中心像素的新值</p>
+<script type="math/tex; mode=display">
+g(x,y)=\text{median}\{\,f(x+i,y+j)\mid -1\le i,j\le 1\,\}</script><p>它最大的好处是能防止（去掉）椒盐噪声：一个孤立的噪点（极黑或极白的点）在 9 个数里排序一定排到最边上，中值直接把它丢掉，其它 8 个正常值几乎不变</p>
+<p>这也是它比均值滤波强的地方——均值滤波遇到噪点会把噪声“抹匀”到一片，中值滤波是真正把噪点<strong>删掉</strong>，同时还能保住边缘的陡峭程度（边缘两侧的值本来就是多数，中值会取到其中一侧的值）</p>
+<p>但是当在边缘处有噪声时，会导致边缘的扩大或者缩小</p>
+<p>原因是边缘处窗口里两侧像素的个数本来就不平衡，中值被“多数派”拉走，于是边界会往外挪一点或者往里缩一点</p>
+<p>另外排序是要花时间的，$n\times n$ 窗口排序复杂度高，实际实现里会用快排/直方图等技巧优化</p>
+<p>补充一句：中值滤波对<strong>高斯噪声</strong>效果一般，那是对着椒盐噪声的专门武器</p>
+<h1 id="锐化"><a href="#锐化" class="headerlink" title="锐化"></a>锐化</h1><h2 id="边缘定义"><a href="#边缘定义" class="headerlink" title="边缘定义"></a>边缘定义</h2><p>指图像局部灰度显著变化的部分</p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><ul>
+<li><strong>阶跃不连续</strong>：灰度从一个平台跳到另一个平台（比如物体轮廓、桌子边）</li>
+<li><strong>线条不连续</strong>：灰度先跳上去又跳回来，宽度很窄（比如电线、细纹路）</li>
+</ul>
+<p>边缘检测算子对这两种响应的形状不一样，这个后面看一阶/二阶微分的区别就很清楚了</p>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>其实是理想化了，加强轮廓</p>
+<p>图像本来就有点糊，锐化的想法是“把变化的地方变化得更猛一点”，让轮廓看得更清楚</p>
+<p>注意锐化<strong>不能恢复已经丢失的信息</strong>，只是把残留的边缘对比度拉大，纯噪声也会被一起拉大</p>
+<p>等一下，看到课件上的实现好像就是二维二阶差分，hyw</p>
+<p>没错，拉普拉斯就是二维二阶导数的离散形式。令 $f$ 在 $x$ 方向的一阶差分为</p>
+<script type="math/tex; mode=display">
+\Delta_x f = f(x+1,y)-f(x,y)</script><p>再差分一次就是二阶：</p>
+<script type="math/tex; mode=display">
+\Delta_x^2 f=f(x+1,y)-2f(x,y)+f(x-1,y)</script><p>$y$ 方向同理，两者相加就是</p>
+<script type="math/tex; mode=display">
+\nabla^2 f=f(x+1,y)+f(x-1,y)+f(x,y+1)+f(x,y-1)-4f(x,y)</script><p>把它按“每个邻居的系数”写回模板：</p>
+<script type="math/tex; mode=display">
+\begin{pmatrix}0&1&0\\1&-4&1\\0&1&0\end{pmatrix}</script><p>正好和我们前面那个四连通拉普拉斯<strong>符号相反</strong>，只是差一个负号（两者都叫拉普拉斯模板，习惯上不同教材写得不一样）</p>
+<p>这就是为什么中心是 4、周围是 $-1$，它压根不是拍脑袋想出来的，就是二阶差分</p>
+<h2 id="一阶微分-vs-二阶差分"><a href="#一阶微分-vs-二阶差分" class="headerlink" title="一阶微分 vs 二阶差分"></a>一阶微分 vs 二阶差分</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>一阶（梯度，如 Sobel/Prewitt）</th>
+<th>二阶（拉普拉斯）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平坦区响应</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>阶跃边缘</td>
+<td>一个宽的“平台”（斜坡越陡值越大）</td>
+<td>一正一负两个尖峰，中间穿越零点</td>
+</tr>
+<tr>
+<td>线条边缘</td>
+<td>两个尖峰（上去一个、下来一个）</td>
+<td>三个峰（中间最强，两侧反号）</td>
+</tr>
+<tr>
+<td>定位</td>
+<td>边界定位在峰值处，<strong>比较粗</strong></td>
+<td>边界定位在<strong>零点交叉</strong>处，定位准</td>
+</tr>
+<tr>
+<td>噪声</td>
+<td>相对温和</td>
+<td>二阶导极其放大噪声</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>所以：一阶适合找“边缘有多强”，二阶适合找“边缘在哪里”，但二阶必须先平滑</p>
+<h2 id="水平-垂直锐化"><a href="#水平-垂直锐化" class="headerlink" title="水平/垂直锐化"></a>水平/垂直锐化</h2><p>一阶水平锐化（上下相减）：</p>
+<script type="math/tex; mode=display">
+\begin{pmatrix}1&2&1\\0&0&0\\-1&-2&-1\end{pmatrix}</script><p>这个是 Sobel 的 $y$ 方向核，检测的是<strong>水平方向的边缘</strong>（因为它是上下两行相减，灰度在竖直方向变化越大，响应越大）</p>
+<p>中间那列权重是 2、两边是 1，等于在求差分的同时顺手做了一次 $[1,2,1]$ 的平滑，比 Prewitt 的 $[[1,1,1],[0,0,0],[-1,-1,-1]]$ 抗噪好一点</p>
+<p>要是转置一下，就变成垂直的了：</p>
+<script type="math/tex; mode=display">
+\begin{pmatrix}1&0&-1\\2&0&-2\\1&0&-1\end{pmatrix}</script><p>两个方向分别算完，幅值取</p>
+<script type="math/tex; mode=display">
+|\nabla f|=\sqrt{G_x^2+G_y^2}\quad\text{（实际常写成 }|G_x|+|G_y|\text{ 省开方）}</script><p>方向取 $\theta=\arctan\dfrac{G_y}{G_x}$，这就是梯度的幅值和方向，Canny 里要用</p>
+<h2 id="计算得到负数的解决办法"><a href="#计算得到负数的解决办法" class="headerlink" title="计算得到负数的解决办法"></a>计算得到负数的解决办法</h2><p>卷积结果是负数说明这里有反向的灰度跳变，但像素值不能是负的（<code>uchar</code> 是 $0\sim255$，负数会直接溢出变成奇怪的值）</p>
+<p>解决办法是<strong>整体抬升</strong>：减去最小的那个值（或者加一个偏移量），就变成正数了</p>
+<script type="math/tex; mode=display">
+g'(x,y)=\text{round}\left(\frac{g(x,y)-\min g}{\max g-\min g}\times 255\right)</script><p>这样做的代价是“0 值（平坦区）不再对应 0”，整张图底色被抬灰了，看起来灰蒙蒙一片，所以直接显示拉普拉斯结果一般不好看——它的正确定位是<strong>中间结果</strong>，不是最终图像</p>
+<h2 id="差异图和原图叠加"><a href="#差异图和原图叠加" class="headerlink" title="差异图和原图叠加"></a>差异图和原图叠加</h2><p>差异图（边缘图）和原图叠加就是结果图了：</p>
+<script type="math/tex; mode=display">
+\text{锐化结果} = \text{原图} + k\cdot(\text{边缘图})</script><p>按拉普拉斯的符号习惯，也可能是减：</p>
+<script type="math/tex; mode=display">
+g = f - \nabla^2 f</script><p>两者是同一件事，取决于你用的模板中心是 $4$ 还是 $-4$</p>
+<p>如果模板是中心 $4$、周围 $-1$，那么 $f-\nabla^2 f$ 展开出来就是</p>
+<script type="math/tex; mode=display">
+\begin{pmatrix}0&-1&0\\-1&5&-1\\0&-1&0\end{pmatrix}</script><p>这就是“<strong>原图 + 拉普拉斯</strong>”合成的锐化核，一个 $3\times3$ 模板就能一步搞定，不用真的算两遍</p>
+<p>八连通版本中心就是 $9$：</p>
+<script type="math/tex; mode=display">
+\begin{pmatrix}-1&-1&-1\\-1&9&-1\\-1&-1&-1\end{pmatrix}</script><p>这类“原图叠边缘”的做法有个名字，叫<strong>非锐化掩蔽（unsharp masking）</strong>：先高斯模糊得到“低频”，再用原图减模糊得到“高频（边缘细节）”，最后原图加回高频</p>
+<p>$k$ 就是强度系数，取大了会出光晕（halo），边缘两侧出现明显的亮白/暗黑描边</p>
+<h1 id="Canny-算子"><a href="#Canny-算子" class="headerlink" title="Canny 算子"></a>Canny 算子</h1><p>最优边缘检测器，理论上满足三个准则：</p>
+<ul>
+<li>有良好检测能力：真正的边缘不漏检，假的边缘不误检</li>
+<li>良好的定位性能：检测出的边缘位置和真实边缘位置尽量接近</li>
+<li>单一边缘响应：一条边缘只输出一条，不能变成多条粗带</li>
+</ul>
+<p>实际流程分几步：滤噪，然后计算幅值（看差异），非极大值抑制，双阈值+滞后连接</p>
+<h2 id="第一步：高斯滤波去噪"><a href="#第一步：高斯滤波去噪" class="headerlink" title="第一步：高斯滤波去噪"></a>第一步：高斯滤波去噪</h2><p>为什么一定要先滤噪？因为下一步是求导，求导会放大噪声（一阶导把噪声放大一次，拉普拉斯这种二阶导放大得更狠），不平滑的话满屏都是假边缘</p>
+<p>通常用 $5\times5$、$\sigma\approx1.4$ 的高斯核</p>
+<h2 id="第二步：计算梯度幅值和方向"><a href="#第二步：计算梯度幅值和方向" class="headerlink" title="第二步：计算梯度幅值和方向"></a>第二步：计算梯度幅值和方向</h2><p>一般就用 Sobel 的 $G_x$、$G_y$ 两个模板，得到</p>
+<script type="math/tex; mode=display">
+M=\sqrt{G_x^2+G_y^2},\qquad \theta=\arctan\frac{G_y}{G_x}</script><p>把 $\theta$ 量化到 $4$ 个方向（$0^\circ,45^\circ,90^\circ,135^\circ$），因为后面 NMS 只需要知道“梯度大致朝向哪边”</p>
+<h2 id="第三步：非极大值抑制（NMS）"><a href="#第三步：非极大值抑制（NMS）" class="headerlink" title="第三步：非极大值抑制（NMS）"></a>第三步：非极大值抑制（NMS）</h2><p>方法：沿梯度方向垂直计算，值保留最大值</p>
+<p>更准确地说，是<strong>沿梯度方向</strong>（不是垂直！）取相邻两个点，如果当前点的幅值比这两个都大，就保留，否则置 0</p>
+<p>严格讲：边缘是沿着“垂直于梯度”的方向延伸的，梯度方向横穿边缘，所以在梯度方向上比较，才能判断这个点是不是这条边缘上的“最亮的一行”</p>
+<p>实现上因为像素是网格，$\theta$ 落在哪一区间就决定比较哪两个邻居：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>梯度方向</th>
+<th>比较的两个邻居</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$0^\circ$（水平）</td>
+<td>左、右</td>
+</tr>
+<tr>
+<td>$90^\circ$（垂直）</td>
+<td>上、下</td>
+</tr>
+<tr>
+<td>$45^\circ$</td>
+<td>左上、右下</td>
+</tr>
+<tr>
+<td>$135^\circ$</td>
+<td>右上、左下</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>作用：让边缘强制变细</p>
+<p>（hyw，为什么这么暴力 —— 因为梯度幅值图里的“一条边缘”其实是一条有宽度的“山脊”，山脊上每个点都有一个不小的幅值；NMS 就是沿着横切山脊的方向做一次“取脊线”，只留下每个横截面上的最高点，于是宽度被压成<strong>单像素</strong>。暴力，但有效，而且它只是局部比较，$O(1)$ 就能判断，代价极低）</p>
+<h2 id="第四步：双阈值检测-滞后连接"><a href="#第四步：双阈值检测-滞后连接" class="headerlink" title="第四步：双阈值检测 + 滞后连接"></a>第四步：双阈值检测 + 滞后连接</h2><p>（课件这里没细讲，但它是 Canny 单一边缘响应的关键）</p>
+<ul>
+<li>高阈值 $T_H$：幅值超过它的点，认定为“强边缘”，直接保留</li>
+<li>低阈值 $T_L$：低于它的点直接丢掉</li>
+<li>居于中间的“弱边缘”：只有和强边缘<strong>相连</strong>时才保留，否则丢掉</li>
+</ul>
+<p>这样就能把真正的边缘连成完整的一条线，同时又不会让噪声引起的零星响应留下来</p>
+<p>一般取 $T_H:T_L=2:1$ 或 $3:1$</p>
+<h1 id="OpenCV-里怎么写"><a href="#OpenCV-里怎么写" class="headerlink" title="OpenCV 里怎么写"></a>OpenCV 里怎么写</h1><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Mat img = <span class="built_in">imread</span>(<span class="string">&quot;lena.jpg&quot;</span>, IMREAD_GRAYSCALE);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 均值滤波</span></span><br><span class="line">Mat mean; <span class="built_in">blur</span>(img, mean, <span class="built_in">Size</span>(<span class="number">3</span>,<span class="number">3</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 高斯滤波</span></span><br><span class="line">Mat gauss; <span class="built_in">GaussianBlur</span>(img, gauss, <span class="built_in">Size</span>(<span class="number">3</span>,<span class="number">3</span>), <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 自定义模板（注意第六个参数是 ddepth，负数是溢出时用 CV_8U 会截断）</span></span><br><span class="line">Mat kernel = (<span class="built_in">Mat_</span>&lt;<span class="type">float</span>&gt;(<span class="number">3</span>,<span class="number">3</span>) &lt;&lt; <span class="number">0</span>,<span class="number">-1</span>,<span class="number">0</span>, <span class="number">-1</span>,<span class="number">4</span>,<span class="number">-1</span>, <span class="number">0</span>,<span class="number">-1</span>,<span class="number">0</span>);</span><br><span class="line">Mat lap; <span class="built_in">filter2D</span>(img, lap, CV_32F, kernel);</span><br><span class="line"><span class="comment">// 拉普拉斯有负数，要转回来显示</span></span><br><span class="line">Mat lapShow; <span class="built_in">convertScaleAbs</span>(lap, lapShow);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一步到位的锐化核</span></span><br><span class="line">Mat sharpK = (<span class="built_in">Mat_</span>&lt;<span class="type">float</span>&gt;(<span class="number">3</span>,<span class="number">3</span>) &lt;&lt; <span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>, <span class="number">-1</span>,<span class="number">9</span>,<span class="number">-1</span>, <span class="number">-1</span>,<span class="number">-1</span>,<span class="number">-1</span>);</span><br><span class="line">Mat sharp; <span class="built_in">filter2D</span>(img, sharp, CV_8U, sharpK);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 中值滤波（ksize 必须是奇数且大于1）</span></span><br><span class="line">Mat med; <span class="built_in">medianBlur</span>(img, med, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Sobel</span></span><br><span class="line">Mat gx, gy, mag;</span><br><span class="line"><span class="built_in">Sobel</span>(img, gx, CV_32F, <span class="number">1</span>, <span class="number">0</span>, <span class="number">3</span>);</span><br><span class="line"><span class="built_in">Sobel</span>(img, gy, CV_32F, <span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>);</span><br><span class="line"><span class="built_in">magnitude</span>(gx, gy, mag);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Canny（内部已经做了高斯、Sobel、NMS、双阈值）</span></span><br><span class="line">Mat edges; <span class="built_in">Canny</span>(img, edges, <span class="number">50</span>, <span class="number">150</span>);</span><br></pre></td></tr></table></figure>
+<p>几个踩过的坑：</p>
+<ul>
+<li><code>filter2D</code> 输入是 <code>CV_8U</code> 时，负数和超过 255 的值会被<strong>截断</strong>（不是归一化），所以算梯度、拉普拉斯一定要用 <code>CV_32F</code></li>
+<li>输出显示前用 <code>convertScaleAbs</code>（取绝对值再转 <code>CV_8U</code>），或者 <code>normalize</code> 到 $0\sim255$</li>
+<li>Canny 的两个阈值就是前面说的 $T_L$、$T_H$，调参时先固定比例再整体缩放</li>
+</ul>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>把这一堆算子按“核元素符号”排一下就很清楚了：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>核元素</th>
+<th>代表</th>
+<th>作用</th>
+<th>注意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全正，和为 1</td>
+<td>均值、高斯</td>
+<td>平滑、去噪、模糊</td>
+<td>会把边缘一起糊掉；高斯比均值保细节</td>
+</tr>
+<tr>
+<td>有正有负，和为 0</td>
+<td>拉普拉斯、Sobel</td>
+<td>找边缘、锐化</td>
+<td>必须归一化抬升才能显示；放大噪声</td>
+</tr>
+<tr>
+<td>非线性</td>
+<td>中值</td>
+<td>去椒盐噪声</td>
+<td>排序耗时；会挪动边缘位置</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>一句话总结：<strong>全正 = 平均（低通），含负 = 差分（高通），锐化 = 原图 + 高通</strong></p>
+<p>Canny 就是把“高斯（低通）→ Sobel（高通）→ NMS（细化）→ 双阈值（筛选）”串起来的一套工程化最优解</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zestfulyk.github.io/ZestfulYK-blog">ZestfulYK</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zestfulyk.github.io/ZestfulYK-blog/2026/10/21/%E6%A8%A1%E6%9D%BF%E5%8D%B7%E7%A7%AF/">https://zestfulyk.github.io/ZestfulYK-blog/2026/10/21/%E6%A8%A1%E6%9D%BF%E5%8D%B7%E7%A7%AF/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://zestfulyk.github.io/ZestfulYK-blog" target="_blank">ZestfulYK的Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/ZestfulYK-blog/tags/OpenCV/">OpenCV</a></div><div class="post-share"><div class="social-share" data-image="/ZestfulYK-blog/images/avatar.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/ZestfulYK-blog/2026/10/21/%E7%BA%BF%E6%AE%B5%E6%A0%91%E8%BF%9B%E9%98%B6%E7%AC%94%E8%AE%B02/" title="线段树进阶笔记2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">线段树进阶笔记2</div></div><div class="info-2"><div class="info-item-1">新内容权值线段树和可持久化线段树 引入下面要用到的权值线段树的概念类似于使用树状数组完成最长不下降子序列的那个题, 那么先复习一下怎么使用树状数组完成最长不上升子序列  要是连这个最基本的dp也看不懂的话,接下来要讲的不适于你理解  权值树状数组以实现最长不上升子序列为例(B3637) dp每一步转移的目标是,找到在自己前面的, 值小于等于自身的, 最长序列长度 在自己前面这个条件值自动满足的,因为dp转移的过程保证了是从前往后递推的 那么接下来要考虑的就是后面两个条件了 注意到树状数组可以维护前缀,所以我们把具体的数值对应下标,而下标的值是dp值  下标并不代表原始数组中的位置,而是对应值,填写在上面的才是要表达和维护的值  那么就可以求前缀最大值了, 12345678910111213141516171819202122const ll N=1e6+10;ll tr[N],m=N-10;ll lowerbit(ll x)&#123;return x&amp;(-x);&#125;void update(ll x,ll k)&#123;  for(;x&lt;=m;x+=low...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/ZestfulYK-blog/2026/10/19/OpenCV%E5%AE%9E%E6%88%98-%E7%9B%B4%E6%96%B9%E5%9B%BE%E5%9D%87%E8%A1%A1%E5%8C%96/" title="OpenCV实战-直方图均衡化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-19</div><div class="info-item-2">OpenCV实战-直方图均衡化</div></div><div class="info-2"><div class="info-item-1">笑了,学校终于讲算法了,急死我了 但是真没想到这么短小的算法这么好玩 直方图均衡化实现,先计算出现概率,然后求前缀和 灰度为0的还是0,其他的前缀值和乘上最大灰度值,然后给这个值四舍五入作为新值 不改变灰度的出现次数 力图使等长区间内出现的像素数接近相等 第一步:彩色变灰色彩色变灰色:加起来除以3 1234Mat img=imread(&quot;dark.jpg&quot;);Mat a[3];split(img,a);Mat b=(a[0]+a[1]+a[2])/3; 第二步:统计出现灰度频率注意点是,灰度图中,每个格子的类型就是uchar了,前面的文章中有提到 123456vector&lt;double&gt; cnt(260,0);for(int i=0;i&lt;r;i++)&#123;  for(int j=0;j&lt;c;j++)&#123;    cnt[b.at&lt;uchar&gt;(i,j)]++;  &#125;&#125; 第三步:得到新的像素值这里先求前缀和,然后除总像素值,最后乘以255再四舍五入 123for(int i=1;i&lt;=25...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2026/10/11/OpenCV%E5%AE%9E%E7%8E%B0%E7%94%BB%E6%9D%BF/" title="OpenCV实现画板"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-11</div><div class="info-item-2">OpenCV实现画板</div></div><div class="info-2"><div class="info-item-1">键盘控制图像的切换这个算最简单的一个部分了,只要使用waitKey大法获取就行 callback这里要注意的是,回调函数只有在鼠标状态变化时才会调用,所以清空这一步得写主函数里面 模拟画图这里的实现方式是,存储旧的图,每次中间模拟的时候,都在旧的图上重新绘制 event这个是一个查询某一瞬间状态的变量,比如按下或者抬起 flags这个是一个状态压缩写的,查询所有状态的变量,但是不能获取瞬间事件 完整代码12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455#include&lt;bits/stdc++.h&gt;#include&lt;opencv2/opencv.hpp&gt;using namespace cv;using namespace std;Point startpos;int curshape=0;Mat img,backup;bool drawing=0;void drawshape(Mat&amp;canvas,i...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2026/10/08/OpenCV%E6%96%B0%E6%89%8B%E6%95%99%E7%A8%8B/" title="OpenCV新手教程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-08</div><div class="info-item-2">OpenCV新手教程</div></div><div class="info-2"><div class="info-item-1">查看函数用法这个必须得学会!!!因为openCV是个开源项目,所以函数都是公开的,必须自己学会查看,这个看我前面发的文章就行了 显示窗口首先是namedWindow,创建一个新的窗口,并命名然后imshow,展示图片,后面要你给一个矩阵,写0就行(空矩阵)最后是waitKey,用于接收鼠标和键盘的指令,同时延时,保持窗口,填入0则一直显示destroyAllWindows关闭所有窗口 标准写法: 1234567int main()&#123;  namedWindow(&quot;new&quot;,WINDOW_NORMAL|WINDOW_KEEPRATIO);  resizeWindow(&quot;new&quot;,640,480);  imshow(&quot;new&quot;,0);  char key=waitKey(0);  if(key==&#x27;q&#x27;) destroyAllWindows();&#125; waiKey实际返回的是16位的整数值,所以如果是和char比较,一个取低8位,也就是写成: 1key&amp;(0xFF) F是16进制下...</div></div></div></a><a class="pagination-related" href="/ZestfulYK-blog/2026/09/28/opencv%E5%85%A5%E9%97%A8/" title="opencv入门"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-28</div><div class="info-item-2">opencv入门</div></div><div class="info-2"><div class="info-item-1">OpenCV 入门教程(C++ 版) 面向零基础入门，所有示例均为完整可编译的 C++ 代码。作者的本机环境：Windows + MinGW (GCC) + OpenCV 4.12.0   目录 OpenCV 入门教程(C++ 版) 目录 0. 环境与编译方式 0.1 编译命令 0.2 头文件 0.3 命名空间   1. 第一个程序 必记的三个窗口函数   2. Mat：OpenCV 的核心数据结构 2.1 创建 2.2 类型命名规则 CV_&lt;位深&gt;&lt;有无符号&gt;&lt;通道数&gt; 2.3 浅拷贝 vs 深拷贝(重点) 2.4 访问像素的三种方式 2.4.1 Vec3b和uchar   2.5 多通道分离/合并与混合 2.6 通道转置：reshape   3. 读写与显示图像 4. 颜色空间与通道操作 4.1 补充:HSV是什么   5. ROI：感兴趣区域 6. 绘图与文字 7. 图像算术与位运算 7.1 加减乘除、混合 7.1.1 逐句解释   7.2 位运算与掩码   8. 几何变换 9. 图像平滑(滤波去噪) 10. 阈值与二值化 11. 形态学...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/ZestfulYK-blog/images/avatar.png" onerror="this.onerror=null;this.src='/ZestfulYK-blog/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZestfulYK</div><div class="author-info-description">这是ZestfulYK的博客网站,求关注</div><div class="site-data"><a href="/ZestfulYK-blog/archives/"><div class="headline">文章</div><div class="length-num">64</div></a><a href="/ZestfulYK-blog/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/ZestfulYK-blog/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zestfulyk"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/zestfulyk" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://space.bilibili.com/3546771233966592?spm_id_from=333.1007.0.0.0" target="_blank" title="Bilibili"><i class="fab fa-bilibili" style="color: #00A1D6;"></i></a><a class="social-icon" href="mailto:717056060@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">若博客中的文章有问题,请及时发邮件告诉我</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E5%8D%B7%E7%A7%AF%E5%88%B0%E5%BA%95%E5%9C%A8%E7%AE%97%E5%95%A5"><span class="toc-number">2.</span> <span class="toc-text">模板卷积到底在算啥</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E5%92%8C%E5%8D%B7%E7%A7%AF%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.1.</span> <span class="toc-text">相关和卷积的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%A0%B8%E8%A6%81%E2%80%9C%E5%BD%92%E4%B8%80%E5%8C%96%E2%80%9D"><span class="toc-number">2.2.</span> <span class="toc-text">为什么核要“归一化”</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BE%B9%E7%BC%98%E7%82%B9%E7%9A%84%E5%A4%84%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">边缘点的处理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%EF%BC%88%E6%A8%A1%E6%9D%BF%EF%BC%89%E7%9A%84%E5%88%86%E7%B1%BB"><span class="toc-number">4.</span> <span class="toc-text">矩阵（模板）的分类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%A8%E6%AD%A3"><span class="toc-number">4.1.</span> <span class="toc-text">全正</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E9%83%A8%E4%B8%BA-1-%E2%80%94%E2%80%94-%E5%9D%87%E5%80%BC%EF%BC%88%E7%9B%92%E5%BC%8F%EF%BC%89%E6%BB%A4%E6%B3%A2"><span class="toc-number">4.1.1.</span> <span class="toc-text">全部为 1 —— 均值（盒式）滤波</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%AB%98%E6%96%AF%E5%8A%A0%E6%9D%83"><span class="toc-number">4.1.2.</span> <span class="toc-text">高斯加权</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AB%E6%9C%89%E8%B4%9F%E6%95%B0"><span class="toc-number">4.2.</span> <span class="toc-text">含有负数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E8%BF%9E%E9%80%9A%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF"><span class="toc-number">4.2.1.</span> <span class="toc-text">四连通拉普拉斯</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AB%E8%BF%9E%E9%80%9A%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF"><span class="toc-number">4.2.2.</span> <span class="toc-text">八连通拉普拉斯</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%AD%E5%80%BC%E6%BB%A4%E6%B3%A2"><span class="toc-number">5.</span> <span class="toc-text">中值滤波</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%94%90%E5%8C%96"><span class="toc-number">6.</span> <span class="toc-text">锐化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%B9%E7%BC%98%E5%AE%9A%E4%B9%89"><span class="toc-number">6.1.</span> <span class="toc-text">边缘定义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%B1%BB"><span class="toc-number">6.1.1.</span> <span class="toc-text">分类</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E7%9A%84"><span class="toc-number">6.2.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E9%98%B6%E5%BE%AE%E5%88%86-vs-%E4%BA%8C%E9%98%B6%E5%B7%AE%E5%88%86"><span class="toc-number">6.3.</span> <span class="toc-text">一阶微分 vs 二阶差分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B0%B4%E5%B9%B3-%E5%9E%82%E7%9B%B4%E9%94%90%E5%8C%96"><span class="toc-number">6.4.</span> <span class="toc-text">水平&#x2F;垂直锐化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%BE%97%E5%88%B0%E8%B4%9F%E6%95%B0%E7%9A%84%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="toc-number">6.5.</span> <span class="toc-text">计算得到负数的解决办法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%AE%E5%BC%82%E5%9B%BE%E5%92%8C%E5%8E%9F%E5%9B%BE%E5%8F%A0%E5%8A%A0"><span class="toc-number">6.6.</span> <span class="toc-text">差异图和原图叠加</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Canny-%E7%AE%97%E5%AD%90"><span class="toc-number">7.</span> <span class="toc-text">Canny 算子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E9%AB%98%E6%96%AF%E6%BB%A4%E6%B3%A2%E5%8E%BB%E5%99%AA"><span class="toc-number">7.1.</span> <span class="toc-text">第一步：高斯滤波去噪</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E8%AE%A1%E7%AE%97%E6%A2%AF%E5%BA%A6%E5%B9%85%E5%80%BC%E5%92%8C%E6%96%B9%E5%90%91"><span class="toc-number">7.2.</span> <span class="toc-text">第二步：计算梯度幅值和方向</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E9%9D%9E%E6%9E%81%E5%A4%A7%E5%80%BC%E6%8A%91%E5%88%B6%EF%BC%88NMS%EF%BC%89"><span class="toc-number">7.3.</span> <span class="toc-text">第三步：非极大值抑制（NMS）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E5%8F%8C%E9%98%88%E5%80%BC%E6%A3%80%E6%B5%8B-%E6%BB%9E%E5%90%8E%E8%BF%9E%E6%8E%A5"><span class="toc-number">7.4.</span> <span class="toc-text">第四步：双阈值检测 + 滞后连接</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenCV-%E9%87%8C%E6%80%8E%E4%B9%88%E5%86%99"><span class="toc-number">8.</span> <span class="toc-text">OpenCV 里怎么写</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-number">9.</span> <span class="toc-text">小结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/21/%E6%A8%A1%E6%9D%BF%E5%8D%B7%E7%A7%AF/" title="模板卷积">模板卷积</a><time datetime="2026-10-21T12:12:32.000Z" title="发表于 2026-10-21 20:12:32">2026-10-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/21/%E7%BA%BF%E6%AE%B5%E6%A0%91%E8%BF%9B%E9%98%B6%E7%AC%94%E8%AE%B02/" title="线段树进阶笔记2">线段树进阶笔记2</a><time datetime="2026-10-21T00:47:43.000Z" title="发表于 2026-10-21 08:47:43">2026-10-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/19/OpenCV%E5%AE%9E%E6%88%98-%E7%9B%B4%E6%96%B9%E5%9B%BE%E5%9D%87%E8%A1%A1%E5%8C%96/" title="OpenCV实战-直方图均衡化">OpenCV实战-直方图均衡化</a><time datetime="2026-10-19T15:58:52.000Z" title="发表于 2026-10-19 23:58:52">2026-10-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/19/java%E7%AC%94%E8%AE%B02/" title="java笔记2">java笔记2</a><time datetime="2026-10-19T07:04:27.000Z" title="发表于 2026-10-19 15:04:27">2026-10-19</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/ZestfulYK-blog/2026/10/16/%E7%BA%BF%E6%AE%B5%E6%A0%91%E8%BF%9B%E9%98%B6%E7%AC%94%E8%AE%B01/" title="线段树进阶笔记1">线段树进阶笔记1</a><time datetime="2026-10-16T15:02:20.000Z" title="发表于 2026-10-16 23:02:20">2026-10-16</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By ZestfulYK</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.0.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/ZestfulYK-blog/js/utils.js?v=5.5.2"></script><script src="/ZestfulYK-blog/js/main.js?v=5.5.2"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        loader: {
+          load: [
+            // Four font extension packages (optional)
+            //- '[tex]/bbm',
+            //- '[tex]/bboldx',
+            //- '[tex]/dsfont',
+            '[tex]/mhchem'
+          ],
+          paths: {
+            'mathjax-newcm': '[mathjax]/../@mathjax/mathjax-newcm-font',
+
+            //- // Four font extension packages (optional)
+            //- 'mathjax-bbm-extension': '[mathjax]/../@mathjax/mathjax-bbm-font-extension',
+            //- 'mathjax-bboldx-extension': '[mathjax]/../@mathjax/mathjax-bboldx-font-extension',
+            //- 'mathjax-dsfont-extension': '[mathjax]/../@mathjax/mathjax-dsfont-font-extension',
+            'mathjax-mhchem-extension': '[mathjax]/../@mathjax/mathjax-mhchem-font-extension'
+          }
+        },
+        output: {
+          font: 'mathjax-newcm',
+        },
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+          packages: {
+            '[+]': [
+              'mhchem'
+            ]
+          }
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          menuOptions: {
+            settings: {
+              enrich: false  // Turn off Braille and voice narration text automatic generation
+            }
+          },
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/ZestfulYK-blog/js/search/local-search.js?v=5.5.2"></script></div></div></body></html>
