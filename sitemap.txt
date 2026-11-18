@@ -1,3 +1,4 @@
+https://zestfulyk.github.io/ZestfulYK-blog/2026/11/18/CCPC%E8%8D%86%E5%B7%9E%E5%9B%9E%E9%A1%BE/
 https://zestfulyk.github.io/ZestfulYK-blog/2026/11/04/ICPC%E6%AD%A6%E6%B1%89%E7%AB%99%E5%9B%9E%E9%A1%BE/
 https://zestfulyk.github.io/ZestfulYK-blog/2026/10/29/ICPC%E8%A5%BF%E5%AE%89%E7%AB%99%E5%9B%9E%E9%A1%BE/
 https://zestfulyk.github.io/ZestfulYK-blog/2026/10/08/3-style%E7%AE%80%E5%8C%96%E7%89%88Orozco/
@@ -73,6 +74,7 @@ https://zestfulyk.github.io/ZestfulYK-blog
 https://zestfulyk.github.io/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95%E6%8C%91%E6%88%98%E8%B5%9B%E9%A2%98%E8%A7%A3/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/%E9%AD%94%E6%96%B9/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/%E7%AE%97%E6%B3%95/
+https://zestfulyk.github.io/ZestfulYK-blog/tags/CCPC/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/ICPC/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/%E6%8A%80%E6%9C%AF/
 https://zestfulyk.github.io/ZestfulYK-blog/tags/OpenCV/
