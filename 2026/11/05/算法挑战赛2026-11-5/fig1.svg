@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0 0 L10 4 L0 8 Z" fill="#333333"/>
+    </marker>
+  </defs>
+  <rect width="640" height="360" fill="#ffffff"/>
+
+  <!-- grid -->
+  <g stroke="#e8e8e8" stroke-width="1" stroke-dasharray="4 4">
+    <line x1="146" y1="40" x2="146" y2="300"/>
+    <line x1="221" y1="40" x2="221" y2="300"/>
+    <line x1="297" y1="40" x2="297" y2="300"/>
+    <line x1="373" y1="40" x2="373" y2="300"/>
+    <line x1="449" y1="40" x2="449" y2="300"/>
+    <line x1="524" y1="40" x2="524" y2="300"/>
+    <line x1="600" y1="40" x2="600" y2="300"/>
+    <line x1="70" y1="170" x2="600" y2="170"/>
+    <line x1="70" y1="40" x2="600" y2="40"/>
+  </g>
+
+  <!-- axes -->
+  <line x1="70" y1="40" x2="70" y2="308" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="62" y1="300" x2="612" y2="300" stroke="#333333" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- ticks and labels -->
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#444444" text-anchor="middle">
+    <text x="70" y="322">1</text>
+    <text x="146" y="322">2</text>
+    <text x="221" y="322">3</text>
+    <text x="297" y="322">4</text>
+    <text x="373" y="322">5</text>
+    <text x="449" y="322">6</text>
+    <text x="524" y="322">7</text>
+    <text x="600" y="322">8</text>
+    <text x="628" y="318" font-style="italic" text-anchor="start">k</text>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#444444" text-anchor="end">
+    <text x="58" y="305">0</text>
+    <text x="58" y="175">1</text>
+    <text x="58" y="45">2</text>
+    <text x="58" y="28" font-style="italic">f(k)</text>
+  </g>
+
+  <!-- data: 0 1 2 2 2 2 1 0 -->
+  <polyline fill="none" stroke="#2b7de9" stroke-width="2.5" stroke-linejoin="round"
+            points="70,300 146,170 221,40 297,40 373,40 449,40 524,170 600,300"/>
+  <g fill="#ffffff" stroke="#2b7de9" stroke-width="2">
+    <circle cx="70" cy="300" r="4"/>
+    <circle cx="146" cy="170" r="4"/>
+    <circle cx="221" cy="40" r="4"/>
+    <circle cx="297" cy="40" r="4"/>
+    <circle cx="373" cy="40" r="4"/>
+    <circle cx="449" cy="40" r="4"/>
+    <circle cx="524" cy="170" r="4"/>
+    <circle cx="600" cy="300" r="4"/>
+  </g>
+</svg>
