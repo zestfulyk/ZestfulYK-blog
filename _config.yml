@@ -112,7 +112,9 @@ theme: butterfly
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
+## 注意：发布分支必须与源码分支区分开，否则 hexo deploy 会用站点快照强推覆盖源码
+## 源码分支：main ；发布分支（GitHub Pages 源）：gh-pages
 deploy:
   type: git
   repo: https://github.com/zestfulyk/ZestfulYK-blog.git
-  branch: master
+  branch: gh-pages
